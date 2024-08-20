@@ -4,7 +4,7 @@ import { Product } from "@/types/product";
 const productData: Product[] = [
   {
     image: "/images/product/product-01.png",
-    name: "Product 1",
+    name: "Customer 1",
     category: "MPK",
     price: 296,
     sold: 22,
@@ -12,7 +12,7 @@ const productData: Product[] = [
   },
   {
     image: "/images/product/product-02.png",
-    name: "Product 2",
+    name: "Customer 2",
     category: "MPK",
     price: 546,
     sold: 12,
@@ -20,7 +20,7 @@ const productData: Product[] = [
   },
   {
     image: "/images/product/product-03.png",
-    name: "Product 3",
+    name: "Customer 3",
     category: "MPK",
     price: 443,
     sold: 64,
@@ -28,7 +28,31 @@ const productData: Product[] = [
   },
   {
     image: "/images/product/product-04.png",
-    name: "Product 4",
+    name: "Customer 4",
+    category: "MPK",
+    price: 499,
+    sold: 72,
+    profit: 103,
+  },
+  {
+    image: "/images/product/product-04.png",
+    name: "Customer 5",
+    category: "MPK",
+    price: 499,
+    sold: 72,
+    profit: 103,
+  },
+  {
+    image: "/images/product/product-04.png",
+    name: "Customer 6",
+    category: "MPK",
+    price: 499,
+    sold: 72,
+    profit: 103,
+  },
+  {
+    image: "/images/product/product-04.png",
+    name: "Customer 7",
     category: "MPK",
     price: 499,
     sold: 72,
