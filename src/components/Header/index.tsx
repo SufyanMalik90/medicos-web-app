@@ -67,7 +67,7 @@ const Header = (props: {
         </div>
 
         <div className="flex w-full">
-          <div>
+          <div className="hidden lg:block">
             <h1 className="mb-0.5 text-heading-5 font-bold text-dark dark:text-white">
               Dashboard
             </h1>
