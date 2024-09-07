@@ -91,7 +91,7 @@ const menuGroups = [
         route: "#",
         children: [
           { label: "Product List", route: "/products" },
-          { label: "Add Product", route: "/forms/form-elements" },
+          // { label: "Add Product", route: "/forms/form-elements" },
         ],
       },
       // {
@@ -143,7 +143,7 @@ const menuGroups = [
         route: "#",
         children: [
           { label: "Customer list", route: "/customers" },
-          { label: "Add new customer", route: "/forms/add-customer" },
+          // { label: "Add new customer", route: "/forms/add-customer" },
         ],
       },
       {

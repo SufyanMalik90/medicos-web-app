@@ -4,8 +4,8 @@ import { Product } from "@/types/product";
 const productData: Product[] = [
   {
     image: "/images/product/product-01.png",
-    name: "Customer 1",
-    category: "MPK",
+    name: "Hammad ul haq",
+    category: "Medical Assistant",
     price: 296,
     sold: 22,
     profit: 45,
@@ -69,7 +69,7 @@ const TableTwo = () => {
         </h4>
       </div>
 
-      <div className="grid grid-cols-6 border-t border-stroke px-4 py-4.5 dark:border-dark-3 sm:grid-cols-8 md:px-6 2xl:px-7.5">
+      <div className="grid grid-cols-6 border-t border-stroke bg-[#5750f1] px-4 py-4.5 text-white dark:border-dark-3 sm:grid-cols-8 md:px-6 2xl:px-7.5">
         <div className="col-span-3 flex items-center">
           <p className="font-medium">Customer Name</p>
         </div>
