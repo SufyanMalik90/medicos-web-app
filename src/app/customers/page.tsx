@@ -6,7 +6,7 @@ import { api } from "../../axios.js";
 import DefaultLayout from "@/components/Layouts/DefaultLaout";
 import { useEffect, useRef, useState } from "react";
 import {AlertSuccess} from "@/components/Alerts/AlertSuccess";
-import {AlertError} from "@/components/Alerts/AlertError";
+import AlertError from "@/components/Alerts/AlertError";
 
 const TablesPage = () => {
   const [isOpen, setIsOpen] = useState(false);

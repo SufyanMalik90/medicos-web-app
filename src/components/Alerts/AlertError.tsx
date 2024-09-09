@@ -39,4 +39,4 @@ const AlertError = ({ title, message, onClose }: AlertSuccessProps) => {
   );
 };
 
-export  {AlertError};
+export  default AlertError;

@@ -8,7 +8,7 @@ import { api } from "../../axios.js";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLaout";
 import { useEffect, useRef, useState } from "react";
-import { AlertError } from "@/components/Alerts/AlertError";
+import  AlertError  from "@/components/Alerts/AlertError";
 import { AlertSuccess } from "@/components/Alerts/AlertSuccess";
 
 const TablesPage = () => {
