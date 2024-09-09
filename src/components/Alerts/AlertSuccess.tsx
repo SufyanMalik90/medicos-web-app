@@ -38,4 +38,4 @@ const AlertSuccess = ({ title, message, onClose }: AlertSuccessProps) => {
   );
 };
 
-export  {AlertSuccess};
+export  default AlertSuccess;

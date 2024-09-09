@@ -9,7 +9,7 @@ import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLaout";
 import { useEffect, useRef, useState } from "react";
 import  AlertError  from "@/components/Alerts/AlertError";
-import { AlertSuccess } from "@/components/Alerts/AlertSuccess";
+import  AlertSuccess  from "@/components/Alerts/AlertSuccess";
 
 const TablesPage = () => {
   const [isOpen, setIsOpen] = useState<any>(false);
