@@ -3,10 +3,11 @@ import Cookies from "js-cookie";
 
 // axios instance
 export const api = axios.create({
-  baseURL: "https://backend.faresharellc.com/api",
+  baseURL: "http://3.17.178.167",
   timeout: 15000,
   headers: {
-    Authorization: `Bearer ${Cookies.get("token")}`,
+    // Authorization: `Bearer ${Cookies.get("token")}`,
+    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWY2MzExNzQzOTE4OGU2YjI4NzQxNSIsImlhdCI6MTcyNTczOTM5MywiZXhwIjoxNzU3Mjc1MzkzfQ.mDjB64bz5OnPdAfOS3We8qj7Ko2vOJ2qMpgG4usg4WI`,
   },
 });
 

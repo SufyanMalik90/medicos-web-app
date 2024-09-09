@@ -1,6 +1,11 @@
 import React from "react";
+interface AlertSuccessProps {
+  title: string;
+  message: string;
+  onClose: () => void;
+}
 
-const AlertError = () => {
+const AlertError = ({ title, message, onClose }: AlertSuccessProps) => {
   return (
     <>
       <div className="flex w-full rounded-[10px] border-l-6 border-red-light bg-red-light-5 px-7 py-8 dark:bg-[#1B1B24] dark:bg-opacity-30 md:p-9">
@@ -21,11 +26,11 @@ const AlertError = () => {
         </div>
         <div className="w-full">
           <h5 className="mb-4 font-bold leading-[22px] text-[#BC1C21]">
-            There were 1 errors with your submission
+            {title}
           </h5>
           <ul>
             <li className="text-[#CD5D5D]">
-              Lorem Ipsum is simply dummy text of the printing
+             {message}
             </li>
           </ul>
         </div>
@@ -34,4 +39,4 @@ const AlertError = () => {
   );
 };
 
-export default AlertError;
+export  {AlertError};

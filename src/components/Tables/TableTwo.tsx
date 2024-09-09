@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { Product } from "@/types/product";
+import { useEffect, useState } from "react";
+import {api} from '@/axios'
 
 const productData: Product[] = [
   {
@@ -60,7 +62,28 @@ const productData: Product[] = [
   },
 ];
 
-const TableTwo = () => {
+const TableTwo = ({ customers }: any) => {
+  // const [customers, setCustomers] = useState([]);
+  // useEffect(() => {
+  //   // Function to fetch customers
+  //   const fetchCustomers = async () => {
+  //     try {
+  //       const response = await api.get("/api/get-all-customer");
+  //       console.log("API Response:", response.data); // Log the response to inspect it
+
+  //       // Check if the response was successful and if the customers array is present
+  //       if (response.data.success && Array.isArray(response.data.customers)) {
+  //         setCustomers(response.data.customers); // Set the customers array in state
+  //       } else {
+  //         console.error("Unexpected response format:", response.data);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching customers:", error);
+  //     }
+  //   };
+
+  //   fetchCustomers();
+  // }, []);
   return (
     <div className="rounded-[10px] bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
       <div className="px-4 py-6 md:px-6 xl:px-9">
@@ -79,42 +102,31 @@ const TableTwo = () => {
         <div className="col-span-1 flex items-center">
           <p className="font-medium">Address</p>
         </div>
-        {/* <div className="col-span-1 flex items-center">
-          <p className="font-medium">Qty</p>
-        </div> */}
-        {/* <div className="col-span-1 flex items-center">
-          <p className="font-medium">Profit</p>
-        </div> */}
+        <div className="col-span-3 flex items-center">
+          <p className="font-medium">Complete Address</p>
+        </div>
       </div>
 
-      {productData.map((product, key) => (
+      {customers.map((customer : any, key: any) => (
         <div
           className="grid grid-cols-6 border-t border-stroke px-4 py-4.5 dark:border-dark-3 sm:grid-cols-8 md:px-6 2xl:px-7.5"
           key={key}
         >
           <div className="col-span-3 flex items-center">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              {/* <div className="h-12.5 w-15 rounded-md">
-                <Image
-                  src={product.image}
-                  width={60}
-                  height={50}
-                  alt="Product"
-                />
-              </div> */}
               <p className="text-body-sm font-medium text-dark dark:text-dark-6">
-                {product.name}
+              {customer.customer_name}
               </p>
             </div>
           </div>
-          <div className="col-span-2 hidden items-center sm:flex">
+          <div className="col-span-1 flex items-center">
             <p className="text-body-sm font-medium text-dark dark:text-dark-6">
-              {product.category}
+            {customer.address.city}
             </p>
           </div>
           <div className="col-span-1 flex items-center">
             <p className="text-body-sm font-medium text-dark dark:text-dark-6">
-              {product.category}
+            {customer.address.complete_address ? customer.address.complete_address : "-"}
             </p>
           </div>
           {/* <div className="col-span-1 flex items-center">

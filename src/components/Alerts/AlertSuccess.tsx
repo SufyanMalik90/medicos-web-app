@@ -1,6 +1,12 @@
 import React from "react";
 
-const AlertSuccess = () => {
+interface AlertSuccessProps {
+  title: string;
+  message: string;
+  onClose: () => void;
+}
+
+const AlertSuccess = ({ title, message, onClose }: AlertSuccessProps) => {
   return (
     <>
       <div className="flex w-full rounded-[10px] border-l-6 border-green bg-green-light-7 px-7 py-8 dark:bg-[#1B1B24] dark:bg-opacity-30 md:p-9">
@@ -21,11 +27,10 @@ const AlertSuccess = () => {
         </div>
         <div className="w-full">
           <h5 className="mb-2 font-bold leading-[22px] text-[#004434] dark:text-[#34D399]">
-            Message Sent Successfully
+          {title}
           </h5>
           <p className="text-[#637381]">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry.
+          {message}
           </p>
         </div>
       </div>
@@ -33,4 +38,4 @@ const AlertSuccess = () => {
   );
 };
 
-export default AlertSuccess;
+export  {AlertSuccess};

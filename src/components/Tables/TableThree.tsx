@@ -27,7 +27,7 @@ const packageData: Package[] = [
   },
 ];
 
-const TableThree = () => {
+const TableThree = ({products}: any) => {
   return (
     <div className="rounded-[10px] bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
       <div className="px-4 py-6 md:px-6 xl:px-9">
@@ -40,7 +40,7 @@ const TableThree = () => {
         <div className="col-span-3 flex items-center">
           <p className="font-medium">Product Title</p>
         </div>
-        <div className="col-span-2 hidden items-center sm:flex">
+        <div className="col-span-1 flex items-center">
           <p className="font-medium">Price</p>
         </div>
         <div className="col-span-1 flex items-center">
@@ -54,7 +54,7 @@ const TableThree = () => {
       </div> */}
       </div>
 
-      {packageData.map((packageDataItem, key) => (
+      {products.map((product: any, key: any) => (
         <div
           className="grid grid-cols-6 border-t border-stroke px-4 py-4.5 dark:border-dark-3 sm:grid-cols-8 md:px-6 2xl:px-7.5"
           key={key}
@@ -70,18 +70,19 @@ const TableThree = () => {
               />
             </div> */}
               <p className="text-body-sm font-medium text-dark dark:text-dark-6">
-                {packageDataItem.name}
+                {product.product_name}
               </p>
             </div>
           </div>
-          <div className="col-span-2 hidden items-center sm:flex">
+          
+          <div className="col-span-1 flex items-center">
             <p className="text-body-sm font-medium text-dark dark:text-dark-6">
-              {packageDataItem.price}
+              {product.price}
             </p>
           </div>
           <div className="col-span-1 flex items-center">
             <p className="text-body-sm font-medium text-dark dark:text-dark-6">
-              {packageDataItem.price}
+              {product.stock}
             </p>
           </div>
           {/* <div className="col-span-1 flex items-center">
