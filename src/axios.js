@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 
 // axios instance
 export const api = axios.create({
-  baseURL: "http://3.17.178.167",
+  baseURL: "https://medicose.coderloops.com",
   timeout: 15000,
   headers: {
     // Authorization: `Bearer ${Cookies.get("token")}`,
