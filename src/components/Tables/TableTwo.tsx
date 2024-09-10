@@ -97,19 +97,17 @@ const TableTwo = ({ customers }: any) => {
           <p className="font-medium">Customer Name</p>
         </div>
         <div className="col-span-2 hidden items-center sm:flex">
-          <p className="font-medium">Category</p>
+          <p className="font-medium">City</p>
         </div>
         <div className="col-span-1 flex items-center">
-          <p className="font-medium">Address</p>
-        </div>
-        <div className="col-span-3 flex items-center">
           <p className="font-medium">Complete Address</p>
         </div>
+        
       </div>
 
       {customers.map((customer : any, key: any) => (
         <div
-          className="grid grid-cols-6 border-t border-stroke px-4 py-4.5 dark:border-dark-3 sm:grid-cols-8 md:px-6 2xl:px-7.5"
+          className="grid grid-cols-9 border-t border-stroke px-4 py-4.5 dark:border-dark-3 sm:grid-cols-8 md:px-6 2xl:px-7.5"
           key={key}
         >
           <div className="col-span-3 flex items-center">
@@ -119,7 +117,7 @@ const TableTwo = ({ customers }: any) => {
               </p>
             </div>
           </div>
-          <div className="col-span-1 flex items-center">
+          <div className="col-span-2 flex items-center">
             <p className="text-body-sm font-medium text-dark dark:text-dark-6">
             {customer.address.city}
             </p>

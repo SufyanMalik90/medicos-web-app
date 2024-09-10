@@ -16,6 +16,8 @@ const TablesPage = () => {
   const [products, setproducts] = useState([]);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [update, setUpdate] = useState<any>(false);
+
   const modalRef = useRef<any>();
   useEffect(() => {
     // Function to fetch customers
@@ -40,7 +42,7 @@ const TablesPage = () => {
     };
 
     fetchCustomers();
-  }, []);
+  }, [update]);
   const toggleModal = (e: any) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
       setIsOpen(false);
@@ -78,6 +80,7 @@ const TablesPage = () => {
     });
 
     if (response?.data?.success) {
+      setUpdate((prev: any) => !prev);
       setShowSuccessAlert(true);
       setIsOpen(false);
       setErrorMessage("");
