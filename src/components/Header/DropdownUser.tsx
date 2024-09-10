@@ -1,11 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import ClickOutside from "@/components/ClickOutside";
+import { api } from "../../axios.js";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [profile, setProfile] = useState<any>(null)
 
+  useEffect(() => {
+    // Function to fetch customers
+    const fetchProfile = async () => {
+      try {
+        const response = await api.get("/api/my-profile");
+        console.log("API Response:", response.data.profile);
+        setProfile(response.data.profile);
+        
+      } catch (error) {
+        console.error("Error fetching customers:", error);
+        
+      }
+    };
+
+    fetchProfile();
+  }, []);
+  
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link
@@ -28,7 +47,7 @@ const DropdownUser = () => {
         </span>
 
         <span className="flex items-center gap-2 font-medium text-dark dark:text-dark-6">
-          <span className="hidden lg:block">Usama Khan</span>
+          <span className="hidden lg:block">{profile?.name || "User"}</span>
 
           <svg
             className={`fill-current duration-200 ease-in ${dropdownOpen && "rotate-180"}`}
@@ -72,10 +91,10 @@ const DropdownUser = () => {
 
             <span className="block">
               <span className="block font-medium text-dark dark:text-white">
-                Usama Khan
+              {profile?.name || "User"}
               </span>
               <span className="block font-medium text-dark-5 dark:text-dark-6">
-                usamaKhan@admin.com
+              {profile?.email || "user@example.com"}
               </span>
             </span>
           </div>
