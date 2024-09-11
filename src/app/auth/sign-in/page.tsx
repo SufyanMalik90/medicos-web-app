@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   description: "This is Next.js Login Page NextAdmin Dashboard Kit",
 };
 
+// Cookies.set("token", response?.data?.token, {expires: 7})
+
 const SignIn: React.FC = () => {
   return (
     <>

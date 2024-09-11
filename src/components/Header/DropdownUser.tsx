@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import ClickOutside from "@/components/ClickOutside";
 import { api } from "../../axios.js";
+import { AppContext } from "@/context/AppContext";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [profile, setProfile] = useState<any>(null)
+  const {profile, setProfile, update} = useContext<any>(AppContext)
 
   useEffect(() => {
     // Function to fetch customers
@@ -23,7 +24,7 @@ const DropdownUser = () => {
     };
 
     fetchProfile();
-  }, []);
+  }, [update]);
   
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">

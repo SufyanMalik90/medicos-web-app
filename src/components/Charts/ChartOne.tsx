@@ -1,9 +1,59 @@
 import { ApexOptions } from "apexcharts";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import DefaultSelectOption from "@/components/SelectOption/DefaultSelectOption";
+import { api } from "../../axios.js";
+import { useRouter } from "next/navigation.js";
+import Cookies from "js-cookie";
+
+
+interface RevenueData {
+  month: string;
+  totalInvoices: number;
+  totalRevenue: number;
+}
+
+interface ApiResponse {
+  success: boolean;
+  type: string;
+  data: RevenueData[];
+}
 
 const ChartOne: React.FC = () => {
+
+  const router = useRouter()
+
+  const [formData, setFormData] = useState<any>({
+    type: "yearly",
+  });
+ 
+
+  useEffect(() => {
+    // Function to fetch customers
+    const fetchProfile = async () => {
+      try {
+        const response = await api.post("/api/revenue", formData);
+        console.log("API Response revenue:", response.data);
+        const apiData: ApiResponse = response.data;
+        if (apiData.success) {
+          
+        } else {
+          console.error("Error fetching revenue data:", response.data.message);
+        }
+        
+      } catch (error:any) {
+        console.log(error);
+        if(error?.response?.status == 401){
+          router.push("/auth/sign-in")
+          Cookies.remove("token")
+        }
+        console.error("Error fetching customers:", error);
+        
+      }
+    };
+
+    fetchProfile();
+  }, []);
   const series = [
     {
       name: "Received Amount",
@@ -98,10 +148,6 @@ const ChartOne: React.FC = () => {
     xaxis: {
       type: "category",
       categories: [
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
         "Jan",
         "Feb",
         "Mar",
@@ -110,6 +156,10 @@ const ChartOne: React.FC = () => {
         "Jun",
         "Jul",
         "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
       ],
       axisBorder: {
         show: false,
@@ -139,7 +189,8 @@ const ChartOne: React.FC = () => {
           <p className="font-medium uppercase text-dark dark:text-dark-6">
             Short by:
           </p>
-          <DefaultSelectOption options={["Monthly", "Yearly"]} />
+          <DefaultSelectOption options={["Yearly", "Monthly"]} 
+            />
         </div>
       </div>
       <div>

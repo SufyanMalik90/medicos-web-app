@@ -34,10 +34,7 @@ auth.interceptors.request.use(
       return Promise.reject(error);
     }
 
-    if (error.response.status === 401) {
-      window.location.href = "/login/";
-      return Promise.reject(error);
-    }
+    
 
     // specific error handling done elsewhere
     return Promise.reject(error);
@@ -53,6 +50,7 @@ auth.interceptors.response.use(
   },
   function (error) {
     // *For unAuthorized
+    
     // if (error.response.status === 401) {
     //   localStorage.clear()
     // }
@@ -79,7 +77,8 @@ api.interceptors.request.use(
     }
 
     if (error.response.status === 401) {
-      window.location.href = "/login/";
+      window.location.href("/auth/sign-in")
+
       return Promise.reject(error);
     }
 
@@ -96,10 +95,22 @@ api.interceptors.response.use(
     }
   },
   function (error) {
+    if (typeof error.response === "undefined") {
+      alert(
+        "A server/network error occurred. " +
+          "Looks like CORS might be the problem. " +
+          "Sorry about this - we will get it fixed shortly.",
+      );
+      return Promise.reject(error);
+    }
     // *For unAuthorized
-    // if (error.response.status === 401) {
-    //   localStorage.clear()
-    // }
+    if (error.response.status === 401) {
+      window.location.href("/auth/sign-in")
+
+      return Promise.reject(error);
+    }
+
+   
     return Promise.reject(error);
   },
 );

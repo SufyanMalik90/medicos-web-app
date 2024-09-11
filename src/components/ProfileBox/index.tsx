@@ -1,28 +1,20 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { api } from "../../axios.js";
+import { AppContext } from "@/context/AppContext";
 
 const ProfileBox = () => {
-  const [profile, setProfile] = useState<any>(null)
+  const {profile, setProfile, setUpdate} = useContext<any>(AppContext) 
 
-  useEffect(() => {
-    // Function to fetch customers
-    const fetchProfile = async () => {
-      try {
-        const response = await api.get("/api/my-profile");
-        console.log("API Response:", response.data.profile);
-        setProfile(response.data.profile);
-        
-      } catch (error) {
-        console.error("Error fetching customers:", error);
-        
-      }
-    };
+  const hitApi = () => {
+    // if(response?.data?.success){
+    //   setUpdate((prev:any)=>!prev)
+    // }
+  }
 
-    fetchProfile();
-  }, []);
+
   return (
     <>
       <div className="overflow-hidden rounded-[10px] bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
