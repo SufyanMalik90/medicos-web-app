@@ -61,6 +61,10 @@ auth.interceptors.response.use(
 // Request interceptor to handle API calls with tokens
 api.interceptors.request.use(
   (config) => {
+    const token = Cookies.get("token"); // Get token dynamically
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     // List of API endpoints that need a token
     return config;
   },
