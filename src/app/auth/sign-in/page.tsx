@@ -1,19 +1,65 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLaout";
 import Signin from "@/components/Auth/Signin";
+import { auth } from "@/axios";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Next.js Login Page | NextAdmin - Next.js Dashboard Kit",
-  description: "This is Next.js Login Page NextAdmin Dashboard Kit",
-};
+
 
 // Cookies.set("token", response?.data?.token, {expires: 7})
 
 const SignIn: React.FC = () => {
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const router = useRouter();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const handleChange = (e:any) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+  const handleSubmit   = async (e:any) => {
+     e.preventDefault();
+ 
+     try {
+       const response = await auth.post("/api/auth/login", formData);
+      console.log("Response ==== login", response.data);
+      
+       if (response?.data?.success) {
+         console.log("Password changed successfully!");
+         try{
+           Cookies.set("token", response?.data?.token, {expires: 7})
+           if(response?.data?.token){
+             router.push("/");       
+            }
+          } catch(error:any){
+            console.log(error);
+          }
+         
+       } else {
+         // Handle password change error
+         setErrorMessage(
+           response?.data?.message,
+         );
+       }
+     } catch (error:any) {
+       // Handle unexpected errors
+       console.error("Error changing password:", error);
+       setErrorMessage(error?.response?.data?.message || "Failed to login. Please try again.");
+     }
+   };
   return (
     <>
  <div className="font-[sans-serif] bg-white flex items-center justify-center md:h-screen p-4">
@@ -48,6 +94,8 @@ const SignIn: React.FC = () => {
                   required
                   className="w-full text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
                   placeholder="Enter email"
+                  value={formData.email}
+                  onChange={handleChange}
                 />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -89,6 +137,8 @@ const SignIn: React.FC = () => {
                   required
                   className="w-full text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
                   placeholder="Enter password"
+                  value={formData.password}
+                  onChange={handleChange}
                 />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -130,14 +180,14 @@ const SignIn: React.FC = () => {
               </div>
             </div>
             <div className="mt-12">
-              <Link href='/'>
-              <button
+              {/* <Link href='/'> */}
+              <button onClick={handleSubmit}
                 type="button"
                 className="w-full shadow-xl py-2.5 px-5 text-sm font-semibold rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
               >
                 Sign in
               </button>
-              </Link>
+              {/* </Link> */}
             </div>
           </form>
         </div>

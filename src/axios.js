@@ -6,13 +6,13 @@ export const api = axios.create({
   baseURL: "https://medicose.coderloops.com",
   timeout: 15000,
   headers: {
-    // Authorization: `Bearer ${Cookies.get("token")}`,
-    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWY2MzExNzQzOTE4OGU2YjI4NzQxNSIsImlhdCI6MTcyNTczOTM5MywiZXhwIjoxNzU3Mjc1MzkzfQ.mDjB64bz5OnPdAfOS3We8qj7Ko2vOJ2qMpgG4usg4WI`,
+    Authorization: `Bearer ${Cookies.get("token")}`,
+    // Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWY2MzExNzQzOTE4OGU2YjI4NzQxNSIsImlhdCI6MTcyNTczOTM5MywiZXhwIjoxNzU3Mjc1MzkzfQ.mDjB64bz5OnPdAfOS3We8qj7Ko2vOJ2qMpgG4usg4WI`,
   },
 });
 
 export const auth = axios.create({
-  baseURL: "https://backend.faresharellc.com/auth",
+  baseURL: "https://medicose.coderloops.com",
   timeout: 15000,
 });
 
@@ -77,7 +77,7 @@ api.interceptors.request.use(
     }
 
     if (error.response.status === 401) {
-      window.location.href("/auth/sign-in")
+      window.location.href = "/auth/sign-in"
 
       return Promise.reject(error);
     }
@@ -105,7 +105,7 @@ api.interceptors.response.use(
     }
     // *For unAuthorized
     if (error.response.status === 401) {
-      window.location.href("/auth/sign-in")
+      window.location.href = "/auth/sign-in"
 
       return Promise.reject(error);
     }
