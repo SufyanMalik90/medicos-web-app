@@ -1,127 +1,107 @@
+"use client";
+import React, { useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { auth } from "@/axios";
+import { useRouter } from "next/navigation";
 
-const forgetPassword = () => {
+const VerifyOTP = () => {
+  const [email, setEmail] = useState("");
+  const [otpValues, setOtpValues] = useState<string[]>(Array(6).fill(""));
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
+  
+  const inputsRef = useRef<any[]>([]);
+
+  const handleInputChange = (e: any, idx: number) => {
+    const value = e.target.value;
+    const newOtpValues = [...otpValues];
+    newOtpValues[idx] = value;
+
+    setOtpValues(newOtpValues);
+
+    if (value && idx < 5) {
+      inputsRef.current[idx + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (e: any, idx: number) => {
+    if (e.key === "Backspace" && !e.currentTarget.value && idx > 0) {
+      inputsRef.current[idx - 1]?.focus();
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const otpCode = otpValues.join("");
+    
+
+    try {
+      const response = await auth.post("/api/auth/verify-otp", { email: "shaikh.arman1239090@gmail.com", otp: otpCode });
+      console.log("Response ==== Verify OTP", response.data);
+     
+      if (response?.data?.success) {
+        console.log("Verify OTP successfully!");
+        router.push("/auth/reset-password");       
+       
+      } else {
+        // Handle password change error
+        setErrorMessage(response?.data?.error);
+      }
+    } catch (error) {
+      // Handle unexpected errors
+      console.error("Error changing password:", error);
+      setErrorMessage("Failed to change password.");
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center bg-white p-4 font-[sans-serif] md:h-screen">
-      <div className="max-w-6xl rounded-md p-6 shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] max-md:max-w-lg">
-        <a href="javascript:void(0)">
-          {/* <img
-            src="https://readymadeui.com/readymadeui.svg"
-            alt="logo"
-            className="w-40 md:mb-4 mb-12"
-          /> */}
-        </a>
-
-        <div className="grid items-center gap-8 md:grid-cols-2">
+    <div className="flex items-center justify-center bg-white p-4 font-sans md:h-screen">
+      <div className="max-w-6xl p-6 rounded-md shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] max-md:max-w-lg">
+        <div className="grid gap-8 md:grid-cols-2 items-center">
           <div className="max-md:order-1 lg:min-w-[450px]">
-          <Image
+            <Image
               src="/images/auth/OTP.svg"
-              alt="forgot-password-image"
+              alt="Verify OTP"
               className="w-full object-cover lg:w-11/12"
               width={25}
               height={25}
             />
           </div>
 
-          <form className="mx-auto max-w-sm flex flex-col">
-          <div className="mb-12 text-center">
-              <h3 className="text-4xl font-extrabold text-blue-600">Veify OTP</h3>
+          <form className="mx-auto w-full md:max-w-sm flex flex-col">
+            <div className="mb-12 text-center">
+              <h3 className="text-4xl font-extrabold text-blue-600">Verify OTP</h3>
             </div>
-            <div className="mb-2 flex space-x-2 rtl:space-x-reverse justify-center">
-              <div>
-                <label className="sr-only">First code</label>
+
+            <div className="mb-2 flex space-x-2 justify-center">
+              {Array(6).fill("").map((_, idx) => (
                 <input
+                  key={idx}
+                  ref={(el:any) => (inputsRef.current[idx] = el as any)} // Assign input ref
                   type="text"
                   maxLength={1}
-                  data-focus-input-init
-                  data-focus-input-next="code-2"
-                  id="code-1"
-                  className="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block h-11 w-11 rounded-lg border border-gray-300 bg-white py-3 text-center text-sm font-extrabold text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+                  className="h-11 w-11 text-center text-sm font-extrabold rounded-lg border border-gray-300 bg-white text-gray-900 focus:ring-blue-600 focus:border-blue-600"
                   required
+                  value={otpValues[idx]} // Bind value to state
+                  onChange={(e) => handleInputChange(e, idx)} // Auto move to next input
+                  onKeyDown={(e) => handleKeyDown(e, idx)} // Handle backspace to go to previous input
                 />
-              </div>
-              <div>
-                <label className="sr-only">Second code</label>
-                <input
-                  type="text"
-                  maxLength={1}
-                  data-focus-input-init
-                  data-focus-input-prev="code-1"
-                  data-focus-input-next="code-3"
-                  id="code-2"
-                  className="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block h-11 w-11 rounded-lg border border-gray-300 bg-white py-3 text-center text-sm font-extrabold text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-                  required
-                />
-              </div>
-              <div>
-                <label className="sr-only">Third code</label>
-                <input
-                  type="text"
-                  maxLength={1}
-                  data-focus-input-init
-                  data-focus-input-prev="code-2"
-                  data-focus-input-next="code-4"
-                  id="code-3"
-                  className="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block h-11 w-11 rounded-lg border border-gray-300 bg-white py-3 text-center text-sm font-extrabold text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-                  required
-                />
-              </div>
-              <div>
-                <label className="sr-only">Fourth code</label>
-                <input
-                  type="text"
-                  maxLength={1}
-                  data-focus-input-init
-                  data-focus-input-prev="code-3"
-                  data-focus-input-next="code-5"
-                  id="code-4"
-                  className="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block h-11 w-11 rounded-lg border border-gray-300 bg-white py-3 text-center text-sm font-extrabold text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-                  required
-                />
-              </div>
-              <div>
-                <label className="sr-only">Fifth code</label>
-                <input
-                  type="text"
-                  maxLength={1}
-                  data-focus-input-init
-                  data-focus-input-prev="code-4"
-                  data-focus-input-next="code-6"
-                  id="code-5"
-                  className="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block h-11 w-11 rounded-lg border border-gray-300 bg-white py-3 text-center text-sm font-extrabold text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-                  required
-                />
-              </div>
-              <div>
-                <label className="sr-only">Sixth code</label>
-                <input
-                  type="text"
-                  maxLength={1}
-                  data-focus-input-init
-                  data-focus-input-prev="code-5"
-                  id="code-6"
-                  className="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block h-11 w-11 rounded-lg border border-gray-300 bg-white py-3 text-center text-sm font-extrabold text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-                  required
-                />
-              </div>
+              ))}
             </div>
-            <p
-              id="helper-text-explanation"
-              className="mt-2 text-sm text-gray-500 dark:text-gray-400 text-center"
-            >
-              Please enter the 6 digit code we sent via email.
+
+            <p className="mt-2 text-sm text-gray-500 text-center">
+              Please enter the 6-digit code we sent via email.
             </p>
 
             <div className="mt-12">
-              <Link href='/auth/reset-password'>
               <button
-                type="button"
-                className="w-full shadow-xl py-2.5 px-5 text-sm font-semibold rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+                onClick={handleSubmit}
+                className="w-full py-2.5 px-5 rounded-full text-sm font-semibold bg-blue-600 text-white shadow-xl hover:bg-blue-700 focus:outline-none"
               >
                 Verify
               </button>
-              </Link>
             </div>
           </form>
         </div>
@@ -130,4 +110,4 @@ const forgetPassword = () => {
   );
 };
 
-export default forgetPassword;
+export default VerifyOTP;
