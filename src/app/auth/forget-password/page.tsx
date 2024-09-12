@@ -1,7 +1,50 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { auth } from "@/axios";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-const forgetPassword = () => {
+
+
+const ForgetPassword = () => {
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
+
+
+  const [formData, setFormData] = useState({
+    email: "",
+  });
+  const handleChange = (e:any) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+  const handleSubmit     = async (e:any) => {
+     e.preventDefault();
+ 
+     try {
+       const response = await auth.post("/api/auth/forget-password", formData);
+      console.log("Response ==== forget password", response.data);
+      
+       if (response?.data?.success) {
+        router.push("/auth/verify-otp");       
+        
+         
+       } else {
+         // Handle password change error
+         setErrorMessage(
+           response?.data?.message,
+         );
+       }
+     } catch (error) {
+       // Handle unexpected errors
+       console.error("Error changing password:", error);
+       setErrorMessage("Failed to change password.");
+     }
+   };
   return (
     <div className="flex items-center justify-center bg-white p-4 font-[sans-serif] md:h-screen">
       <div className="max-w-6xl rounded-md p-6 shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] max-md:max-w-lg">
@@ -44,7 +87,8 @@ const forgetPassword = () => {
                   required
                   className="w-full border-b border-gray-300 px-2 py-3 text-sm outline-none focus:border-blue-600"
                   placeholder="Enter email"
-                  
+                  value={formData.email}
+                  onChange={handleChange}                  
                 />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -78,27 +122,15 @@ const forgetPassword = () => {
               </div>
             </div>
 
-            {/* <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center"></div>
-              <div>
-                <Link
-                  href="/auth/login"
-                  className="text-sm font-semibold text-blue-600 hover:underline"
-                >
-                  Sign In?
-                </Link>
-              </div>
-            </div> */}
 
             <div className="mt-12">
-              <Link href="/auth/verify-otp">
                 <button
+                onClick={handleSubmit}
                   type="button"
                   className="w-full rounded-full bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-xl hover:bg-blue-700 focus:outline-none"
                 >
                   Forgot Password
                 </button>
-              </Link>
             </div>
           </form>
         </div>
@@ -107,7 +139,7 @@ const forgetPassword = () => {
   );
 }
 
-export default forgetPassword
+export default ForgetPassword
 
 
     
