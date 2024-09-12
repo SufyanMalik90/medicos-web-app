@@ -1,5 +1,8 @@
+"use client";
 import { BRAND } from "@/types/brand";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { api } from "../../axios.js";
 
 const brandData: BRAND[] = [
   {
@@ -45,6 +48,33 @@ const brandData: BRAND[] = [
 ];
 
 const TableOne = () => {
+  const [invoices, setinvoices] = useState([]);
+
+
+  useEffect(() => {
+    // Function to fetch customers
+    const fetchLastInvoices = async () => {
+      try {
+        const response = await api.get("/api/get-all-invoices");
+        console.log("API Response Invoices:", response.data);
+
+
+        if (response.data.success && Array.isArray(response.data.invoice)) {
+          const sortedproducts = response.data.invoice.sort(
+            (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+          setinvoices(sortedproducts);
+        } else {
+          console.error("Unexpected response format:", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching customers:", error);
+        
+      }
+    };
+
+    fetchLastInvoices();
+  },[]);
   return (
     <div className="rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
       <h4 className="mb-5.5 text-body-2xlg font-bold text-dark dark:text-white">
@@ -80,10 +110,10 @@ const TableOne = () => {
           </div> */}
         </div>
 
-        {brandData.map((brand, key) => (
+        {invoices.map((invoice: any, key) => (
           <div
             className={`grid grid-cols-3 sm:grid-cols-5 ${
-              key === brandData.length - 1
+              key === invoices.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-dark-3"
             }`}
@@ -94,28 +124,28 @@ const TableOne = () => {
                 {/* <Image src={brand.logo} alt="Brand" width={48} height={48} /> */}
               </div>
               <p className="font-medium text-dark dark:text-white sm:block">
-                {brand.name}
+                {invoice.invoice_number}
               </p>
             </div>
 
             <div className="flex items-center justify-center px-2 py-4">
               <p className="font-medium text-dark dark:text-white">
-                {brand.visitors}
+              {invoice.customer_id.customer_name}
               </p>
             </div>
 
             <div className="flex items-center justify-center px-2 py-4">
-              <p className="font-medium text-green-light-1">{brand.revenues}</p>
+              <p className="font-medium text-green-light-1"> {invoice.total}</p>
             </div>
 
             <div className="items-center justify-center px-2 py-4 sm:flex">
               <div
                 className={`rounded-md px-4 w-18 flex justify-center ${
-                  brand.status === "Paid" ? "bg-green-500" : "bg-red-500"
+                  invoice.status === "Paid" ? "bg-green-500" : "bg-red-500"
                 }`}
               >
                 <p className="font-medium text-dark dark:text-white">
-                  {brand.status}
+                {invoice.status}
                 </p>
               </div>
             </div>
