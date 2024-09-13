@@ -11,35 +11,35 @@ const SettingBoxes = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const [name, setName] = useState<string>("");
-  const [formData, setFormData] = useState({
-    name: "",
-  });
+  
 
   const handleSubmit     = async (e:any) => {
     e.preventDefault();
     setEdit(false)
-    // try {
-    //   const response = await api.post("/api/change-password", formData);
-    //  console.log("Response ==== change password", response.data);
+    try {
+      const response = await api.put("/api/update-profile", {
+        name: name
+      });
+     console.log("Response ==== update-profile", response.data);
      
-    //   if (response?.data?.success) {
-    //     console.log("Password changed successfully!");
-    //     setShowSuccessAlert(true);
-    //     setTimeout(() => {
-    //      setShowSuccessAlert(false);
-    //    }, 3000);
+      if (response?.data?.success) {
+        console.log("update-profile successfully!");
+        setShowSuccessAlert(true);
+        setTimeout(() => {
+         setShowSuccessAlert(false);
+       }, 3000);
         
-    //   } else {
-    //     // Handle password change error
-    //     setErrorMessage(
-    //       response?.data?.error,
-    //     );
-    //   }
-    // } catch (error) {
-    //   // Handle unexpected errors
-    //   console.error("Error changing password:", error);
-    //   setErrorMessage("Failed to change password.");
-    // }
+      } else {
+        // Handle password change error
+        setErrorMessage(
+          response?.data?.error,
+        );
+      }
+    } catch (error) {
+      // Handle unexpected errors
+      console.error("Error changing password:", error);
+      setErrorMessage("Failed to change password.");
+    }
   };
   const handleCencelProfileEdit = (event: any) => {
     event.preventDefault();
@@ -139,7 +139,7 @@ const SettingBoxes = () => {
                       id="Username"
                       placeholder="admin username"
                       disabled={!edit}
-                      value={name || "Admin"}
+                      value={name}
                       onChange={(e) => {
                         setName(e.target.value);
                       }}
