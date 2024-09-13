@@ -2,12 +2,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@/axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
+import { AppContext } from "@/context/AppContext";
 
 
 
 const ForgetPassword = () => {
+  const {email, setEmail, update} = useContext<any>(AppContext)
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
@@ -30,6 +32,7 @@ const ForgetPassword = () => {
       console.log("Response ==== forget password", response.data);
       
        if (response?.data?.success) {
+        setEmail(formData.email)
         router.push("/auth/verify-otp");       
         
          

@@ -1,14 +1,18 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import Image from "next/image";
 import { auth } from "@/axios";
 import { useRouter } from "next/navigation";
+import { AppContext } from "@/context/AppContext";
 
 const VerifyOTP = () => {
-  const [email, setEmail] = useState("");
   const [otpValues, setOtpValues] = useState<string[]>(Array(6).fill(""));
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const {email, setEmail, update} = useContext<any>(AppContext)
+  // console.log("log check email>>>>", email);
+  
+
   const router = useRouter();
   
   const inputsRef = useRef<any[]>([]);
@@ -38,7 +42,7 @@ const VerifyOTP = () => {
     
 
     try {
-      const response = await auth.post("/api/auth/verify-otp", { email: "shaikh.arman1239090@gmail.com", otp: otpCode });
+      const response = await auth.post("/api/auth/verify-otp", { email: email, otp: otpCode });
       console.log("Response ==== Verify OTP", response.data);
      
       if (response?.data?.success) {
