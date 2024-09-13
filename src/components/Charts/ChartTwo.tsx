@@ -1,9 +1,39 @@
 import { ApexOptions } from "apexcharts";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import DefaultSelectOption from "@/components/SelectOption/DefaultSelectOption";
+import { api } from "../../axios.js";
 
 const ChartTwo: React.FC = () => {
+  const [formData, setFormData] = useState<any>({
+    week: "last",
+  });
+  useEffect(() => {
+    // Function to fetch customers
+    const fetchProfile = async () => {
+      try {
+        const response = await api.post("/api/weekly-revenue", formData);
+        console.log("API Response getWeeklyRevenue:", response.data);
+        const apiData = response.data;
+        if (apiData.success) {
+          
+        } else {
+          console.error("Error fetching revenue data:", response.data.message);
+        }
+        
+      } catch (error:any) {
+        console.log(error);
+        if(error?.response?.status == 401){
+          // router.push("/auth/sign-in")
+          // Cookies.remove("token")
+        }
+        console.error("Error fetching customers:", error);
+        
+      }
+    };
+
+    fetchProfile();
+  }, []);
   const series = [
     {
       name: "Sales",
