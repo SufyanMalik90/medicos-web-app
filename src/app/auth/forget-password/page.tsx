@@ -5,11 +5,11 @@ import { auth } from "@/axios";
 import { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppContext } from "@/context/AppContext";
-
+import {forgotPasswordSchema} from '@/validations/auth-validation'
 
 
 const ForgetPassword = () => {
-  const {email, setEmail, update} = useContext<any>(AppContext)
+  const { email, setEmail } = useContext<any>(AppContext);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
@@ -18,36 +18,44 @@ const ForgetPassword = () => {
   const [formData, setFormData] = useState({
     email: "",
   });
-  const handleChange = (e:any) => {
+
+  const handleChange = (e: any) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
-  const handleSubmit     = async (e:any) => {
-     e.preventDefault();
- 
-     try {
-       const response = await auth.post("/api/auth/forget-password", formData);
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    // Validate the form data using zod schema
+    const result = forgotPasswordSchema.safeParse(formData);
+    if (!result.success) {
+      // If validation fails, extract the error message
+      const firstError = result.error.errors[0];
+      setErrorMessage(firstError.message);
+      return;
+    }
+
+    try {
+      const response = await auth.post("/api/auth/forget-password", formData);
       console.log("Response ==== forget password", response.data);
-      
-       if (response?.data?.success) {
-        setEmail(formData.email)
-        router.push("/auth/verify-otp");       
-        
-         
-       } else {
-         // Handle password change error
-         setErrorMessage(
-           response?.data?.message,
-         );
-       }
-     } catch (error) {
-       // Handle unexpected errors
-       console.error("Error changing password:", error);
-       setErrorMessage("Failed to change password.");
-     }
-   };
+
+      if (response?.data?.success) {
+        setEmail(formData.email);
+        router.push("/auth/verify-otp");
+      } else {
+        // Handle password change error
+        setErrorMessage(response?.data?.message);
+      }
+    } catch (error:any) {
+      // Handle unexpected errors
+      console.error("Error changing password:", error);
+      setErrorMessage(error?.response?.data?.message);
+    }
+  };
+
   return (
     <div className="flex items-center justify-center bg-white p-4 font-[sans-serif] md:h-screen">
       <div className="max-w-6xl rounded-md p-6 shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] max-md:max-w-lg">
@@ -124,7 +132,9 @@ const ForgetPassword = () => {
                 </svg>
               </div>
             </div>
-
+            {errorMessage && (
+              <div className="mt-4 text-red-500 text-sm">{errorMessage}</div>
+            )}
 
             <div className="mt-12">
                 <button
