@@ -10,10 +10,13 @@ import DefaultLayout from "@/components/Layouts/DefaultLaout";
 import { useEffect, useRef, useState } from "react";
 import  AlertError  from "@/components/Alerts/AlertError";
 import  AlertSuccess  from "@/components/Alerts/AlertSuccess";
+import Pagination from "@/components/Pagination/pagination";
 
 const TablesPage = () => {
   const [isOpen, setIsOpen] = useState<any>(false);
   const [products, setproducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [update, setUpdate] = useState<any>(false);
@@ -21,9 +24,9 @@ const TablesPage = () => {
   const modalRef = useRef<any>();
   useEffect(() => {
     // Function to fetch customers
-    const fetchCustomers = async () => {
+    const fetchProducts  = async (page: number) => {
       try {
-        const response = await api.get("/api/get-all-products");
+        const response = await api.get(`/api/get-all-products?page=${page}`);
         console.log("API Response:", response.data); // Log the response to inspect it
 
         // Check if the response was successful and if the customers array is present
@@ -32,6 +35,8 @@ const TablesPage = () => {
             (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
           setproducts(sortedproducts);
+          setTotalPages(response.data.totalPages || 1);
+          setCurrentPage(response.data.currentPage || 1);
         } else {
           console.error("Unexpected response format:", response.data);
         }
@@ -41,8 +46,8 @@ const TablesPage = () => {
       }
     };
 
-    fetchCustomers();
-  }, [update]);
+    fetchProducts(currentPage);
+  }, [update, currentPage]);
   const toggleModal = (e: any) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
       setIsOpen(false);
@@ -107,11 +112,28 @@ const TablesPage = () => {
     }, 3000);
   }
 }
+
+// Function to handle page change
+const handlePageChange = (newPage: number) => {
+  setCurrentPage(newPage);
+};
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Products" />
-      {errorMessage && <AlertError title="Error" message={errorMessage} onClose={() => setErrorMessage("")}/>}
-      {showSuccessAlert && <AlertSuccess title="New Product Added" message="" onClose={() => setShowSuccessAlert(false)}/>}
+      {errorMessage && (
+        <AlertError
+          title="Error"
+          message={errorMessage}
+          onClose={() => setErrorMessage("")}
+        />
+      )}
+      {showSuccessAlert && (
+        <AlertSuccess
+          title="New Product Added"
+          message=""
+          onClose={() => setShowSuccessAlert(false)}
+        />
+      )}
       <div
         onClick={toggleModal}
         className={`fixed left-0 top-0 h-screen w-screen transition-all duration-500 ${isOpen ? "scale-1" : "scale-0"} flex items-center justify-center `}
@@ -131,7 +153,7 @@ const TablesPage = () => {
             className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
             placeholder="Title"
           />
-            <input
+          <input
             type="text"
             name="purchasing_price"
             value={formData.purchasing_price}
@@ -156,7 +178,10 @@ const TablesPage = () => {
             placeholder="Quantity"
           />
 
-          <button onClick={hitApi} className="text-md flex h-14 w-full items-center justify-center rounded-lg bg-[#5750f1] font-medium text-white outline-none">
+          <button
+            onClick={hitApi}
+            className="text-md flex h-14 w-full items-center justify-center rounded-lg bg-[#5750f1] font-medium text-white outline-none"
+          >
             Add Product
           </button>
         </div>
@@ -174,7 +199,14 @@ const TablesPage = () => {
       <div className="flex flex-col gap-10">
         {/* <TableOne /> */}
         {/* <TableTwo /> */}
-        <TableThree products= {products}/>
+        <TableThree products={products} />
+        <div className="flex justify-end">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </div>
       </div>
     </DefaultLayout>
   );
