@@ -52,6 +52,7 @@ const TablesPage = () => {
   const [formData, setFormData] = useState({
     product_name: "",
     price: "",
+    purchasing_price: "",
     stock: "",
   });
 
@@ -60,7 +61,7 @@ const TablesPage = () => {
     const { name, value } = e.target;
   
     // Convert the value to a number if the input name is 'price' or 'stock'
-    const numericValue = name === "price" || name === "stock" ? Number(value) : value;
+    const numericValue = name === "price" || name === "stock" || name === "purchasing_price" ? Number(value) : value;
   console.log("numericValue",numericValue);
   
     setFormData((prevFormData) => ({
@@ -76,6 +77,7 @@ const TablesPage = () => {
     const response = await api.post("/api/create-product", {
       product_name: formData.product_name,
       price: formData.price,
+      purchasing_price: formData.purchasing_price,
       stock: formData.stock,
     });
 
@@ -129,13 +131,21 @@ const TablesPage = () => {
             className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
             placeholder="Title"
           />
+            <input
+            type="text"
+            name="purchasing_price"
+            value={formData.purchasing_price}
+            onChange={handleInputChange}
+            className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
+            placeholder="Purchasing price"
+          />
           <input
             type="text"
             name="price"
             value={formData.price}
             onChange={handleInputChange}
             className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
-            placeholder="Price"
+            placeholder="Selling price"
           />
           <input
             type="text"
