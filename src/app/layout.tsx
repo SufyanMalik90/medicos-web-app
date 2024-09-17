@@ -6,6 +6,7 @@ import "@/css/style.css";
 import React, { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
 import { AppContextProvider } from "@/context/AppContext";
+import "./globals.css"
 
 export default function RootLayout({
   children,
