@@ -1,10 +1,12 @@
 "use client"
 import DefaultLayout from '@/components/Layouts/DefaultLaout';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { api } from "@/axios";
 import Loader from '@/components/common/Loader';
 import moment from 'moment';
 import ToogleSwitchButton from '@/components/Toggle/ToggleButton';
+import {jsPDF} from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const OrderDatails = ({ params, searchParams }: {
   params: { order_id: string },
@@ -12,6 +14,8 @@ const OrderDatails = ({ params, searchParams }: {
 }) => {
     console.log("order id>>", params.order_id);
     const [orderDetails, setOrderDetails] = useState<any>(null);
+    const invoiceRef = useRef<HTMLDivElement>(null); 
+    const doc = new jsPDF();
 
     useEffect(() => {
       // Function to fetch customers
@@ -35,6 +39,45 @@ const OrderDatails = ({ params, searchParams }: {
   
       fetchOrderDetails();
     }, [params.order_id]);
+    const handleDownloadInvoice = async () => {
+      if (invoiceRef.current) {
+        const element = invoiceRef.current;
+        
+        // Capture the DOM as an image using html2canvas
+        const canvas = await html2canvas(element, {
+          backgroundColor: '#ffffff',
+          scale: 2,
+        });
+        const imgData = canvas.toDataURL('image/png');
+        
+        // Create a new PDF document using jsPDF
+        const pdf = new jsPDF('p', 'mm', 'a4'); // 'p' for portrait, 'mm' for millimeters, 'a4' for the size
+  
+        // Calculate the width and height based on A4 page size (210mm x 297mm)
+        const imgWidth = 210;
+        const pageHeight = 297;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  
+        let heightLeft = imgHeight;
+        let position = 0;
+  
+        // Add image to the PDF
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+  
+        // If the content is larger than one page, add more pages
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+  
+        // Save the generated PDF
+        element.style.backgroundColor = "";
+        pdf.save(`invoice_${orderDetails._id}.pdf`);
+      }
+    };
 
      // Show loading or placeholder text while fetching the data
   if (!orderDetails) {
@@ -49,7 +92,7 @@ const OrderDatails = ({ params, searchParams }: {
   return (
     <DefaultLayout>
 
-    <div className="max-w-2xl mx-auto bg-white dark:bg-gray-dark dark:shadow-card shadow-md rounded-lg p-6">
+    <div ref={invoiceRef} className="max-w-2xl mx-auto bg-white dark:bg-gray-dark dark:shadow-card shadow-md rounded-lg p-6">
       {/* Order Info */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white"> {orderDetails.party_name}</h2>
@@ -133,6 +176,13 @@ const OrderDatails = ({ params, searchParams }: {
           className="flex items-center px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition"
         >
           Delete
+        </button>
+        <button
+          type="button"
+          onClick={handleDownloadInvoice}
+          className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition md:block hidden"
+        >
+          Download Invoice
         </button>
       </div>
     </div>
