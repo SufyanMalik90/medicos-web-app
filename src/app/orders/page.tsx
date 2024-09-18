@@ -118,7 +118,7 @@ const TablesPage = () => {
     // Function to fetch customers
     const fetchProducts = async (page: number) => {
       try {
-        const response = await api.get(`/api/get-all-products?page=${page}`);
+        const response = await api.get(`/api/all-products`);
         console.log("API Response:", response.data); // Log the response to inspect it
 
         // Check if the response was successful and if the customers array is present

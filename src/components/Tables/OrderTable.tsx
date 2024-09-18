@@ -2,9 +2,17 @@ import Image from "next/image";
 import { Product } from "@/types/product";
 import { useEffect, useState } from "react";
 import {api} from '@/axios'
+import { useRouter } from "next/navigation";
 
 
 const OrderTable = ({ orders }: any) => {
+  const router = useRouter();
+
+  const handleViewDetails = (order_id: string) => {
+    console.log("order_id >>", order_id);
+    router.push(`/orders/${order_id}`);
+    
+  }
  
   return (
     <div className="rounded-[10px] bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
@@ -73,7 +81,7 @@ const OrderTable = ({ orders }: any) => {
             <button
             type="button"
               className=" hover:text-blue-700"
-              // onClick={() => handleViewDetails(order.id)} // Define your view details logic
+              onClick={() => handleViewDetails(order._id)} // Define your view details logic
             >
             <Image
               alt="view-icon"
@@ -85,7 +93,7 @@ const OrderTable = ({ orders }: any) => {
             </button>
             <button
               className=" hover:text-blue-700"
-              // onClick={() => handleViewDetails(order.id)} // Define your view details logic
+              // onClick={() => handleViewDetails(order._id)}
             >
             <Image
               alt="view-icon"
