@@ -15,6 +15,7 @@ const OrderDatails = ({ params, searchParams }: {
     console.log("order id>>", params.order_id);
     const [orderDetails, setOrderDetails] = useState<any>(null);
     const invoiceRef = useRef<HTMLDivElement>(null); 
+    const buttonRef = useRef<HTMLDivElement>(null);
     const doc = new jsPDF();
 
     useEffect(() => {
@@ -40,7 +41,9 @@ const OrderDatails = ({ params, searchParams }: {
       fetchOrderDetails();
     }, [params.order_id]);
     const handleDownloadInvoice = async () => {
-      if (invoiceRef.current) {
+      if (invoiceRef.current && buttonRef.current) {
+        if (buttonRef.current) buttonRef.current.classList.add('hide-in-pdf');
+        buttonRef.current.style.display = 'none';
         const element = invoiceRef.current;
         
         // Capture the DOM as an image using html2canvas
@@ -76,6 +79,7 @@ const OrderDatails = ({ params, searchParams }: {
         // Save the generated PDF
         element.style.backgroundColor = "";
         pdf.save(`invoice_${orderDetails._id}.pdf`);
+        buttonRef.current.style.display = 'flex';
       }
     };
 
@@ -170,7 +174,7 @@ const OrderDatails = ({ params, searchParams }: {
       </div>
 
       {/* Action Buttons */}
-      <div className="mt-6 flex space-x-4">
+      <div ref={buttonRef} className="mt-6 flex space-x-4">
         <button
           type="button"
           className="flex items-center px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition"
