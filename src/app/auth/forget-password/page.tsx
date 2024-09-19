@@ -57,8 +57,8 @@ const ForgetPassword = () => {
   };
 
   return (
-    <div className="flex items-center justify-center bg-white p-4 font-[sans-serif] md:h-screen">
-      <div className="max-w-6xl rounded-md p-6 shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] max-md:max-w-lg">
+    <div className="flex items-center justify-center bg-gray-900 p-4 font-[sans-serif] md:h-screen">
+      <div className="max-w-6xl rounded-md p-6 bg-gray-800 shadow-[0_2px_16px_-3px_rgba(6,81,237,0.2)] max-md:max-w-lg">
         <a href="javascript:void(0)">
           {/* <img
             src="https://readymadeui.com/readymadeui.svg"
@@ -85,7 +85,7 @@ const ForgetPassword = () => {
 
           <form className="mx-auto w-full md:max-w-md">
             <div className="mb-12">
-              <h3 className="text-4xl font-extrabold text-blue-600">
+              <h3 className="text-4xl font-extrabold text-white">
                 Forgot Password
               </h3>
             </div>
@@ -96,7 +96,7 @@ const ForgetPassword = () => {
                   name="email"
                   type="text"
                   required
-                  className="w-full border-b border-gray-300 px-2 py-3 text-sm outline-none focus:border-blue-600"
+                  className="w-full px-3 py-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="Enter email"
                   value={formData.email}
                   onChange={handleChange}                  
@@ -140,7 +140,7 @@ const ForgetPassword = () => {
                 <button
                 onClick={handleSubmit}
                   type="button"
-                  className="w-full rounded-full bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-xl hover:bg-blue-700 focus:outline-none"
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
                 >
                   Forgot Password
                 </button>
