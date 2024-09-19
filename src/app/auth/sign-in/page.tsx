@@ -89,7 +89,7 @@ const SignIn: React.FC = () => {
 
           <form className="md:max-w-md w-full mx-auto">
             <div className="mb-12">
-              <h3 className="text-4xl font-extrabold text-blue-600">Sign in</h3>
+              <h3 className="text-4xl font-extrabold text-white">Sign in</h3>
             </div>
               <p className="text-gray-400 mb-8 mt-[-20px]">Welcome back! Please sign in to continue.</p>
 
