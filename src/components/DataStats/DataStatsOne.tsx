@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { dataStats } from "@/types/dataStats";
 import { api } from "../../axios.js";
+import { motion } from "framer-motion";
 
 
 
@@ -146,6 +147,12 @@ useEffect(() => {
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         {statistics.map((stat:any, index:any) => (
+          <motion.div
+          key={index}
+          whileHover={{ y: -10 }} // Move the box up by 10px on hover
+          transition={{ type: "spring", stiffness: 300 }} // Smooth spring transition
+        >
+          
           <div
             key={index}
             className="rounded-[10px] bg-white p-6 shadow-1 dark:bg-gray-dark"
@@ -203,6 +210,7 @@ useEffect(() => {
               </span>
             </div>
           </div>
+          </motion.div>
         ))}
       </div>
     </>
