@@ -1,8 +1,35 @@
 "use client"
 import DefaultLayout from '@/components/Layouts/DefaultLaout';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { api } from "@/axios";
 
 const CreateInvoice = () => {
+  const [products, setProducts] = useState<any>([]); // API fetched products
+
+  useEffect(() => {
+    // Fetch products from API
+    const fetchProducts = async () => {
+      try {
+        const response = await api.get(`/api/all-products`);
+        console.log("API Response Products:", response.data);
+
+        if (response.data.success && Array.isArray(response.data.products)) {
+          const sortedProducts = response.data.products.sort(
+            (a: any, b: any) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+          );
+          setProducts(sortedProducts);
+        } else {
+          console.error("Unexpected response format:", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   const [invoice, setInvoice] = useState({
     customerName: '',
     products: [
@@ -30,32 +57,19 @@ const CreateInvoice = () => {
     );
     setInvoice({ ...invoice, products: newProducts });
   };
+
   const totalAmount = invoice.products.reduce((total, product) => {
     return total + (product.rate * product.quantity - product.discount);
   }, 0);
 
-  const availableProducts = [
-    { name: "Mask", rate: 50 },
-    { name: "Bandage", rate: 30 },
-    { name: "Siring", rate: 100 },
-    { name: "Hand Band", rate: 200 },
-    // Add more products as needed
-  ];
   return (
     <DefaultLayout>
-      <div className="container mx-auto rounded-lg bg-white p-6 shadow-1 dark:bg-gray-dark ">
+      <div className="container mx-auto rounded-lg bg-white p-6 shadow-1 dark:bg-gray-dark">
         <h2 className="mb-6 text-center text-2xl font-semibold text-gray-800 dark:text-white">
           Sale Invoice
         </h2>
-        <div className="mb-3 flex items-baseline justify-end gap-1">
-          <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-white">
-            Issue Date:
-          </label>
-          <span className="dark:text-white">
-            {new Date().toISOString().split("T")[0]}{" "}
-          </span>
-        </div>
-        {/* Customer Information */}
+
+        {/* Customer and Date Information */}
         <div className="mb-4 flex justify-between">
           <div>
             <label className="mb-2 block text-sm font-medium dark:text-white">
@@ -88,7 +102,7 @@ const CreateInvoice = () => {
         </div>
 
         {/* Product Table */}
-        <table className="min-w-full bg- dark:bg-gray-7 00 ">
+        <table className="min-w-full bg- dark:bg-gray-700">
           <thead>
             <tr className="rounded-2xl bg-gray-100 shadow-md dark:bg-gray-800">
               <th className="px-4 py-2 dark:text-white">Product Name</th>
@@ -100,90 +114,89 @@ const CreateInvoice = () => {
             </tr>
           </thead>
           <tbody>
-          {invoice.products.map((product, index) => (
-            <tr key={index} className="border-b">
-              <td className="px-4 py-2">
-                <select
-                  
-                  onChange={(e) => {
-                    const selectedProduct = availableProducts.find(
-                      (p) => p.name === e.target.value
-                    );
-                    updateProduct(index, "productName", e.target.value);
-                    if (selectedProduct) {
-                      updateProduct(index, "rate", selectedProduct.rate);
+            {invoice.products.map((product:any, index:any) => (
+              <tr key={index} className="border-b">
+                <td className="px-4 py-2">
+                  <select
+                    onChange={(e) => {
+                      const selectedProduct = products.find(
+                        (p: any) => p.product_name === e.target.value
+                      );
+                      updateProduct(index, "productName", e.target.value);
+                      if (selectedProduct) {
+                        updateProduct(index, "rate", selectedProduct.price); // Use price from API
+                      }
+                    }}
+                    className="w-full rounded-md border text-center px-2 py-1 dark:bg-gray-700 dark:text-white"
+                  >
+                    <option value="">Select Product</option>
+                    {products.map((p: any, idx: number) => (
+                      <option key={idx} value={p.product_name}>
+                        {p.product_name}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td className="px-4 py-2">
+                  <input
+                    type="text"
+                    value={product.rate}
+                    onChange={(e) =>
+                      updateProduct(index, "rate", Number(e.target.value))
                     }
-                  }}
-                  className="w-full rounded-md border text-center px-2 py-1 dark:bg-gray-700 dark:text-white"
-                >
-                  <option value="">Select Product</option>
-                  {availableProducts.map((p, idx) => (
-                    <option key={idx} value={p.name}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
-              </td>
-              <td className="px-4 py-2">
-                <input
-                  type="text"
-                  value={product.rate}
-                  onChange={(e) =>
-                    updateProduct(index, "rate", Number(e.target.value))
-                  }
-                  className="w-full rounded-md border text-center px-2 py-1 dark:bg-gray-700 dark:text-white"
-                  placeholder="Rate"
-                />
-              </td>
-              <td className="px-4 py-2">
-                <input
-                  type="number"
-                  value={product.quantity}
-                  onChange={(e) =>
-                    updateProduct(index, "quantity", Number(e.target.value))
-                  }
-                  className="w-full rounded-md border text-center px-2 py-1 dark:bg-gray-700 dark:text-white"
-                  placeholder="Quantity"
-                />
-              </td>
-              <td className="px-4 py-2 dark:text-white text-center">
-                {product.rate * product.quantity}{" "}
-              </td>
-              <td className="px-4 py-2">
-                <input
-                  type="number"
-                  value={product.discount}
-                  onChange={(e) =>
-                    updateProduct(index, "discount", Number(e.target.value))
-                  }
-                  className="w-full rounded-md border text-center px-2 py-1 dark:bg-gray-700 dark:text-white"
-                  placeholder="Discount"
-                />
-              </td>
-              <td className="px-4 py-2 dark:text-white text-center">
-                {product.rate * product.quantity - product.discount}{" "}
-              </td>
-            </tr>
-          ))}
-        </tbody>
+                    className="w-full rounded-md border text-center px-2 py-1 dark:bg-gray-700 dark:text-white"
+                    placeholder="Rate"
+                  />
+                </td>
+                <td className="px-4 py-2">
+                  <input
+                    type="number"
+                    value={product.quantity}
+                    onChange={(e) =>
+                      updateProduct(index, "quantity", Number(e.target.value))
+                    }
+                    className="w-full rounded-md border text-center px-2 py-1 dark:bg-gray-700 dark:text-white"
+                    placeholder="Quantity"
+                  />
+                </td>
+                <td className="px-4 py-2 dark:text-white text-center">
+                  {product.rate * product.quantity}{" "}
+                </td>
+                <td className="px-4 py-2">
+                  <input
+                    type="number"
+                    value={product.discount}
+                    onChange={(e) =>
+                      updateProduct(index, "discount", Number(e.target.value))
+                    }
+                    className="w-full rounded-md border text-center px-2 py-1 dark:bg-gray-700 dark:text-white"
+                    placeholder="Discount"
+                  />
+                </td>
+                <td className="px-4 py-2 dark:text-white text-center">
+                  {product.rate * product.quantity - product.discount}{" "}
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
-        {/* T-Amount section */}
-      <div className="mt-4 text-right flex justify-between items-center w-full">
-        
-        {/* Add Product Button */}
-        <button
-          onClick={addProduct}
-          className="flex items-center gap-2 rounded-md bg-gray-200 px-4 py-2 text-gray-800 transition"
-        >
-          +
-        </button>
 
-        <h3 className="font-medium text-gray-700 dark:text-white">T-Amount: {totalAmount}</h3>
-      </div>
+        {/* Total Amount Section */}
+        <div className="mt-4 text-right flex justify-between items-center w-full">
+          <button
+            onClick={addProduct}
+            className="flex items-center gap-2 rounded-md bg-gray-200 px-4 py-2 text-gray-800 transition"
+          >
+            +
+          </button>
+          <h3 className="font-medium text-gray-700 dark:text-white">
+            T-Amount: {totalAmount}
+          </h3>
+        </div>
 
         {/* Save Invoice Button */}
         <button
-          onClick={() => console.log(invoice)} // Here you would call your API to save the invoice
+          onClick={() => console.log(invoice)} // Save invoice functionality
           className="mt-6 rounded-md bg-blue-500 px-6 py-2 text-white transition hover:bg-blue-600"
         >
           Save Invoice
@@ -192,5 +205,6 @@ const CreateInvoice = () => {
     </DefaultLayout>
   );
 };
+
 
 export default CreateInvoice;
