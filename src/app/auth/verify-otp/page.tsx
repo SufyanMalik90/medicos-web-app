@@ -61,8 +61,8 @@ const VerifyOTP = () => {
   };
 
   return (
-    <div className="flex items-center justify-center bg-white p-4 font-sans md:h-screen">
-      <div className="max-w-6xl p-6 rounded-md shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] max-md:max-w-lg">
+    <div className="flex items-center justify-center bg-gray-900 p-4 font-sans md:h-screen">
+      <div className="max-w-6xl p-6 rounded-md bg-gray-900 shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] max-md:max-w-lg">
         <div className="grid gap-8 md:grid-cols-2 items-center">
           <div className="max-md:order-1 lg:min-w-[450px]">
             <Image
@@ -76,7 +76,7 @@ const VerifyOTP = () => {
 
           <form className="mx-auto w-full md:max-w-sm flex flex-col">
             <div className="mb-12 text-center">
-              <h3 className="text-4xl font-extrabold text-blue-600">Verify OTP</h3>
+              <h3 className="text-4xl font-extrabold text-white">Verify OTP</h3>
             </div>
 
             <div className="mb-2 flex space-x-2 justify-center">
@@ -86,7 +86,7 @@ const VerifyOTP = () => {
                   ref={(el:any) => (inputsRef.current[idx] = el as any)} // Assign input ref
                   type="text"
                   maxLength={1}
-                  className="h-11 w-11 text-center text-sm font-extrabold rounded-lg border border-gray-300 bg-white text-gray-900 focus:ring-blue-600 focus:border-blue-600"
+                  className="h-11 w-11 text-center text-sm font-extrabold rounded-lg border border-gray-300 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   required
                   value={otpValues[idx]} // Bind value to state
                   onChange={(e) => handleInputChange(e, idx)} // Auto move to next input
@@ -95,14 +95,14 @@ const VerifyOTP = () => {
               ))}
             </div>
 
-            <p className="mt-2 text-sm text-gray-500 text-center">
+            <p className="mt-2 text-base text-gray-400 text-center">
               Please enter the 6-digit code we sent via email.
             </p>
 
             <div className="mt-12">
               <button
                 onClick={handleSubmit}
-                className="w-full py-2.5 px-5 rounded-full text-sm font-semibold bg-blue-600 text-white shadow-xl hover:bg-blue-700 focus:outline-none"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
               >
                 Verify
               </button>

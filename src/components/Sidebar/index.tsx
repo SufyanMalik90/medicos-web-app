@@ -167,7 +167,7 @@ const menuGroups = [
         label: "Invoices",
         route: "#",
         children: [
-          { label: "Create new invoice", route: "/tables" },
+          { label: "Create new invoice", route: "/invoices" },
         ],
       },
       {

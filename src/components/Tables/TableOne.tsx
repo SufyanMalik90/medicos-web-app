@@ -3,7 +3,7 @@ import { BRAND } from "@/types/brand";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { api } from "../../axios.js";
-
+import { useRouter } from "next/navigation";
 const brandData: BRAND[] = [
   {
     logo: "",
@@ -49,7 +49,7 @@ const brandData: BRAND[] = [
 
 const TableOne = () => {
   const [invoices, setinvoices] = useState([]);
-
+  const router = useRouter();
 
   useEffect(() => {
     // Function to fetch customers
@@ -75,6 +75,12 @@ const TableOne = () => {
 
     fetchLastInvoices();
   },[]);
+
+  const handleViewDetails = (invoice_no: string) => {
+    console.log("invoices >>", invoice_no);
+    router.push(`/invoices/${invoice_no}`);
+    
+  }
   return (
     <div className="rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
       <h4 className="mb-5.5 text-body-2xlg font-bold text-dark dark:text-white">
@@ -149,6 +155,36 @@ const TableOne = () => {
                 </p>
               </div>
             </div>
+            
+            <div className="col-span-1 flex items-center">
+            <div className="flex gap-4 items-center">
+            <button
+            type="button"
+              className=" hover:text-blue-700"
+              onClick={() => handleViewDetails(invoice.invoice_number)}
+            >
+            <Image
+              alt="view-icon"
+              src="/images/icon/view.svg"
+              width={20}
+              height={20}
+              className="text-green-900"
+            />
+            </button>
+            <button
+              className=" hover:text-blue-700"
+              // onClick={() => handleViewDetails(order._id)}
+            >
+            <Image
+              alt="view-icon"
+              src="/images/icon/trash.svg"
+              width={20}
+              height={20}
+              className="text-green-900"
+            />
+            </button>
+            </div>
+          </div>
 
             {/* <div className="hidden items-center justify-center px-2 py-4 sm:flex">
               <p className="font-medium text-dark dark:text-white">

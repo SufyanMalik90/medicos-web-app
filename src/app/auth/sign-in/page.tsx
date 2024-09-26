@@ -76,8 +76,8 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <div className="font-[sans-serif] bg-white flex items-center justify-center md:h-screen p-4">
-      <div className="shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] max-w-6xl max-md:max-w-lg rounded-md p-6">
+    <div className="font-[sans-serif] bg-gray-900 flex items-center justify-center md:h-screen p-4">
+      <div className="shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] bg-gray-800 max-w-6xl max-md:max-w-lg rounded-md p-6">
         <div className="grid md:grid-cols-2 items-center gap-8">
           <div className="max-md:order-1 lg:min-w-[450px]">
             <img
@@ -89,15 +89,16 @@ const SignIn: React.FC = () => {
 
           <form className="md:max-w-md w-full mx-auto">
             <div className="mb-12">
-              <h3 className="text-4xl font-extrabold text-blue-600">Sign in</h3>
+              <h3 className="text-4xl font-extrabold text-white">Sign in</h3>
             </div>
+              <p className="text-gray-400 mb-8 mt-[-20px]">Welcome back! Please sign in to continue.</p>
 
             <div className="mb-4">
               <div className="relative flex items-center">
                 <input
                   name="email"
                   type="text"
-                  className="w-full text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
+                  className="w-full px-3 py-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="Enter email"
                   value={formData.email}
                   onChange={handleChange}
@@ -113,7 +114,7 @@ const SignIn: React.FC = () => {
                 <input
                   name="password"
                   type={showPassword ? "text" : "password"} // Toggle password visibility
-                  className="w-full text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
+                  className="w-full px-3 py-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="Enter password"
                   value={formData.password}
                   onChange={handleChange}
@@ -147,7 +148,7 @@ const SignIn: React.FC = () => {
 
             <div className="flex flex-wrap items-center justify-between gap-4 mt-6">
               <div className="flex items-center">
-                <input
+                {/* <input
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
@@ -158,12 +159,12 @@ const SignIn: React.FC = () => {
                   className="text-gray-800 ml-3 block text-sm"
                 >
                   Remember me
-                </label>
+                </label> */}
               </div>
               <div>
                 <Link
                   href="/auth/forget-password"
-                  className="text-blue-600 font-semibold text-sm hover:underline"
+                  className="cursor-pointer text-indigo-500 hover:text-indigo-600"
                 >
                   Forgot Password?
                 </Link>
@@ -173,7 +174,7 @@ const SignIn: React.FC = () => {
             <div className="mt-12">
               <button
                 onClick={handleSubmit}
-                className="w-full shadow-xl py-2.5 px-5 text-sm font-semibold rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
               >
                 Sign in
               </button>

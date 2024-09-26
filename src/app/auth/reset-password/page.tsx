@@ -3,8 +3,8 @@ import Link from "next/link";
 
 const login = () => {
   return (
-    <div className="font-[sans-serif] bg-white flex items-center justify-center md:h-screen p-4">
-      <div className="shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] max-w-6xl max-md:max-w-lg rounded-md p-6">
+    <div className="font-[sans-serif] bg-gray-900 flex items-center justify-center md:h-screen p-4">
+      <div className="shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] bg-gray-800 max-w-6xl max-md:max-w-lg rounded-md p-6">
         <a href="javascript:void(0)">
           {/* <img
             src="https://readymadeui.com/readymadeui.svg"
@@ -26,7 +26,7 @@ const login = () => {
 
           <form className="md:max-w-md w-full mx-auto">
             <div className="mb-12">
-              <h3 className="text-4xl font-extrabold text-blue-600">Reset Password</h3>
+              <h3 className="text-4xl font-extrabold text-white">Reset Password</h3>
             </div>
 
 
@@ -36,7 +36,7 @@ const login = () => {
                   name="password"
                   type="password"
                   required
-                  className="w-full text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
+                  className="w-full px-3 py-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="Enter password"
                 />
                 <svg
@@ -60,7 +60,7 @@ const login = () => {
                   name="password"
                   type="password"
                   required
-                  className="w-full text-sm border-b border-gray-300 focus:border-blue-600 px-2 py-3 outline-none"
+                  className="w-full px-3 py-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="Enter confirm password"
                 />
                 <svg
@@ -82,7 +82,7 @@ const login = () => {
               <Link href='/auth/sign-in'>
               <button
                 type="button"
-                className="w-full shadow-xl py-2.5 px-5 text-sm font-semibold rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
               >
                 Reset Password
               </button>
