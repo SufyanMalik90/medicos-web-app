@@ -102,7 +102,7 @@ const CreateInvoice = () => {
         </div>
 
         {/* Product Table */}
-        <table className="min-w-full bg- dark:bg-gray-700">
+        <table className="bg- min-w-full dark:bg-gray-700">
           <thead>
             <tr className="rounded-2xl bg-gray-100 shadow-md dark:bg-gray-800">
               <th className="px-4 py-2 dark:text-white">Product Name</th>
@@ -110,79 +110,89 @@ const CreateInvoice = () => {
               <th className="px-4 py-2 dark:text-white">Quantity</th>
               <th className="px-4 py-2 dark:text-white">Amount</th>
               <th className="px-4 py-2 dark:text-white">Discount (%)</th>
+              <th className="px-4 py-2 dark:text-white">Dis-Amount</th>
               <th className="px-4 py-2 dark:text-white">N-Total</th>
             </tr>
           </thead>
           <tbody>
-            {invoice.products.map((product:any, index:any) => (
-              <tr key={index} className="border-b">
-                <td className="px-4 py-2">
-                  <select
-                    onChange={(e) => {
-                      const selectedProduct = products.find(
-                        (p: any) => p.product_name === e.target.value
-                      );
-                      updateProduct(index, "productName", e.target.value);
-                      if (selectedProduct) {
-                        updateProduct(index, "rate", selectedProduct.price); // Use price from API
+            {invoice.products.map((product: any, index: any) => {
+              const amount = product.rate * product.quantity;
+              const discountAmount = (amount * product.discount) / 100; // Dis-Amount
+              const netTotal = amount - discountAmount; // N-Total
+
+              return (
+                <tr key={index} className="border-b">
+                  <td className="px-4 py-2">
+                    <select
+                      onChange={(e) => {
+                        const selectedProduct = products.find(
+                          (p: any) => p.product_name === e.target.value,
+                        );
+                        updateProduct(index, "productName", e.target.value);
+                        if (selectedProduct) {
+                          updateProduct(index, "rate", selectedProduct.price); // Use price from API
+                        }
+                      }}
+                      className="w-full rounded-md border px-2 py-1 text-center dark:bg-gray-700 dark:text-white"
+                    >
+                      <option value="">Select Product</option>
+                      {products.map((p: any, idx: number) => (
+                        <option key={idx} value={p.product_name}>
+                          {p.product_name}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                  <td className="px-4 py-2">
+                    <input
+                      type="text"
+                      value={product.rate}
+                      onChange={(e) =>
+                        updateProduct(index, "rate", Number(e.target.value))
                       }
-                    }}
-                    className="w-full rounded-md border text-center px-2 py-1 dark:bg-gray-700 dark:text-white"
-                  >
-                    <option value="">Select Product</option>
-                    {products.map((p: any, idx: number) => (
-                      <option key={idx} value={p.product_name}>
-                        {p.product_name}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td className="px-4 py-2">
-                  <input
-                    type="text"
-                    value={product.rate}
-                    onChange={(e) =>
-                      updateProduct(index, "rate", Number(e.target.value))
-                    }
-                    className="w-full rounded-md border text-center px-2 py-1 dark:bg-gray-700 dark:text-white"
-                    placeholder="Rate"
-                  />
-                </td>
-                <td className="px-4 py-2">
-                  <input
-                    type="number"
-                    value={product.quantity}
-                    onChange={(e) =>
-                      updateProduct(index, "quantity", Number(e.target.value))
-                    }
-                    className="w-full rounded-md border text-center px-2 py-1 dark:bg-gray-700 dark:text-white"
-                    placeholder="Quantity"
-                  />
-                </td>
-                <td className="px-4 py-2 dark:text-white text-center">
-                  {product.rate * product.quantity}{" "}
-                </td>
-                <td className="px-4 py-2">
-                  <input
-                    type="number"
-                    value={product.discount}
-                    onChange={(e) =>
-                      updateProduct(index, "discount", Number(e.target.value))
-                    }
-                    className="w-full rounded-md border text-center px-2 py-1 dark:bg-gray-700 dark:text-white"
-                    placeholder="Discount"
-                  />
-                </td>
-                <td className="px-4 py-2 dark:text-white text-center">
-                  {product.rate * product.quantity - product.discount}{" "}
-                </td>
-              </tr>
-            ))}
+                      className="w-full rounded-md border px-2 py-1 text-center dark:bg-gray-700 dark:text-white"
+                      placeholder="Rate"
+                    />
+                  </td>
+                  <td className="px-4 py-2">
+                    <input
+                      type="text"
+                      value={product.quantity}
+                      onChange={(e) =>
+                        updateProduct(index, "quantity", Number(e.target.value))
+                      }
+                      className="w-full rounded-md border px-2 py-1 text-center dark:bg-gray-700 dark:text-white"
+                      placeholder="Quantity"
+                    />
+                  </td>
+                  <td className="px-4 py-2 text-center dark:text-white">
+                    {amount}{" "}
+                  </td>
+                  <td className="px-4 py-2">
+                    <input
+                      type="text"
+                      value={product.discount}
+                      onChange={(e) =>
+                        updateProduct(index, "discount", Number(e.target.value))
+                      }
+                      className="w-full rounded-md border px-2 py-1 text-center dark:bg-gray-700 dark:text-white"
+                      placeholder="Discount"
+                    />
+                  </td>
+                  <td className="px-4 py-2 text-center dark:text-white">
+                    {discountAmount}{" "}
+                  </td>
+                  <td className="px-4 py-2 text-center dark:text-white">
+                    {netTotal}{" "}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
 
         {/* Total Amount Section */}
-        <div className="mt-4 text-right flex justify-between items-center w-full">
+        <div className="mt-4 flex w-full items-center justify-between text-right">
           <button
             onClick={addProduct}
             className="flex items-center gap-2 rounded-md bg-gray-200 px-4 py-2 text-gray-800 transition"
