@@ -1,7 +1,7 @@
-"use client"
-import DefaultLayout from '@/components/Layouts/DefaultLaout';
-import React, { useEffect, useState } from 'react';
-import { api } from "@/axios";
+"use client";
+import { useState, useEffect } from "react";
+import { api } from "@/axios"; // Assuming you have an API setup
+import DefaultLayout from "@/components/Layouts/DefaultLaout";
 
 const CreateInvoice = () => {
   const [products, setProducts] = useState<any>([]); // API fetched products
@@ -33,7 +33,7 @@ const CreateInvoice = () => {
   const [invoice, setInvoice] = useState({
     customerName: '',
     products: [
-      { productName: '', quantity: 1, rate: 0, discount: 0, total: 0 }
+      { productName: '', quantity: 1, rate: 0, discount: 0, total: 0, filteredProducts: [] } // Added filteredProducts for each product
     ],
     issueDate: '',
     dueDate: '',
@@ -45,7 +45,7 @@ const CreateInvoice = () => {
       ...invoice,
       products: [
         ...invoice.products,
-        { productName: '', quantity: 1, rate: 0, discount: 0, total: 0 }
+        { productName: '', quantity: 1, rate: 0, discount: 0, total: 0, filteredProducts: [] } // Initialize filteredProducts for the new product
       ]
     });
   };
@@ -53,9 +53,43 @@ const CreateInvoice = () => {
   // Function to update product details
   const updateProduct = (index: number, field: string, value: any) => {
     const newProducts = invoice.products.map((product, i) =>
-      i === index ? { ...product, [field]: value, total: (value.quantity || product.quantity) * (value.rate || product.rate) - value.discount } : product
+      i === index
+        ? { 
+            ...product, 
+            [field]: value,
+            total: (field === 'quantity' ? value : product.quantity) * (field === 'rate' ? value : product.rate) - product.discount 
+          }
+        : product
     );
     setInvoice({ ...invoice, products: newProducts });
+  };
+
+  // Filter products based on the search input for a specific row
+  const handleProductSearch = (searchValue: string, index: number) => {
+    const updatedProducts = invoice.products.map((product, i) => {
+      if (i === index) {
+        const filtered = searchValue
+          ? products.filter((p: any) =>
+              p.product_name.toLowerCase().includes(searchValue.toLowerCase())
+            )
+          : [];
+        return { ...product, productName: searchValue, filteredProducts: filtered };
+      }
+      return product;
+    });
+
+    setInvoice({ ...invoice, products: updatedProducts });
+  };
+
+  const handleProductSelect = (selectedProduct: any, index: number) => {
+    // Update the selected product's name and rate
+    const updatedProducts = invoice.products.map((product, i) =>
+      i === index
+        ? { ...product, productName: selectedProduct.product_name, rate: selectedProduct.price, filteredProducts: [] } // Clear filtered products after selection
+        : product
+    );
+
+    setInvoice({ ...invoice, products: updatedProducts });
   };
 
   const totalAmount = invoice.products.reduce((total, product) => {
@@ -123,25 +157,28 @@ const CreateInvoice = () => {
               return (
                 <tr key={index} className="border-b">
                   <td className="px-4 py-2">
-                    <select
-                      onChange={(e) => {
-                        const selectedProduct = products.find(
-                          (p: any) => p.product_name === e.target.value,
-                        );
-                        updateProduct(index, "productName", e.target.value);
-                        if (selectedProduct) {
-                          updateProduct(index, "rate", selectedProduct.price); // Use price from API
-                        }
-                      }}
+                    <input
+                      type="text"
+                      value={product.productName}
+                      onChange={(e) =>
+                        handleProductSearch(e.target.value, index)
+                      }
                       className="w-full rounded-md border px-2 py-1 text-center dark:bg-gray-700 dark:text-white"
-                    >
-                      <option value="">Select Product</option>
-                      {products.map((p: any, idx: number) => (
-                        <option key={idx} value={p.product_name}>
-                          {p.product_name}
-                        </option>
-                      ))}
-                    </select>
+                      placeholder="Search Product"
+                    />
+                    {product.filteredProducts.length > 0 && (
+                      <ul className="absolute rounded-md border bg-white shadow-md dark:bg-gray-800">
+                        {product.filteredProducts.map((p: any, idx: number) => (
+                          <li
+                            key={idx}
+                            onClick={() => handleProductSelect(p, index)}
+                            className="cursor-pointer p-2 hover:bg-gray-200 dark:text-white dark:hover:bg-gray-600"
+                          >
+                            {p.product_name}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </td>
                   <td className="px-4 py-2">
                     <input
@@ -166,7 +203,7 @@ const CreateInvoice = () => {
                     />
                   </td>
                   <td className="px-4 py-2 text-center dark:text-white">
-                    {amount}{" "}
+                    {amount}
                   </td>
                   <td className="px-4 py-2">
                     <input
@@ -180,10 +217,10 @@ const CreateInvoice = () => {
                     />
                   </td>
                   <td className="px-4 py-2 text-center dark:text-white">
-                    {discountAmount}{" "}
+                    {discountAmount}
                   </td>
                   <td className="px-4 py-2 text-center dark:text-white">
-                    {netTotal}{" "}
+                    {netTotal}
                   </td>
                 </tr>
               );
@@ -191,20 +228,23 @@ const CreateInvoice = () => {
           </tbody>
         </table>
 
-        {/* Total Amount Section */}
-        <div className="mt-4 flex w-full items-center justify-between text-right">
-          <button
-            onClick={addProduct}
-            className="flex items-center gap-2 rounded-md bg-gray-200 px-4 py-2 text-gray-800 transition"
-          >
-            +
-          </button>
-          <h3 className="font-medium text-gray-700 dark:text-white">
-            T-Amount: {totalAmount}
-          </h3>
+            <div className="flex mt-2 mx-4 justify-between items-center">
+            <button
+          onClick={addProduct}
+          className="flex items-center gap-2 rounded-md bg-gray-200 px-4 py-2 text-gray-800 transition"
+        >
+          +
+        </button>
+        <div className="mt-4">
+          <span className="font-bold dark:text-white">
+            Total: {totalAmount}
+          </span>
         </div>
+            </div>
+        {/* Add Product Button */}
+       
 
-        {/* Save Invoice Button */}
+        {/* Total Amount */}
         <button
           onClick={() => console.log(invoice)} // Save invoice functionality
           className="mt-6 rounded-md bg-blue-500 px-6 py-2 text-white transition hover:bg-blue-600"
@@ -215,6 +255,5 @@ const CreateInvoice = () => {
     </DefaultLayout>
   );
 };
-
 
 export default CreateInvoice;
