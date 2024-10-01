@@ -5,6 +5,9 @@ import DefaultLayout from "@/components/Layouts/DefaultLaout";
 
 const CreateInvoice = () => {
   const [products, setProducts] = useState<any>([]); // API fetched products
+  const [customers, setcustomer] = useState<any>([]); // API fetched products
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [filteredCustomers, setFilteredCustomers] = useState<any>([]);
 
   useEffect(() => {
     // Fetch products from API
@@ -22,8 +25,23 @@ const CreateInvoice = () => {
         console.error("Error fetching products:", error);
       }
     };
+    const fetchCustomer = async () => {
+      try {
+        const response = await api.get(`/api/get-all-customer`);
+        if (response.data.success && Array.isArray(response.data.customers)) {
+          const sortedProducts = response.data.customers.sort(
+            (a: any, b: any) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+          );
+          setcustomer(sortedProducts);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
 
     fetchProducts();
+    fetchCustomer();
   }, []);
 
   const [invoice, setInvoice] = useState({
@@ -138,6 +156,29 @@ const CreateInvoice = () => {
     return total + (product.rate * product.quantity - product.discount);
   }, 0);
 
+  // Filter customers based on input
+  const handleCustomerSearch = (e: any) => {
+    const query = e.target.value.toLowerCase();
+    setInvoice({ ...invoice, customerName: query });
+
+    if (query.length > 0) {
+      const filtered = customers.filter((customer: any) =>
+        customer.customer_name.toLowerCase().includes(query),
+      );
+      setFilteredCustomers(filtered);
+      setShowDropdown(true); // Show dropdown when searching
+    } else {
+      setFilteredCustomers(customers);
+      setShowDropdown(false); // Hide dropdown if input is empty
+    }
+  };
+
+  // Handle customer selection
+  const handleCustomerSelect = (customerName: string) => {
+    setInvoice({ ...invoice, customerName });
+    setShowDropdown(false); // Hide dropdown after selection
+  };
+
   return (
     <DefaultLayout>
       <div className="container mx-auto rounded-lg bg-white p-6 shadow-1 dark:bg-gray-dark">
@@ -154,12 +195,29 @@ const CreateInvoice = () => {
             <input
               type="text"
               value={invoice.customerName}
-              onChange={(e) =>
-                setInvoice({ ...invoice, customerName: e.target.value })
-              }
-              className="w-40 rounded-md border px-3 py-2 focus:outline-none dark:bg-gray-800 dark:text-white"
+              onChange={handleCustomerSearch}
+              className="w-40 rounded-md border text-center font-bold px-3 py-2 focus:outline-none dark:bg-gray-800 dark:text-white"
               placeholder="Select customer"
+              onBlur={() => setShowDropdown(false)} // Hide dropdown on blur
+              onFocus={() => invoice.customerName && setShowDropdown(true)} // Show dropdown when input focused
             />
+
+            {/* Dropdown for filtered customer results */}
+            {showDropdown && (
+              <ul className="absolute w-36 rounded-sm border bg-white dark:bg-gray-800 dark:text-white">
+                {filteredCustomers.map((customer: any) => (
+                  <li
+                    key={customer._id}
+                    className="cursor-pointer p-2 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    onMouseDown={() =>
+                      handleCustomerSelect(customer.customer_name)
+                    }
+                  >
+                    {customer.customer_name}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div className="flex items-baseline gap-1">
@@ -299,12 +357,12 @@ const CreateInvoice = () => {
         </table>
 
         <div className="my-4">
-        <button
-          onClick={() => console.log(invoice)} // Save invoice functionality
-          className="mt-6 rounded-md bg-blue-500 px-6 py-2 text-white transition hover:bg-blue-600"
-        >
-          Save Invoice
-        </button>
+          <button
+            onClick={() => console.log(invoice)} // Save invoice functionality
+            className="mt-6 rounded-md bg-blue-500 px-6 py-2 text-white transition hover:bg-blue-600"
+          >
+            Save Invoice
+          </button>
         </div>
 
         <div className="text-right">
