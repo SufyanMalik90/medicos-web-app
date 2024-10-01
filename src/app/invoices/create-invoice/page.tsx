@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { api } from "@/axios"; // Assuming you have an API setup
 import DefaultLayout from "@/components/Layouts/DefaultLaout";
 
@@ -11,16 +11,12 @@ const CreateInvoice = () => {
     const fetchProducts = async () => {
       try {
         const response = await api.get(`/api/all-products`);
-        console.log("API Response Products:", response.data);
-
         if (response.data.success && Array.isArray(response.data.products)) {
           const sortedProducts = response.data.products.sort(
             (a: any, b: any) =>
               new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
           );
           setProducts(sortedProducts);
-        } else {
-          console.error("Unexpected response format:", response.data);
         }
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -33,11 +29,14 @@ const CreateInvoice = () => {
   const [invoice, setInvoice] = useState({
     customerName: '',
     products: [
-      { productName: '', quantity: 1, rate: 0, discount: 0, total: 0, filteredProducts: [] } // Added filteredProducts for each product
+      { productName: '', quantity: 1, rate: 0, discount: 0, total: 0, filteredProducts: [] }
     ],
     issueDate: '',
     dueDate: '',
   });
+
+  // Refs for each input field
+  const productRefs = useRef<Array<any>>([]);
 
   // Function to add a new product row
   const addProduct = () => {
@@ -45,7 +44,7 @@ const CreateInvoice = () => {
       ...invoice,
       products: [
         ...invoice.products,
-        { productName: '', quantity: 1, rate: 0, discount: 0, total: 0, filteredProducts: [] } // Initialize filteredProducts for the new product
+        { productName: '', quantity: 1, rate: 0, discount: 0, total: 0, filteredProducts: [] }
       ]
     });
   };
@@ -82,15 +81,58 @@ const CreateInvoice = () => {
   };
 
   const handleProductSelect = (selectedProduct: any, index: number) => {
-    // Update the selected product's name and rate
     const updatedProducts = invoice.products.map((product, i) =>
       i === index
-        ? { ...product, productName: selectedProduct.product_name, rate: selectedProduct.price, filteredProducts: [] } // Clear filtered products after selection
+        ? { ...product, productName: selectedProduct.product_name, rate: selectedProduct.price, filteredProducts: [] }
         : product
     );
 
     setInvoice({ ...invoice, products: updatedProducts });
+
+    // Move focus to the T.P (rate) field after selecting the product
+    setTimeout(() => {
+      if (productRefs.current[index] && productRefs.current[index]["rate"]) {
+        productRefs.current[index]["rate"].focus();
+      }
+    }, 100);
   };
+
+  const handleKeyDown = (e: any, index: number, field: string) => {
+    if (e.key === "Enter") {
+      switch (field) {
+        case "productName":
+          if (productRefs.current[index] && productRefs.current[index]["rate"]) {
+            productRefs.current[index]["rate"].focus();
+          }
+          break;
+        case "rate":
+          if (productRefs.current[index] && productRefs.current[index]["quantity"]) {
+            productRefs.current[index]["quantity"].focus();
+          }
+          break;
+        case "quantity":
+          if (productRefs.current[index] && productRefs.current[index]["discount"]) {
+            productRefs.current[index]["discount"].focus();
+          }
+          break;
+        case "discount":
+          // If Enter is pressed on the discount field, add a new product
+          addProduct();
+  
+          // Move focus to the next product's productName field after a delay
+          setTimeout(() => {
+            const nextIndex = index + 1;
+            if (productRefs.current[nextIndex] && productRefs.current[nextIndex]["productName"]) {
+              productRefs.current[nextIndex]["productName"].focus();
+            }
+          }, 100); // Allow time for the new product to be added to state
+          break;
+        default:
+          break;
+      }
+    }
+  };
+  
 
   const totalAmount = invoice.products.reduce((total, product) => {
     return total + (product.rate * product.quantity - product.discount);
@@ -136,7 +178,7 @@ const CreateInvoice = () => {
         </div>
 
         {/* Product Table */}
-        <table className="bg- min-w-full dark:bg-gray-700">
+        <table className="min-w-full dark:bg-gray-700">
           <thead>
             <tr className="rounded-2xl bg-gray-100 shadow-md dark:bg-gray-800">
               <th className="px-4 py-2 dark:text-white">Product Name</th>
@@ -151,8 +193,8 @@ const CreateInvoice = () => {
           <tbody>
             {invoice.products.map((product: any, index: any) => {
               const amount = product.rate * product.quantity;
-              const discountAmount = (amount * product.discount) / 100; // Dis-Amount
-              const netTotal = amount - discountAmount; // N-Total
+              const discountAmount = (amount * product.discount) / 100;
+              const netTotal = amount - discountAmount;
 
               return (
                 <tr key={index} className="border-b">
@@ -162,6 +204,13 @@ const CreateInvoice = () => {
                       value={product.productName}
                       onChange={(e) =>
                         handleProductSearch(e.target.value, index)
+                      }
+                      onKeyDown={(e) => handleKeyDown(e, index, "productName")}
+                      ref={(el) =>
+                        (productRefs.current[index] = {
+                          ...productRefs.current[index],
+                          productName: el,
+                        })
                       }
                       className="w-full rounded-md border px-2 py-1 text-center dark:bg-gray-700 dark:text-white"
                       placeholder="Search Product"
@@ -187,6 +236,13 @@ const CreateInvoice = () => {
                       onChange={(e) =>
                         updateProduct(index, "rate", Number(e.target.value))
                       }
+                      onKeyDown={(e) => handleKeyDown(e, index, "rate")}
+                      ref={(el) =>
+                        (productRefs.current[index] = {
+                          ...productRefs.current[index],
+                          rate: el,
+                        })
+                      }
                       className="w-full rounded-md border px-2 py-1 text-center dark:bg-gray-700 dark:text-white"
                       placeholder="Rate"
                     />
@@ -197,6 +253,13 @@ const CreateInvoice = () => {
                       value={product.quantity}
                       onChange={(e) =>
                         updateProduct(index, "quantity", Number(e.target.value))
+                      }
+                      onKeyDown={(e) => handleKeyDown(e, index, "quantity")}
+                      ref={(el) =>
+                        (productRefs.current[index] = {
+                          ...productRefs.current[index],
+                          quantity: el,
+                        })
                       }
                       className="w-full rounded-md border px-2 py-1 text-center dark:bg-gray-700 dark:text-white"
                       placeholder="Quantity"
@@ -212,15 +275,22 @@ const CreateInvoice = () => {
                       onChange={(e) =>
                         updateProduct(index, "discount", Number(e.target.value))
                       }
+                      onKeyDown={(e) => handleKeyDown(e, index, "discount")}
+                      ref={(el) =>
+                        (productRefs.current[index] = {
+                          ...productRefs.current[index],
+                          discount: el,
+                        })
+                      }
                       className="w-full rounded-md border px-2 py-1 text-center dark:bg-gray-700 dark:text-white"
                       placeholder="Discount"
                     />
                   </td>
                   <td className="px-4 py-2 text-center dark:text-white">
-                    {discountAmount}
+                    {discountAmount.toFixed(2)}
                   </td>
                   <td className="px-4 py-2 text-center dark:text-white">
-                    {netTotal}
+                    {netTotal.toFixed(2)}
                   </td>
                 </tr>
               );
@@ -228,29 +298,18 @@ const CreateInvoice = () => {
           </tbody>
         </table>
 
-            <div className="flex mt-2 mx-4 justify-between items-center">
-            <button
-          onClick={addProduct}
-          className="flex items-center gap-2 rounded-md bg-gray-200 px-4 py-2 text-gray-800 transition"
-        >
-          +
-        </button>
-        <div className="mt-4">
-          <span className="font-bold dark:text-white">
-            Total: {totalAmount}
-          </span>
-        </div>
-            </div>
-        {/* Add Product Button */}
-       
-
-        {/* Total Amount */}
+        <div className="my-4">
         <button
           onClick={() => console.log(invoice)} // Save invoice functionality
           className="mt-6 rounded-md bg-blue-500 px-6 py-2 text-white transition hover:bg-blue-600"
         >
           Save Invoice
         </button>
+        </div>
+
+        <div className="text-right">
+          <p>Total Amount: {totalAmount.toFixed(2)}</p>
+        </div>
       </div>
     </DefaultLayout>
   );
