@@ -45,6 +45,7 @@ const CreateInvoice = () => {
   }, []);
 
   const [invoice, setInvoice] = useState({
+    customer_id : "",
     customerName: '',
     products: [
       { productName: '', quantity: 1, rate: 0, discount: 0, total: 0, filteredProducts: [] }
@@ -174,8 +175,8 @@ const CreateInvoice = () => {
   };
 
   // Handle customer selection
-  const handleCustomerSelect = (customerName: string) => {
-    setInvoice({ ...invoice, customerName });
+  const handleCustomerSelect = (customerName: string, customer_id: string) => {
+    setInvoice({ ...invoice, customerName, customer_id });
     setShowDropdown(false); // Hide dropdown after selection
   };
 
@@ -210,7 +211,7 @@ const CreateInvoice = () => {
                     key={customer._id}
                     className="cursor-pointer p-2 hover:bg-gray-200 dark:hover:bg-gray-600"
                     onMouseDown={() =>
-                      handleCustomerSelect(customer.customer_name)
+                      handleCustomerSelect(customer.customer_name, customer._id)
                     }
                   >
                     {customer.customer_name}

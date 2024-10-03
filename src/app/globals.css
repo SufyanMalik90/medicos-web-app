@@ -18,3 +18,10 @@
   ::-webkit-scrollbar-thumb:hover {
     background: #52b2f2;
   }
+
+ /* Hide Number arrows */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
