@@ -42,12 +42,12 @@ const OrderDatails = ({ params, searchParams }: {
       fetchOrderDetails();
     }, [params.invoice_no]);
     const handleDownloadInvoice = async () => {
-      if (invoiceRef.current && buttonRef.current) {
+      if (invoiceRef.current) {
         if (buttonRef.current) buttonRef.current.classList.add('hide-in-pdf');
-        buttonRef.current.style.display = 'none';
+    
         const element = invoiceRef.current;
-        
-        // Capture the DOM as an image using html2canvas
+    
+        // Use onclone to ensure all images are loaded
         const canvas = await html2canvas(element, {
           backgroundColor: '#ffffff',
           scale: 2,
@@ -76,22 +76,29 @@ const OrderDatails = ({ params, searchParams }: {
           pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
           heightLeft -= pageHeight;
         }
-  
-        // Save the generated PDF
-        element.style.backgroundColor = "";
-        pdf.save(`invoice_${orderDetails._id}.pdf`);
-        buttonRef.current.style.display = 'flex';
+    
+        pdf.save(`invoice_${orderDetails.invoice_number}.pdf`);
       }
-    };    
+    };
+    
+
+     // Show loading or placeholder text while fetching the data
+  if (!orderDetails) {
+    return (
+      <DefaultLayout>
+       <Loader />
+      </DefaultLayout>
+    );
+  }
+    
     
   return (
     <DefaultLayout>
-      {
-        orderDetails? 
-        <div
+      <div
         ref={invoiceRef}
         className="mx-auto max-w-4xl rounded-lg bg-white p-6 shadow-md dark:bg-gray-dark dark:shadow-card"
       >
+          <p className='text-center font-bold text-3xl text-black'>Sale Invoice</p>
         <div className=" mb-2 flex h-auto justify-center">
           <Image
             width={176}
@@ -144,14 +151,6 @@ const OrderDatails = ({ params, searchParams }: {
           </div>
         </div>
 
-        {/* <div className="flex items-center justify-end gap-2">
-          <p className="text-sm font-bold text-gray-700 dark:text-white">
-            Due Date:
-          </p>
-          <p className="text-gray-600 dark:text-white">
-            {moment(orderDetails.due_date).format("YYYY-MM-DD")}
-          </p>
-        </div> */}
 
         {/* Products Table */}
         <div>
@@ -283,7 +282,8 @@ const OrderDatails = ({ params, searchParams }: {
         </div>
 
         {/* Action Buttons */}
-        <div ref={buttonRef} className="mt-6 flex space-x-4">
+      </div>
+        <div className="mt-6 flex space-x-4 mx-auto max-w-4xl">
           <button
             type="button"
             className="flex items-center rounded-full bg-red-600 px-4 py-2 text-white transition hover:bg-red-700"
@@ -298,11 +298,6 @@ const OrderDatails = ({ params, searchParams }: {
             Download Invoice
           </button>
         </div>
-      </div>
-      : 
-      <Loader />
-      }
-     
     </DefaultLayout>
   );
   
