@@ -82,21 +82,13 @@ const OrderDatails = ({ params, searchParams }: {
         pdf.save(`invoice_${orderDetails._id}.pdf`);
         buttonRef.current.style.display = 'flex';
       }
-    };
-
-     // Show loading or placeholder text while fetching the data
-  if (!orderDetails) {
-    return (
-      <DefaultLayout>
-       <Loader />
-      </DefaultLayout>
-    );
-  }
-    
+    };    
     
   return (
     <DefaultLayout>
-      <div
+      {
+        orderDetails? 
+        <div
         ref={invoiceRef}
         className="mx-auto max-w-4xl rounded-lg bg-white p-6 shadow-md dark:bg-gray-dark dark:shadow-card"
       >
@@ -307,6 +299,10 @@ const OrderDatails = ({ params, searchParams }: {
           </button>
         </div>
       </div>
+      : 
+      <Loader />
+      }
+     
     </DefaultLayout>
   );
   
