@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { api } from "@/axios"; // Assuming you have an API setup
 import DefaultLayout from "@/components/Layouts/DefaultLaout";
 
+
 const CreateInvoice = () => {
   const [products, setProducts] = useState<any>([]); // API fetched products
   const [customers, setcustomer] = useState<any>([]); // API fetched products
@@ -48,7 +49,7 @@ const CreateInvoice = () => {
     customer_id : "",
     customerName: '',
     products: [
-      { productName: '', quantity: 1, rate: 0, discount: 0, total: 0, filteredProducts: [] }
+      { product_id: '', productName: '', quantity: 1, rate: 0, discount: 0, total: 0, filteredProducts: [] }
     ],
     issueDate: '',
     dueDate: '',
@@ -63,7 +64,7 @@ const CreateInvoice = () => {
       ...invoice,
       products: [
         ...invoice.products,
-        { productName: '', quantity: 1, rate: 0, discount: 0, total: 0, filteredProducts: [] }
+        { product_id: '', productName: '', quantity: 1, rate: 0, discount: 0, total: 0, filteredProducts: [] }
       ]
     });
   };
@@ -100,9 +101,10 @@ const CreateInvoice = () => {
   };
 
   const handleProductSelect = (selectedProduct: any, index: number) => {
+    
     const updatedProducts = invoice.products.map((product, i) =>
       i === index
-        ? { ...product, productName: selectedProduct.product_name, rate: selectedProduct.price, filteredProducts: [] }
+        ? { ...product, product_id: selectedProduct._id, productName: selectedProduct.product_name, rate: selectedProduct.price, filteredProducts: [] }
         : product
     );
 
@@ -179,6 +181,42 @@ const CreateInvoice = () => {
     setInvoice({ ...invoice, customerName, customer_id });
     setShowDropdown(false); // Hide dropdown after selection
   };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    console.log("invoice======", invoice);
+    
+    // Prepare the data for the API by excluding unnecessary fields like 'customerName' and 'productName'
+    const apiInvoiceData = {
+      customer_id: invoice.customer_id,
+      products: invoice.products.map((product) => ({
+        product_id: product.product_id,
+        quantity: product.quantity,
+        rate: product.rate,
+        discount: product.discount
+      })),
+      issue_date: new Date().toISOString().slice(0, 10),
+      due_date: invoice.dueDate,
+    };
+  
+    console.log("Prepared API data:", apiInvoiceData);
+  
+    try {
+      const response = await api.post('/api/create-invoice', apiInvoiceData);
+      if (response.data.success) {
+        console.log("Invoice created successfully:", response.data);
+        alert("Invoice Created!")
+        // Handle successful invoice creation (e.g., show success message, redirect, etc.)
+      } else {
+        console.error("Error creating invoice:", response.data.message);
+        alert("Something went Wrong")
+      }
+    } catch (error) {
+      console.error("Error submitting invoice:", error);
+      alert("Something went Wrong")
+    }
+  };
+  
 
   return (
     <DefaultLayout>
@@ -359,7 +397,7 @@ const CreateInvoice = () => {
 
         <div className="my-4">
           <button
-            onClick={() => console.log(invoice)} // Save invoice functionality
+            onClick={handleSubmit} // Save invoice functionality
             className="mt-6 rounded-md bg-blue-500 px-6 py-2 text-white transition hover:bg-blue-600"
           >
             Save Invoice
