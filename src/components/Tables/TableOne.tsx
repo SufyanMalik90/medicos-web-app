@@ -98,7 +98,7 @@ const TableOne = () => {
         <div className="relative">
           <input
             type="text"
-            placeholder="Search customer..."
+            placeholder="Search invoice..."
             className="rounded-lg dark:bg-gray-700 bg-white py-2 pl-10 pr-4 dark:text-white text-black border-2 dark:border-none placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={searchTerm}
             onChange={handleSearch}
