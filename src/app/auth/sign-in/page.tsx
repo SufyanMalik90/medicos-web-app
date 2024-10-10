@@ -7,6 +7,7 @@ import { z } from "zod"; // Import Zod
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { auth } from "@/axios";
+import Spinners from "@/components/Spinners/Spinners";
 
 // Define the Zod schema
 const signInSchema = z.object({
@@ -21,6 +22,7 @@ const SignIn: React.FC = () => {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false); // Add loading state
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,6 +53,7 @@ const SignIn: React.FC = () => {
     }
 
     // Proceed with API call if validation passes
+    setLoading(true); // Start loading spinner
     try {
       const response = await auth.post("/api/auth/login", formData);
       console.log("Response ==== login", response.data);
@@ -67,6 +70,8 @@ const SignIn: React.FC = () => {
       setErrorMessage(
         error?.response?.data?.error || "Failed to login. Please try again."
       );
+    } finally {
+      setLoading(false); // Stop loading spinner
     }
   };
 
@@ -91,7 +96,9 @@ const SignIn: React.FC = () => {
             <div className="mb-12">
               <h3 className="text-4xl font-extrabold text-white">Sign in</h3>
             </div>
-              <p className="text-gray-400 mb-8 mt-[-20px]">Welcome back! Please sign in to continue.</p>
+            <p className="text-gray-400 mb-8 mt-[-20px]">
+              Welcome back! Please sign in to continue.
+            </p>
 
             <div className="mb-4">
               <div className="relative flex items-center">
@@ -147,20 +154,6 @@ const SignIn: React.FC = () => {
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-4 mt-6">
-              <div className="flex items-center">
-                {/* <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label
-                  htmlFor="remember-me"
-                  className="text-gray-800 ml-3 block text-sm"
-                >
-                  Remember me
-                </label> */}
-              </div>
               <div>
                 <Link
                   href="/auth/forget-password"
@@ -175,8 +168,9 @@ const SignIn: React.FC = () => {
               <button
                 onClick={handleSubmit}
                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
+                disabled={loading} // Disable button when loading
               >
-                Sign in
+                {loading ? <Spinners /> : "Sign in"} {/* Toggle spinner */}
               </button>
             </div>
 
