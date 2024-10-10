@@ -12,6 +12,7 @@ import  AlertError  from "@/components/Alerts/AlertError";
 import  AlertSuccess  from "@/components/Alerts/AlertSuccess";
 import Pagination from "@/components/Pagination/pagination";
 import Image from "next/image.js";
+import Spinners from "@/components/Spinners/Spinners";
 
 const TablesPage = () => {
   const [isOpen, setIsOpen] = useState<any>(false);
@@ -21,6 +22,8 @@ const TablesPage = () => {
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [update, setUpdate] = useState<any>(false);
+  const [loading, setLoading] = useState(false); // Add loading state
+
 
   const modalRef = useRef<any>();
   useEffect(() => {
@@ -78,6 +81,7 @@ const TablesPage = () => {
 
  // API call to add the product
  async function hitApi() {
+  setLoading(true); 
   
   try {
     const response = await api.post("/api/create-product", {
@@ -111,6 +115,8 @@ const TablesPage = () => {
     setTimeout(() => {
       setErrorMessage("");
     }, 3000);
+  }finally {
+    setLoading(false); // End loading
   }
 }
 
@@ -185,7 +191,11 @@ return (
           onClick={hitApi}
           className="text-md flex h-14 w-full items-center justify-center rounded-lg bg-[#5750f1] font-medium text-white outline-none"
         >
-          Add Product
+           {loading ? (
+              <Spinners />
+            ) : (
+              "Add Product"
+            )}
         </button>
       </div>
     </div>
