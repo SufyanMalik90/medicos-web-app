@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import  AlertError  from "@/components/Alerts/AlertError";
 import  AlertSuccess  from "@/components/Alerts/AlertSuccess";
 import Pagination from "@/components/Pagination/pagination";
+import Image from "next/image.js";
 
 const TablesPage = () => {
   const [isOpen, setIsOpen] = useState<any>(false);
@@ -117,99 +118,114 @@ const TablesPage = () => {
 const handlePageChange = (newPage: number) => {
   setCurrentPage(newPage);
 };
-  return (
-    <DefaultLayout>
-      <Breadcrumb pageName="Products" />
-      {errorMessage && (
-        <AlertError
-          title="Error"
-          message={errorMessage}
-          onClose={() => setErrorMessage("")}
-        />
-      )}
-      {showSuccessAlert && (
-        <AlertSuccess
-          title="New Product Added"
-          message=""
-          onClose={() => setShowSuccessAlert(false)}
-        />
-      )}
+return (
+  <DefaultLayout>
+    <Breadcrumb pageName="Products" />
+
+    {errorMessage && (
+      <AlertError
+        title="Error"
+        message={errorMessage}
+        onClose={() => setErrorMessage("")}
+      />
+    )}
+    {showSuccessAlert && (
+      <AlertSuccess
+        title="New Product Added"
+        message=""
+        onClose={() => setShowSuccessAlert(false)}
+      />
+    )}
+
+    <div
+      onClick={toggleModal}
+      className={`fixed left-0 top-0 h-screen w-screen transition-all duration-500 ${isOpen ? "scale-1" : "scale-0"} flex items-center justify-center `}
+    >
       <div
-        onClick={toggleModal}
-        className={`fixed left-0 top-0 h-screen w-screen transition-all duration-500 ${isOpen ? "scale-1" : "scale-0"} flex items-center justify-center `}
+        ref={modalRef}
+        className="flex h-auto w-full flex-col items-start justify-start gap-4 rounded-3xl  bg-white p-6 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] dark:bg-[rgb(2,13,26)] lg:w-[40rem]"
       >
-        <div
-          ref={modalRef}
-          className="flex h-auto w-full flex-col items-start justify-start gap-4 rounded-3xl  bg-white p-6 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] dark:bg-[rgb(2,13,26)] lg:w-[40rem]"
-        >
-          <span className="text-2xl font-bold text-[#5750f1] dark:text-white">
-            Add Product
-          </span>
-          <input
-            type="text"
-            name="product_name"
-            value={formData.product_name}
-            onChange={handleInputChange}
-            className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
-            placeholder="Title"
-          />
-          <input
-            type="text"
-            name="purchasing_price"
-            value={formData.purchasing_price}
-            onChange={handleInputChange}
-            className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
-            placeholder="Purchasing price"
-          />
-          <input
-            type="text"
-            name="price"
-            value={formData.price}
-            onChange={handleInputChange}
-            className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
-            placeholder="Selling price"
-          />
-          <input
-            type="text"
-            name="stock"
-            value={formData.stock}
-            onChange={handleInputChange}
-            className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
-            placeholder="Quantity"
-          />
+        <span className="text-2xl font-bold text-[#5750f1] dark:text-white">
+          Add Product
+        </span>
+        <input
+          type="text"
+          name="product_name"
+          value={formData.product_name}
+          onChange={handleInputChange}
+          className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
+          placeholder="Title"
+        />
+        <input
+          type="text"
+          name="purchasing_price"
+          value={formData.purchasing_price}
+          onChange={handleInputChange}
+          className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
+          placeholder="Purchasing price"
+        />
+        <input
+          type="text"
+          name="price"
+          value={formData.price}
+          onChange={handleInputChange}
+          className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
+          placeholder="Selling price"
+        />
+        <input
+          type="text"
+          name="stock"
+          value={formData.stock}
+          onChange={handleInputChange}
+          className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
+          placeholder="Quantity"
+        />
 
-          <button
-            onClick={hitApi}
-            className="text-md flex h-14 w-full items-center justify-center rounded-lg bg-[#5750f1] font-medium text-white outline-none"
-          >
-            Add Product
-          </button>
-        </div>
-      </div>
-
-      <div className="mb-3 flex h-12 w-full items-center justify-end ">
         <button
-          onClick={() => setIsOpen((prev: any) => !prev)}
-          className="flex h-12  w-40 items-center justify-center rounded-lg bg-[#5750f1] font-medium text-white"
+          onClick={hitApi}
+          className="text-md flex h-14 w-full items-center justify-center rounded-lg bg-[#5750f1] font-medium text-white outline-none"
         >
           Add Product
         </button>
       </div>
+    </div>
 
-      <div className="flex flex-col gap-10">
-        {/* <TableOne /> */}
-        {/* <TableTwo /> */}
-        <TableThree products={products} />
-        <div className="flex justify-end">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
+    <div className="mb-3 flex h-12 w-full items-center justify-end ">
+      <button
+        onClick={() => setIsOpen((prev: any) => !prev)}
+        className="flex h-12  w-40 items-center justify-center rounded-lg bg-[#5750f1] font-medium text-white"
+      >
+        Add Product
+      </button>
+    </div>
+
+    <div className="flex flex-col gap-10">
+      {products.length === 0 ? (
+        <div className="flex w-full flex-col items-center justify-center py-4">
+          <span className="text-3xl font-bold">Nothing here</span>
+          <Image
+            src="/images/nothing.png"
+            alt="No products found"
+            width={400}
+            height={300}
+            className="w-full md:w-1/2 lg:w-1/4"
           />
         </div>
-      </div>
-    </DefaultLayout>
-  );
+      ) : (
+        <>
+          <TableThree products={products} />
+          <div className="flex justify-end">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </div>
+        </>
+      )}
+    </div>
+  </DefaultLayout>
+);
 };
 
 export default TablesPage;
