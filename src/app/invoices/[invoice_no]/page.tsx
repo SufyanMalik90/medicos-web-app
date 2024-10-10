@@ -207,7 +207,7 @@ const OrderDetails = ({
             </p>
           </div>
 
-          <div className="flex justify-end gap-1">
+          {/* <div className="flex justify-end gap-1">
             <p className="font-medium text-gray-700 dark:text-white">
               Invoice Status:
             </p>
@@ -222,7 +222,7 @@ const OrderDetails = ({
             >
               {orderDetails.status}
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
 
