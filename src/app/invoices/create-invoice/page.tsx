@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { api } from "@/axios"; // Assuming you have an API setup
 import DefaultLayout from "@/components/Layouts/DefaultLaout";
+import { useRouter } from "next/navigation";
 
 
 const CreateInvoice = () => {
@@ -9,6 +10,7 @@ const CreateInvoice = () => {
   const [customers, setcustomer] = useState<any>([]); // API fetched products
   const [showDropdown, setShowDropdown] = useState(false);
   const [filteredCustomers, setFilteredCustomers] = useState<any>([]);
+  const router = useRouter()
 
   useEffect(() => {
     // Fetch products from API
@@ -206,13 +208,16 @@ const CreateInvoice = () => {
       if (response.data.success) {
         console.log("Invoice created successfully:", response.data);
         alert("Invoice Created!")
+        router.push('/invoices')
+
         // Handle successful invoice creation (e.g., show success message, redirect, etc.)
       } else {
         console.error("Error creating invoice:", response.data.message);
         alert("Something went Wrong")
       }
-    } catch (error) {
+    } catch (error:any) {
       console.error("Error submitting invoice:", error);
+      // alert(error.response.data.message)
       alert("Something went Wrong")
     }
   };
