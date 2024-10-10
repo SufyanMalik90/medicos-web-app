@@ -8,6 +8,7 @@ import { use, useEffect, useRef, useState } from "react";
 import AlertSuccess from "@/components/Alerts/AlertSuccess";
 import AlertError from "@/components/Alerts/AlertError";
 import Image from "next/image.js";
+import Spinners from "@/components/Spinners/Spinners";
 
 const TablesPage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,6 +17,8 @@ const TablesPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const modalRef = useRef<any>();
   const [update, setUpdate] = useState<any>(false);
+  const [loading, setLoading] = useState(false); // Add loading state
+
 
   const [page, setPage] = useState<any>(1);
   const [pagesArr, setPagesArr] = useState<any>([]);
@@ -78,6 +81,7 @@ const TablesPage = () => {
 
   // Function to send POST request
   async function hitApi() {
+    setLoading(true); 
     try {
       const response = await api.post("/api/create-customer", {
         customer_name: formData.customer_name,
@@ -104,6 +108,8 @@ const TablesPage = () => {
       setTimeout(() => {
         setErrorMessage("");
       }, 3000);
+    }finally {
+      setLoading(false); // End loading
     }
   }
 
@@ -174,7 +180,11 @@ const TablesPage = () => {
             onClick={hitApi}
             className="text-md flex h-14 w-full items-center justify-center rounded-lg bg-[#5750f1] font-medium text-white outline-none"
           >
-            Create Customer
+           {loading ? (
+              <Spinners />
+            ) : (
+              "Create Customer"
+            )}
           </button>
         </div>
       </div>
