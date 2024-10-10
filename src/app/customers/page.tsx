@@ -7,6 +7,7 @@ import DefaultLayout from "@/components/Layouts/DefaultLaout";
 import { use, useEffect, useRef, useState } from "react";
 import AlertSuccess from "@/components/Alerts/AlertSuccess";
 import AlertError from "@/components/Alerts/AlertError";
+import Image from "next/image.js";
 
 const TablesPage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -125,13 +126,13 @@ const TablesPage = () => {
       )}
       <div
         onClick={toggleModal}
-        className={`fixed left-0 top-0 h-screen w-screen transition-all duration-500 ${
+        className={`fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center transition-all duration-500 ${
           isOpen ? "scale-1" : "scale-0"
-        } flex items-center justify-center `}
+        }`}
       >
         <div
           ref={modalRef}
-          className="flex h-auto w-full flex-col items-start justify-start gap-4 rounded-3xl bg-white p-6 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] dark:bg-[rgb(2,13,26)] lg:w-[40rem]"
+          className="flex h-auto w-full max-w-lg flex-col items-start justify-start gap-4 rounded-3xl bg-white p-6 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] dark:bg-[rgb(2,13,26)] lg:w-[40rem]"
         >
           <span className="text-2xl font-bold text-[#5750f1] dark:text-white">
             Create Customer
@@ -186,34 +187,57 @@ const TablesPage = () => {
           Create Customer
         </button>
       </div>
+
       <div className="flex flex-col gap-10">
-        <TableTwo customers={customers} />
+        {/* Conditional rendering for image or table */}
+        {customers.length === 0 ? (
+          <div className="flex w-full flex-col items-start justify-start py-4 lg:px-2">
+            <div className="relative h-auto w-full overflow-x-auto ">
+              <span className="flex h-auto w-full flex-col items-center justify-center py-4 text-3xl font-bold">
+                <Image
+                  src="/images/nothing.png"
+                  alt="No customers found"
+                  width={400}
+                  height={300}
+                  className="w-full md:w-1/2 lg:w-1/4"
+                />
+                Nothing here
+              </span>
+            </div>
+          </div>
+        ) : (
+          <TableTwo customers={customers} />
+        )}
       </div>
 
-      <div className="mt-4 flex h-auto w-full items-center justify-end gap-2">
-        <button
-          disabled={current == 1}
-          className={`text-md flex h-12 w-auto items-center justify-center rounded-xl border bg-white px-2 font-medium text-gray-700 shadow disabled:bg-gray-200`}
-        >
-          Back
-        </button>
-        {pagesArr?.map((item: any, key: number) => {
-          return (
-            <button
-              key={key}
-              className={`h-12 w-12  ${current == key + 1 ? "bg-gray-200" : "bg-white"} text-md flex items-center justify-center rounded-xl border font-medium text-gray-700 shadow`}
-            >
-              {key + 1}
-            </button>
-          );
-        })}
-        <button
-          disabled={current == pagesArr.length}
-          className={`text-md flex h-12 w-auto items-center justify-center rounded-xl border bg-white px-2 font-medium text-gray-700 shadow disabled:bg-gray-200`}
-        >
-          Next
-        </button>
-      </div>
+      {pagesArr && pagesArr.length > 0 && (
+        <div className="mt-4 flex h-auto w-full items-center justify-end gap-2">
+          <button
+            disabled={current == 1}
+            className={`text-md flex h-12 w-auto items-center justify-center rounded-xl border bg-white px-2 font-medium text-gray-700 shadow disabled:bg-gray-200`}
+          >
+            Back
+          </button>
+          {pagesArr.map((item: any, key: number) => {
+            return (
+              <button
+                key={key}
+                className={`h-12 w-12  ${
+                  current == key + 1 ? "bg-gray-200" : "bg-white"
+                } text-md flex items-center justify-center rounded-xl border font-medium text-gray-700 shadow`}
+              >
+                {key + 1}
+              </button>
+            );
+          })}
+          <button
+            disabled={current == pagesArr.length}
+            className={`text-md flex h-12 w-auto items-center justify-center rounded-xl border bg-white px-2 font-medium text-gray-700 shadow disabled:bg-gray-200`}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </DefaultLayout>
   );
 };
