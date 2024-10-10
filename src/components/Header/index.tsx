@@ -71,7 +71,7 @@ const Header = (props: {
             <h1 className="mb-0.5 text-heading-5 font-bold text-dark dark:text-white">
               Dashboard
             </h1>
-            <p className="font-medium">Medicos</p>
+            <p className="font-medium">UK Medicos</p>
           </div>
         </div>
 
@@ -86,7 +86,7 @@ const Header = (props: {
             {/* <!-- Dark Mode Toggle --> */}
 
             {/* <!-- Notification Menu Area --> */}
-            <DropdownNotification />
+            {/* <DropdownNotification /> */}
             {/* <!-- Notification Menu Area --> */}
           </ul>
 
