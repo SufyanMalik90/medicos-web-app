@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { auth } from "@/axios";
 import Spinners from "@/components/Spinners/Spinners";
+import toast, { Toaster } from 'react-hot-toast';
 
 // Define the Zod schema
 const signInSchema = z.object({
@@ -57,16 +58,26 @@ const SignIn: React.FC = () => {
     try {
       const response = await auth.post("/api/auth/login", formData);
       console.log("Response ==== login", response.data);
-
+      let message: any;
       if (response?.data?.success) {
+        if (formData.email == 'hanzalakh90@gmail.com') {
+          
+          message = 'Welcome to UK Medicos Hanzla!'
+        }
+        // toast(message, {
+        //   duration: 7000,
+        //   icon: '👏',
+        // });
         Cookies.set("token", response?.data?.token, { expires: 7 });
         if (response?.data?.token) {
           router.push("/");
         }
       } else {
+        toast.error("Please try again!")
         setErrorMessage(response?.data?.error);
       }
     } catch (error: any) {
+      toast.error("Please try again!")
       setErrorMessage(
         error?.response?.data?.error || "Failed to login. Please try again."
       );
@@ -82,6 +93,10 @@ const SignIn: React.FC = () => {
 
   return (
     <div className="font-[sans-serif] bg-gray-900 flex items-center justify-center md:h-screen p-4">
+      <Toaster
+      position="top-center"
+      reverseOrder={false}
+    />
       <div className="shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] bg-gray-800 max-w-6xl max-md:max-w-lg rounded-md p-6">
         <div className="grid md:grid-cols-2 items-center gap-8">
           <div className="max-md:order-1 lg:min-w-[450px]">
@@ -153,7 +168,7 @@ const SignIn: React.FC = () => {
               )}
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 mt-6">
+            <div className="flex flex-wrap items-center justify-end gap-4 mt-6">
               <div>
                 <Link
                   href="/auth/forget-password"
@@ -164,7 +179,7 @@ const SignIn: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-12">
+            <div className="mt-4">
               <button
                 onClick={handleSubmit}
                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
