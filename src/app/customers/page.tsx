@@ -2,7 +2,7 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import TableTwo from "@/components/Tables/TableTwo";
 import { api } from "../../axios.js";
-
+import toast, { Toaster } from 'react-hot-toast';
 import DefaultLayout from "@/components/Layouts/DefaultLaout";
 import { use, useEffect, useRef, useState } from "react";
 import AlertSuccess from "@/components/Alerts/AlertSuccess";
@@ -93,21 +93,22 @@ const TablesPage = () => {
       });
       if (response?.data?.success) {
         setUpdate((prev: any) => !prev);
-        setShowSuccessAlert(true);
+        toast.success('New customer Created!!')
         setIsOpen(false);
-        setErrorMessage("");
+        // setErrorMessage("");
         // Hide the success alert after 3 seconds
-        setTimeout(() => {
-          setShowSuccessAlert(false);
-        }, 3000); // Close the modal after successful creation
+        // setTimeout(() => {
+        //   setShowSuccessAlert(false);
+        // }, 3000); // Close the modal after successful creation
       }
     } catch (error) {
       console.error("Error creating customer:", error);
-      setErrorMessage(`Failed to create customer. ${error}`);
+      // setErrorMessage(`Failed to create customer. ${error}`);
+      toast.error("Failed to create customer.")
       setIsOpen(false);
-      setTimeout(() => {
-        setErrorMessage("");
-      }, 3000);
+      // setTimeout(() => {
+      //   setErrorMessage("");
+      // }, 3000);
     }finally {
       setLoading(false); // End loading
     }
@@ -130,6 +131,10 @@ const TablesPage = () => {
           onClose={() => setShowSuccessAlert(false)}
         />
       )}
+      <Toaster
+      position="top-center"
+      reverseOrder={false}
+    />
       <div
         onClick={toggleModal}
         className={`fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center transition-all duration-500 ${
