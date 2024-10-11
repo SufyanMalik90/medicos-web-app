@@ -4,6 +4,7 @@ import TableOne from "@/components/Tables/TableOne";
 import TableThree from "@/components/Tables/TableThree";
 import TableTwo from "@/components/Tables/TableTwo";
 import { api } from "../../axios.js";
+import toast, { Toaster } from 'react-hot-toast';
 
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLaout";
@@ -93,28 +94,31 @@ const TablesPage = () => {
 
     if (response?.data?.success) {
       setUpdate((prev: any) => !prev);
-      setShowSuccessAlert(true);
+      // setShowSuccessAlert(true);
       setIsOpen(false);
-      setErrorMessage("");
-      setTimeout(() => {
-        setShowSuccessAlert(false);
-      }, 3000);
+      toast.success('New Product Created!!')
+      // setErrorMessage("");
+      // setTimeout(() => {
+      //   setShowSuccessAlert(false);
+      // }, 3000);
     } else {
       console.log("response?.data?.message",response?.data?.message);
       
-      setErrorMessage(response?.data?.message || "Failed to create product.");
+      // setErrorMessage(response?.data?.message || "Failed to create product.");
+      toast.error("Failed to create product.")
       setIsOpen(false);
-      setTimeout(() => {
-        setErrorMessage("");
-      }, 3000);
+      // setTimeout(() => {
+      //   setErrorMessage("");
+      // }, 3000);
     }
   } catch (error: any) {
     console.error("Error creating product:", error);
-    setErrorMessage(`Failed to create product.`);
+    toast.error("Failed to create product.")
+    // setErrorMessage(`Failed to create product.`);
     setIsOpen(false);
-    setTimeout(() => {
-      setErrorMessage("");
-    }, 3000);
+    // setTimeout(() => {
+    //   setErrorMessage("");
+    // }, 3000);
   }finally {
     setLoading(false); // End loading
   }
@@ -142,7 +146,10 @@ return (
         onClose={() => setShowSuccessAlert(false)}
       />
     )}
-
+    <Toaster
+      position="top-center"
+      reverseOrder={false}
+    />
     <div
       onClick={toggleModal}
       className={`fixed left-0 top-0 h-screen w-screen transition-all duration-500 ${isOpen ? "scale-1" : "scale-0"} flex items-center justify-center `}
