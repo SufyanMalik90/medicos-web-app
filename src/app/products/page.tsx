@@ -59,6 +59,7 @@ const TablesPage = () => {
   const toggleModal = (e: any) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
       setIsOpen(false);
+      resetForm();
     }
   };
   // State to hold form inputs
@@ -68,6 +69,15 @@ const TablesPage = () => {
     purchasing_price: "",
     stock: "",
   });
+
+  const resetForm = () => {
+    setFormData({
+      product_name: "",
+      price: "",
+      purchasing_price: "",
+      stock: "",
+    });
+  };
 
    // Handle input changes
    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
