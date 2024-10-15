@@ -24,7 +24,10 @@ const TablesPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [update, setUpdate] = useState<any>(false);
   const [loading, setLoading] = useState(false); // Add loading state
-
+  const productNameRef = useRef(null);
+  const purchasingPriceRef = useRef(null);
+  const priceRef = useRef(null);
+  const stockRef = useRef(null);
 
   const modalRef = useRef<any>();
   useEffect(() => {
@@ -78,6 +81,11 @@ const TablesPage = () => {
       ...prevFormData,
       [name]: numericValue,
     }));
+  };
+  const handleKeyDown = (e:any, nextRef:any) => {
+    if (e.key === "Enter" && nextRef && nextRef.current) {
+      nextRef.current.focus();
+    }
   };
 
  // API call to add the product
@@ -164,32 +172,40 @@ return (
         <input
           type="text"
           name="product_name"
+          ref={productNameRef}
           value={formData.product_name}
           onChange={handleInputChange}
+          onKeyDown={(e) => handleKeyDown(e, purchasingPriceRef)}
           className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
           placeholder="Title"
         />
         <input
           type="text"
           name="purchasing_price"
+          ref={purchasingPriceRef}
           value={formData.purchasing_price}
           onChange={handleInputChange}
+          onKeyDown={(e) => handleKeyDown(e, priceRef)}
           className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
           placeholder="Purchasing price"
         />
         <input
           type="text"
           name="price"
+          ref={priceRef}
           value={formData.price}
           onChange={handleInputChange}
+          onKeyDown={(e) => handleKeyDown(e, stockRef)}
           className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
           placeholder="Selling price"
         />
         <input
           type="text"
           name="stock"
+          ref={stockRef}
           value={formData.stock}
           onChange={handleInputChange}
+          onKeyDown={(e) => e.key === "Enter" && hitApi()}
           className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
           placeholder="Quantity"
         />
