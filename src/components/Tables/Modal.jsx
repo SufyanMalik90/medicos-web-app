@@ -3,7 +3,7 @@ import Spinners from '../Spinners/Spinners'
 import toast, { Toaster } from 'react-hot-toast';
 import { api } from "../../axios.js";
 
-const NewModal = ({product, toggleModal, modalRef, isOpen}) => {
+const NewModal = ({product, toggleModal, modalRef, isOpen, setIsOpen, setUpdate}) => {
 
 
     const [name, setName] = useState("")
@@ -14,7 +14,6 @@ const NewModal = ({product, toggleModal, modalRef, isOpen}) => {
     const priceRef = useRef(null);
     const stockRef = useRef(null);
   const [loading, setLoading] = useState(false); // Add loading state
-  const [update, setUpdate] = useState(false);
 
 
     useEffect(()=>{
@@ -32,43 +31,45 @@ const NewModal = ({product, toggleModal, modalRef, isOpen}) => {
       async function handleUpdateProduct() {
         setLoading(true); 
         
-        // try {
-        //   const response = await api.post("/api/update-product", {
-        //     // product_name: formData.product_name,
-        //     // price: formData.price,
-        //     // purchasing_price: formData.purchasing_price,
-        //     // stock: formData.stock,
-        //   });
+        try {
+          const response = await api.post("/api/update-product", {
+            product_id: product._id,
+            product_name: name,
+            purchasing_price: purchasingPrice,
+            price: price,
+            stock: stock,
+          });
       
-        //   if (response?.data?.success) {
-        //     setUpdate((prev) => !prev);
-        //     // setShowSuccessAlert(true);
-        //     toast.success('New Product Created!!')
-        //     // setErrorMessage("");
-        //     // setTimeout(() => {
-        //     //   setShowSuccessAlert(false);
-        //     // }, 3000);
-        //   } else {
-        //     console.log("response?.data?.message",response?.data?.message);
+          if (response?.data?.success) {
+            setUpdate((prev) => !prev);
+            setIsOpen(false)
+            // setShowSuccessAlert(true);
+            toast.success('Product Updated!')
+            // setErrorMessage("");
+            // setTimeout(() => {
+            //   setShowSuccessAlert(false);
+            // }, 3000);
+          } else {
+            console.log("response?.data?.message",response?.data?.message);
             
-        //     // setErrorMessage(response?.data?.message || "Failed to create product.");
-        //     toast.error("Failed to create product.")
-        //     // setIsOpen(false);
-        //     // setTimeout(() => {
-        //     //   setErrorMessage("");
-        //     // }, 3000);
-        //   }
-        // } catch (error) {
-        //   console.error("Error creating product:", error);
-        //   toast.error("Failed to create product.")
-        //   // setErrorMessage(`Failed to create product.`);
-        // //   setIsOpen(false);
-        //   // setTimeout(() => {
-        //   //   setErrorMessage("");
-        //   // }, 3000);
-        // }finally {
-        //   setLoading(false); // End loading
-        // }
+            // setErrorMessage(response?.data?.message || "Failed to create product.");
+            toast.error("Failed to update product.")
+            // setIsOpen(false);
+            // setTimeout(() => {
+            //   setErrorMessage("");
+            // }, 3000);
+          }
+        } catch (error) {
+          console.error("Error creating product:", error);
+          toast.error("Failed to create product.")
+          // setErrorMessage(`Failed to create product.`);
+        //   setIsOpen(false);
+          // setTimeout(() => {
+          //   setErrorMessage("");
+          // }, 3000);
+        }finally {
+          setLoading(false); // End loading
+        }
       }
   return (
     <div

@@ -30,7 +30,7 @@ const packageData: Package[] = [
   },
 ];
 
-const TableThree = ({products}: any) => {
+const TableThree = ({products, setUpdate}: any) => {
   const modalRef = useRef<any>();
   const [isOpen, setIsOpen] = useState<any>(false);
 
@@ -42,11 +42,6 @@ const TableThree = ({products}: any) => {
   });
 
 
-  const toggleModal = (e: any) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-      setIsOpen(false);
-    }
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -62,6 +57,13 @@ const TableThree = ({products}: any) => {
   };
 
   const [selectedProduct, setSelectedProduct] = useState(null)
+  
+  const toggleModal = (e: any) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      setIsOpen(false);
+      setSelectedProduct(null)
+    }
+  };
   const handleViewDetails = (product: any) => {
     setIsOpen(true);
     setSelectedProduct(product)
@@ -78,7 +80,7 @@ const TableThree = ({products}: any) => {
       </div>
 
     {
-      isOpen && <NewModal product={selectedProduct} toggleModal={toggleModal} modalRef={modalRef}  isOpen={isOpen}/>
+      isOpen && <NewModal product={selectedProduct} toggleModal={toggleModal} modalRef={modalRef}  isOpen={isOpen} setIsOpen={setIsOpen} setUpdate={setUpdate}/>
     }
       
       <div className="grid grid-cols-6 border-t border-stroke bg-[#5750f1] px-4 py-4.5 text-white dark:border-dark-3 sm:grid-cols-8 md:px-6 2xl:px-7.5">

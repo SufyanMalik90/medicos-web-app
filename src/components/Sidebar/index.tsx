@@ -340,7 +340,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       >
         {/* <!-- SIDEBAR HEADER --> */}
         {/* <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5 xl:py-10"> */}
-        <div className="flex items-center justify-center gap-2 px-6 py-5.5 lg:py-6.5 xl:py-10">
+        <div className="flex items-center justify-center gap-2 px-6 py-5.5 lg:py-2 xl:py-4">
           <Link href="/">
             {/* <Image
               width={176}
@@ -361,22 +361,22 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               style={{ width: "auto", height: "auto" }}
             /> */}
             <Image
-              width={125}
-              height={28}
+              width={170}
+              height={170}
               src={"/images/logo/medicose-logo.png"}
               alt="Logo"
               priority
               className="dark:hidden"
-              style={{ width: "auto", height: "auto" }}
+              style={{ width: "170px", height: "170px" }}
             />
             <Image
-              width={125}
-              height={28}
+              width={170}
+              height={170}
               src={"/images/logo/medicose-logo.png"}
               alt="Logo"
               priority
               className="hidden dark:block"
-              style={{ width: "auto", height: "auto" }}
+              style={{ width: "170px", height: "170px" }}
             />
           </Link>
 

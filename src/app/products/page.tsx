@@ -256,7 +256,7 @@ return (
         </div>
       ) : (
         <>
-          <TableThree products={products} />
+          <TableThree products={products} setUpdate={setUpdate}/>
           <div className="flex justify-end">
             <Pagination
               currentPage={currentPage}
