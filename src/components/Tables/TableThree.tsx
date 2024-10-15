@@ -1,5 +1,7 @@
 import { Package } from "@/types/package";
 import Image from "next/image";
+import { useRef, useState } from "react";
+import NewModal from "./Modal.jsx"
 
 const packageData: Package[] = [
   {
@@ -29,9 +31,42 @@ const packageData: Package[] = [
 ];
 
 const TableThree = ({products}: any) => {
+  const modalRef = useRef<any>();
+  const [isOpen, setIsOpen] = useState<any>(false);
 
-  const handleViewDetails = (product_id: string) => {
-    console.log("invoices >>", product_id);
+  const [formData, setFormData] = useState({
+    product_name: "",
+    price: "",
+    purchasing_price: "",
+    stock: "",
+  });
+
+
+  const toggleModal = (e: any) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      setIsOpen(false);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+  
+    // Convert the value to a number if the input name is 'price' or 'stock'
+    const numericValue = name === "price" || name === "stock" || name === "purchasing_price" ? Number(value) : value;
+  console.log("numericValue",numericValue);
+  
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: numericValue,
+    }));
+  };
+
+  const [selectedProduct, setSelectedProduct] = useState(null)
+  const handleViewDetails = (product: any) => {
+    setIsOpen(true);
+    setSelectedProduct(product)
+    console.log("ProductUpdateData======== >>", product);
+    
     
   };
   return (
@@ -42,6 +77,10 @@ const TableThree = ({products}: any) => {
         </h4>
       </div>
 
+    {
+      isOpen && <NewModal product={selectedProduct} toggleModal={toggleModal} modalRef={modalRef}  isOpen={isOpen}/>
+    }
+      
       <div className="grid grid-cols-6 border-t border-stroke bg-[#5750f1] px-4 py-4.5 text-white dark:border-dark-3 sm:grid-cols-8 md:px-6 2xl:px-7.5">
         <div className="col-span-3 flex items-center">
           <p className="font-medium">Product Title</p>
@@ -99,7 +138,7 @@ const TableThree = ({products}: any) => {
                     <button
                       type="button"
                       className="hover:text-blue-700"
-                      onClick={() => handleViewDetails(product._id)}
+                      onClick={() => handleViewDetails(product)}
                     >
                       <Image
                         alt="edit-icon"
