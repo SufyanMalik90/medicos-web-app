@@ -11,6 +11,8 @@ const CreateInvoice = () => {
   const [customers, setcustomer] = useState<any>([]); // API fetched products
   const [showDropdown, setShowDropdown] = useState(false);
   const [filteredCustomers, setFilteredCustomers] = useState<any>([]);
+  const [stockAvailable, setStockAvailable] = useState<string | null>(null);
+  const [stockQty, setStockQty] = useState<string | null>(null);
   const router = useRouter()
 
   useEffect(() => {
@@ -52,7 +54,7 @@ const CreateInvoice = () => {
     customer_id : "",
     customerName: '',
     products: [
-      { product_id: '', productName: '', quantity: 1, rate: 0, discount: 0, total: 0, filteredProducts: [] }
+      { product_id: '', productName: '', quantity: 0, rate: 0, discount: 0, total: 0, filteredProducts: [] }
     ],
     issueDate: '',
     dueDate: '',
@@ -67,13 +69,22 @@ const CreateInvoice = () => {
       ...invoice,
       products: [
         ...invoice.products,
-        { product_id: '', productName: '', quantity: 1, rate: 0, discount: 0, total: 0, filteredProducts: [] }
+        { product_id: '', productName: '', quantity: 0, rate: 0, discount: 0, total: 0, filteredProducts: [] }
       ]
     });
   };
 
   // Function to update product details
   const updateProduct = (index: number, field: string, value: any) => {
+    const product: any = invoice.products[index];
+    const apiProduct = products.find((p: { _id: any }) => p._id === product.product_id);
+   
+    if (field === 'quantity' && apiProduct && value > apiProduct.stock) {
+      setStockAvailable(`Stock available ${apiProduct.stock}`);
+    } else {
+      setStockAvailable(null); // Clear the error if quantity is valid
+    }
+    
     const newProducts = invoice.products.map((product, i) =>
       i === index
         ? { 
@@ -105,6 +116,7 @@ const CreateInvoice = () => {
 
   const handleProductSelect = (selectedProduct: any, index: number) => {
     
+    setStockQty(selectedProduct.stock)
     const updatedProducts = invoice.products.map((product, i) =>
       i === index
         ? { ...product, product_id: selectedProduct._id, productName: selectedProduct.product_name, rate: selectedProduct.price, filteredProducts: [] }
@@ -228,10 +240,7 @@ const CreateInvoice = () => {
 
   return (
     <DefaultLayout>
-      <Toaster
-      position="top-center"
-      reverseOrder={false}
-    />
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="container mx-auto rounded-lg bg-white p-6 shadow-1 dark:bg-gray-dark">
         <h2 className="mb-6 text-center text-2xl font-semibold text-gray-800 dark:text-white">
           Sale Invoice
@@ -247,7 +256,7 @@ const CreateInvoice = () => {
               type="text"
               value={invoice.customerName}
               onChange={handleCustomerSearch}
-              className="w-40 rounded-md border text-center font-bold px-3 py-2 focus:outline-none dark:bg-gray-800 dark:text-white"
+              className="w-40 rounded-md border px-3 py-2 text-center font-bold focus:outline-none dark:bg-gray-800 dark:text-white"
               placeholder="Select customer"
               onBlur={() => setShowDropdown(false)} // Hide dropdown on blur
               onFocus={() => invoice.customerName && setShowDropdown(true)} // Show dropdown when input focused
@@ -271,11 +280,18 @@ const CreateInvoice = () => {
             )}
           </div>
 
-          <div className="flex items-baseline gap-1">
-            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-white">
-              Supply Date:{" "}
-            </label>
-            {new Date().toISOString().slice(0, 10)}
+          <div className="flex flex-col items-baseline gap-1">
+            <div className="flex items-baseline gap-1">
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-white">
+                Supply Date:{" "}
+              </label>
+              {new Date().toISOString().slice(0, 10)}
+            </div>
+            {
+              stockQty && 
+              <p className="mb-2 block text-sm font-medium text-gray-700 dark:text-white">Available QTY: {stockQty}</p>
+
+            }
             {/* <input
               type="date"
               value={invoice.dueDate}
@@ -374,7 +390,13 @@ const CreateInvoice = () => {
                       className="w-full rounded-md border px-2 py-1 text-center dark:bg-gray-700 dark:text-white"
                       placeholder="Quantity"
                     />
+                    {/* {stockAvailable && (
+                      <p className="mt-1 text-center text-sm text-red-500">
+                        {stockAvailable}
+                      </p>
+                    )} */}
                   </td>
+
                   <td className="px-4 py-2 text-center dark:text-white">
                     {amount}
                   </td>
