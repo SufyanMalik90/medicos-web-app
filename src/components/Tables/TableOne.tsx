@@ -5,12 +5,13 @@ import { useEffect, useState } from "react";
 import { api } from "../../axios.js";
 import { useRouter } from "next/navigation";
 import DatePickerOne from "../FormElements/DatePicker/DatePickerOne";
-
+import ConfirmModal from '../ConfirmModal/ConfirmModal'
 const TableOne = () => {
   const [invoices, setInvoices] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false); // State for filter dropdown
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [invoiceNo, setInvoiceNo] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -45,6 +46,18 @@ const TableOne = () => {
     router.push(`/invoices/${invoice_no}`);
   };
 
+  const handleDeleteInvoice = (invoice_no: string) => {
+    setIsModalOpen(true)
+    setInvoiceNo(invoice_no)
+    
+  };
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
   const filteredInvoices = invoices.filter((invoice: any) =>
     invoice.customer_id.customer_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -86,7 +99,7 @@ const TableOne = () => {
           </div>
           <div className="relative">
             <div
-              className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-md dark:bg-gray-200 shadow-md"
+              className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-md shadow-md dark:bg-gray-200"
               onClick={toggleFilterDropdown}
             >
               <svg
@@ -151,6 +164,7 @@ const TableOne = () => {
                     />
                   </div>
                 </div>
+
                 <div className="flex justify-between gap-2">
                   <button
                     className="w-full rounded-md bg-gray-200 px-4 py-2 text-gray-500"
@@ -236,7 +250,7 @@ const TableOne = () => {
                     </p>
                   </div>
                 </div>
-
+                <ConfirmModal isOpen={isModalOpen} onClose={closeModal} invoiceNo={invoiceNo}/>
                 <div className="col-span-1 flex items-center">
                   <div className="flex items-center gap-4">
                     <button
@@ -252,7 +266,12 @@ const TableOne = () => {
                         className="text-green-900"
                       />
                     </button>
-                    <button className="hover:text-blue-700">
+                    <button
+                      className="hover:text-blue-700"
+                      onClick={() =>
+                        handleDeleteInvoice(invoice.invoice_number)
+                      }
+                    >
                       <Image
                         alt="delete-icon"
                         src="/images/icon/trash.svg"
