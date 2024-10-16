@@ -2,7 +2,7 @@ import React from "react";
 import toast, { Toaster } from 'react-hot-toast';
 import { api } from "../../axios.js";
 
-const ConfirmModal = ({ isOpen, onClose, invoiceNo }) => {
+const ConfirmModal = ({ isOpen, onClose, invoiceNo , setUpdate}) => {
   if (!isOpen) return null;
   console.log("invoiceNo>>", invoiceNo);
   
@@ -17,6 +17,8 @@ const ConfirmModal = ({ isOpen, onClose, invoiceNo }) => {
   
       if (response?.data?.success) {
         toast.success('Invoice Deleted Successfully!');
+        setUpdate((prev) => !prev);
+
         onClose();
       } else {
         console.log("response?.data?.message", response?.data?.message);

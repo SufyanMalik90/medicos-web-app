@@ -13,6 +13,7 @@ const TableOne = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [invoiceNo, setInvoiceNo] = useState("");
   const router = useRouter();
+  const [update, setUpdate] = useState<any>(false);
 
   useEffect(() => {
     // Function to fetch invoices
@@ -26,6 +27,7 @@ const TableOne = () => {
             (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
           setInvoices(sortedProducts);
+
         } else {
           console.error("Unexpected response format:", response.data);
         }
@@ -35,7 +37,7 @@ const TableOne = () => {
     };
 
     fetchLastInvoices();
-  }, []);
+  }, [update]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -250,7 +252,7 @@ const TableOne = () => {
                     </p>
                   </div>
                 </div>
-                <ConfirmModal isOpen={isModalOpen} onClose={closeModal} invoiceNo={invoiceNo}/>
+                <ConfirmModal isOpen={isModalOpen} onClose={closeModal} invoiceNo={invoiceNo} setUpdate={setUpdate}/>
                 <div className="col-span-1 flex items-center">
                   <div className="flex items-center gap-4">
                     <button
