@@ -18,6 +18,8 @@ const TablesPage = () => {
   const modalRef = useRef<any>();
   const [update, setUpdate] = useState<any>(false);
   const [loading, setLoading] = useState(false); // Add loading state
+  const addressRef = useRef(null);
+  const completeAddressRef = useRef(null);
 
 
   const [page, setPage] = useState<any>(1);
@@ -77,6 +79,11 @@ const TablesPage = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+  const handleKeyDown = (e:any, nextRef:any) => {
+    if (e.key === "Enter" && nextRef && nextRef.current) {
+      nextRef.current.focus();
+    }
   };
 
   // Function to send POST request
@@ -153,6 +160,7 @@ const TablesPage = () => {
             name="customer_name"
             value={formData.customer_name}
             onChange={handleInputChange}
+            onKeyDown={(e) => handleKeyDown(e, addressRef)}
             className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
             placeholder="Full Name"
           />
@@ -160,7 +168,9 @@ const TablesPage = () => {
             type="text"
             name="address"
             value={formData.address}
+            ref={addressRef}
             onChange={handleInputChange}
+            onKeyDown={(e) => handleKeyDown(e, completeAddressRef)}
             className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
             placeholder="Address"
           />
@@ -168,7 +178,9 @@ const TablesPage = () => {
             type="text"
             name="complete_address"
             value={formData.complete_address}
+            ref={completeAddressRef}
             onChange={handleInputChange}
+            onKeyDown={(e) => e.key === "Enter" && hitApi()}
             className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
             placeholder="Complete Address"
           />
