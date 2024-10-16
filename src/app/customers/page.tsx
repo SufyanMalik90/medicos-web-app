@@ -9,6 +9,7 @@ import AlertSuccess from "@/components/Alerts/AlertSuccess";
 import AlertError from "@/components/Alerts/AlertError";
 import Image from "next/image.js";
 import Spinners from "@/components/Spinners/Spinners";
+import Pagination from "@/components/Pagination/pagination";
 
 const TablesPage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,6 +21,10 @@ const TablesPage = () => {
   const [loading, setLoading] = useState(false); // Add loading state
   const addressRef = useRef(null);
   const completeAddressRef = useRef(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+
+
 
 
   const [page, setPage] = useState<any>(1);
@@ -34,7 +39,7 @@ const TablesPage = () => {
   }
   useEffect(() => {
     // Function to fetch customers
-    const fetchCustomers = async () => {
+    const fetchCustomers = async (page: number) => {
       try {
         const response = await api.get(`/api/get-all-customer?page=${page}`);
         console.log("API Response:", response.data); // Log the response to inspect it
@@ -46,8 +51,8 @@ const TablesPage = () => {
               new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
           );
           setCustomers(sortedCustomers);
-          setPagesArr(createArray(response?.data?.totalPages));
-          setCurrent(response?.data?.currentPage);
+          setTotalPages(response.data.totalPages || 1);
+          setCurrentPage(response.data.currentPage || 1);
         } else {
           console.error("Unexpected response format:", response.data);
         }
@@ -56,8 +61,8 @@ const TablesPage = () => {
       }
     };
 
-    fetchCustomers();
-  }, [update]);
+    fetchCustomers(currentPage);
+  }, [update, currentPage]);
 
   // State to hold form inputs
   const [formData, setFormData] = useState({
@@ -120,6 +125,12 @@ const TablesPage = () => {
       setLoading(false); // End loading
     }
   }
+  // Function to handle page change
+const handlePageChange = (newPage: number) => {
+  console.log("newPage>>", newPage);
+  
+  setCurrentPage(newPage);
+};
 
   return (
     <DefaultLayout>
@@ -138,10 +149,7 @@ const TablesPage = () => {
           onClose={() => setShowSuccessAlert(false)}
         />
       )}
-      <Toaster
-      position="top-center"
-      reverseOrder={false}
-    />
+      <Toaster position="top-center" reverseOrder={false} />
       <div
         onClick={toggleModal}
         className={`fixed left-0 top-0 z-50 flex h-screen w-screen items-center justify-center transition-all duration-500 ${
@@ -197,11 +205,7 @@ const TablesPage = () => {
             onClick={hitApi}
             className="text-md flex h-14 w-full items-center justify-center rounded-lg bg-[#5750f1] font-medium text-white outline-none"
           >
-           {loading ? (
-              <Spinners />
-            ) : (
-              "Create Customer"
-            )}
+            {loading ? <Spinners /> : "Create Customer"}
           </button>
         </div>
       </div>
@@ -233,38 +237,20 @@ const TablesPage = () => {
             </div>
           </div>
         ) : (
+          <>
           <TableTwo customers={customers} />
+          <div className="flex justify-end">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </div>
+      </>
         )}
       </div>
 
-      {pagesArr && pagesArr.length > 0 && (
-        <div className="mt-4 flex h-auto w-full items-center justify-end gap-2">
-          <button
-            disabled={current == 1}
-            className={`text-md flex h-12 w-auto items-center justify-center rounded-xl border bg-white px-2 font-medium text-gray-700 shadow disabled:bg-gray-200`}
-          >
-            Back
-          </button>
-          {pagesArr.map((item: any, key: number) => {
-            return (
-              <button
-                key={key}
-                className={`h-12 w-12  ${
-                  current == key + 1 ? "bg-gray-200" : "bg-white"
-                } text-md flex items-center justify-center rounded-xl border font-medium text-gray-700 shadow`}
-              >
-                {key + 1}
-              </button>
-            );
-          })}
-          <button
-            disabled={current == pagesArr.length}
-            className={`text-md flex h-12 w-auto items-center justify-center rounded-xl border bg-white px-2 font-medium text-gray-700 shadow disabled:bg-gray-200`}
-          >
-            Next
-          </button>
-        </div>
-      )}
+      
     </DefaultLayout>
   );
 };
