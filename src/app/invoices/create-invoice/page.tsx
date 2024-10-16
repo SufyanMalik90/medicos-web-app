@@ -199,7 +199,7 @@ const CreateInvoice = () => {
         discount: product.discount
       })),
       issue_date: new Date().toISOString().slice(0, 10),
-      due_date: invoice.dueDate,
+      due_date: new Date().toISOString().slice(0, 10),
     };
   
     console.log("Prepared API data:", apiInvoiceData);
@@ -255,7 +255,7 @@ const CreateInvoice = () => {
 
             {/* Dropdown for filtered customer results */}
             {showDropdown && (
-              <ul className="absolute w-36 rounded-sm border bg-white dark:bg-gray-800 dark:text-white">
+              <ul className="absolute w-39 rounded-sm border bg-white dark:bg-gray-800 dark:text-white">
                 {filteredCustomers.map((customer: any) => (
                   <li
                     key={customer._id}
@@ -275,14 +275,15 @@ const CreateInvoice = () => {
             <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-white">
               Supply Date:{" "}
             </label>
-            <input
+            {new Date().toISOString().slice(0, 10)}
+            {/* <input
               type="date"
               value={invoice.dueDate}
               onChange={(e) =>
                 setInvoice({ ...invoice, dueDate: e.target.value })
               }
               className="h-7 w-40 rounded-md border border-none px-3 py-2 dark:bg-gray-800 dark:text-white"
-            />
+            /> */}
           </div>
         </div>
 
