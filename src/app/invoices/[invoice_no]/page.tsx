@@ -54,7 +54,7 @@ const OrderDetails = ({
         ref={contentRef}
         className="mx-auto max-w-4xl rounded-lg bg-white p-6 shadow-md dark:bg-gray-dark dark:shadow-card"
       >
-        <p className="text-center font-bold text-3xl text-black">Sale Invoice</p>
+        <p className="text-center font-bold text-3xl text-black dark:text-white">Sale Invoice</p>
         <div className="mb-2 flex h-auto justify-center">
           <Image
             width={176}
@@ -94,7 +94,7 @@ const OrderDetails = ({
               Address:{" "}
             </p>
             <p className="text-gray-600 dark:text-white">
-              {orderDetails.address}
+              {orderDetails.customer_id.address.city}
             </p>
           </div>
           <div className="flex items-center gap-1">
