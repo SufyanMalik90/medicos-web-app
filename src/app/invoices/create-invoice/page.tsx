@@ -13,6 +13,7 @@ const CreateInvoice = () => {
   const [filteredCustomers, setFilteredCustomers] = useState<any>([]);
   const [stockAvailable, setStockAvailable] = useState<string | null>(null);
   const [stockQty, setStockQty] = useState<string | null>(null);
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
   const router = useRouter()
 
   useEffect(() => {
@@ -65,6 +66,7 @@ const CreateInvoice = () => {
 
   // Function to add a new product row
   const addProduct = () => {
+    setStockQty("");
     setInvoice({
       ...invoice,
       products: [
@@ -115,8 +117,7 @@ const CreateInvoice = () => {
   };
 
   const handleProductSelect = (selectedProduct: any, index: number) => {
-    
-    setStockQty(selectedProduct.stock)
+    setStockQty(selectedProduct.stock);
     const updatedProducts = invoice.products.map((product, i) =>
       i === index
         ? { ...product, product_id: selectedProduct._id, productName: selectedProduct.product_name, rate: selectedProduct.price, filteredProducts: [] }
@@ -124,7 +125,8 @@ const CreateInvoice = () => {
     );
 
     setInvoice({ ...invoice, products: updatedProducts });
-
+    setHighlightedIndex(-1); // Reset highlighted index
+  
     // Move focus to the T.P (rate) field after selecting the product
     setTimeout(() => {
       if (productRefs.current[index] && productRefs.current[index]["rate"]) {
@@ -132,6 +134,35 @@ const CreateInvoice = () => {
       }
     }, 100);
   };
+
+  const handleKeyDownProductSelect = (e: React.KeyboardEvent<HTMLInputElement>, index: number, field: string) => {
+    
+    const filteredLength = invoice.products[index].filteredProducts.length;
+  
+    if (e.key === 'ArrowDown') {
+      // Move down in the list
+      setHighlightedIndex((prevIndex) =>
+        prevIndex < filteredLength - 1 ? prevIndex + 1 : 0
+      );
+      e.preventDefault(); // Prevent default scrolling behavior
+    } else if (e.key === 'ArrowUp') {
+      // Move up in the list
+      setHighlightedIndex((prevIndex) =>
+        prevIndex > 0 ? prevIndex - 1 : filteredLength - 1
+      );
+      e.preventDefault(); // Prevent default scrolling behavior
+    } else if (e.key === 'Enter') {
+      // Select the highlighted item
+      if (highlightedIndex >= 0 && highlightedIndex < filteredLength) {
+        handleProductSelect(invoice.products[index].filteredProducts[highlightedIndex], index);
+      }
+    } else if (e.key === 'Escape') {
+      // Close the dropdown
+      setHighlightedIndex(-1);
+    }
+  };
+  
+  
 
   const handleKeyDown = (e: any, index: number, field: string) => {
     if (e.key === "Enter") {
@@ -324,37 +355,38 @@ const CreateInvoice = () => {
 
               return (
                 <tr key={index} className="border-b">
-                  <td className="px-4 py-2">
-                    <input
-                      type="text"
-                      value={product.productName}
-                      onChange={(e) =>
-                        handleProductSearch(e.target.value, index)
-                      }
-                      onKeyDown={(e) => handleKeyDown(e, index, "productName")}
-                      ref={(el) =>
-                        (productRefs.current[index] = {
-                          ...productRefs.current[index],
-                          productName: el,
-                        })
-                      }
-                      className="w-full rounded-md border px-2 py-1 text-center dark:bg-gray-700 dark:text-white"
-                      placeholder="Search Product"
-                    />
-                    {product.filteredProducts.length > 0 && (
-                      <ul className="absolute rounded-md border bg-white shadow-md dark:bg-gray-800">
-                        {product.filteredProducts.map((p: any, idx: number) => (
-                          <li
-                            key={idx}
-                            onClick={() => handleProductSelect(p, index)}
-                            className="cursor-pointer p-2 hover:bg-gray-200 dark:text-white dark:hover:bg-gray-600"
-                          >
-                            {p.product_name}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </td>
+                 <td className="px-4 py-2">
+  <input
+    type="text"
+    value={product.productName}
+    onChange={(e) => handleProductSearch(e.target.value, index)}
+    onKeyDown={(e) => handleKeyDownProductSelect(e, index, "productName")}
+    ref={(el) =>
+      (productRefs.current[index] = {
+        ...productRefs.current[index],
+        productName: el,
+      })
+    }
+    className="w-full rounded-md border px-2 py-1 text-center dark:bg-gray-700 dark:text-white"
+    placeholder="Search Product"
+  />
+  {product.filteredProducts.length > 0 && (
+    <ul className="absolute rounded-md border bg-white shadow-md dark:bg-gray-800">
+      {product.filteredProducts.map((p: any, idx: number) => (
+        <li
+          key={idx}
+          onClick={() => handleProductSelect(p, index)}
+          className={`cursor-pointer p-2 ${
+            highlightedIndex === idx ? 'bg-gray-200 dark:bg-gray-600' : ''
+          } hover:bg-gray-200 dark:text-white dark:hover:bg-gray-600`}
+        >
+          {p.product_name}
+        </li>
+      ))}
+    </ul>
+  )}
+</td>
+
                   <td className="px-4 py-2">
                     <input
                       type="text"
