@@ -14,6 +14,8 @@ const CreateInvoice = () => {
   const [stockAvailable, setStockAvailable] = useState<string | null>(null);
   const [stockQty, setStockQty] = useState<string | null>(null);
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
+  const [highlightedCustomerIndex, setHighlightedCustomerIndex] = useState<number>(-1);
+
   const router = useRouter()
 
   useEffect(() => {
@@ -221,11 +223,41 @@ const CreateInvoice = () => {
       setShowDropdown(false); // Hide dropdown if input is empty
     }
   };
-
+  const handleCustomerKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const customersLength = filteredCustomers.length;
+  
+    if (e.key === 'ArrowDown') {
+      // Move down in the list
+      setHighlightedCustomerIndex((prevIndex) =>
+        prevIndex < customersLength - 1 ? prevIndex + 1 : 0
+      );
+      e.preventDefault(); // Prevent default scrolling behavior
+    } else if (e.key === 'ArrowUp') {
+      // Move up in the list
+      setHighlightedCustomerIndex((prevIndex) =>
+        prevIndex > 0 ? prevIndex - 1 : customersLength - 1
+      );
+      e.preventDefault(); // Prevent default scrolling behavior
+    } else if (e.key === 'Enter') {
+      // Select the highlighted customer
+      if (highlightedCustomerIndex >= 0 && highlightedCustomerIndex < customersLength) {
+        handleCustomerSelect(
+          filteredCustomers[highlightedCustomerIndex].customer_name,
+          filteredCustomers[highlightedCustomerIndex]._id
+        );
+      }
+    } else if (e.key === 'Escape') {
+      // Close the dropdown
+      setShowDropdown(false);
+      setHighlightedCustomerIndex(-1);
+    }
+  };
+  
   // Handle customer selection
   const handleCustomerSelect = (customerName: string, customer_id: string) => {
     setInvoice({ ...invoice, customerName, customer_id });
     setShowDropdown(false); // Hide dropdown after selection
+    setHighlightedCustomerIndex(-1); // Reset highlighted index
   };
 
   const handleSubmit = async (e: any) => {
@@ -287,6 +319,7 @@ const CreateInvoice = () => {
               type="text"
               value={invoice.customerName}
               onChange={handleCustomerSearch}
+              onKeyDown={handleCustomerKeyDown}
               className="w-40 rounded-md border px-3 py-2 text-center font-bold focus:outline-none dark:bg-gray-800 dark:text-white"
               placeholder="Select customer"
               onBlur={() => setShowDropdown(false)} // Hide dropdown on blur
@@ -296,10 +329,14 @@ const CreateInvoice = () => {
             {/* Dropdown for filtered customer results */}
             {showDropdown && (
               <ul className="absolute w-39 rounded-sm border bg-white dark:bg-gray-800 dark:text-white">
-                {filteredCustomers.map((customer: any) => (
+                {filteredCustomers.map((customer: any, idx: number) => (
                   <li
                     key={customer._id}
-                    className="cursor-pointer p-2 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    className={`cursor-pointer p-2 ${
+                      highlightedCustomerIndex === idx
+                        ? "bg-gray-200 dark:bg-gray-600"
+                        : ""
+                    } hover:bg-gray-200 dark:hover:bg-gray-600`}
                     onMouseDown={() =>
                       handleCustomerSelect(customer.customer_name, customer._id)
                     }
@@ -318,11 +355,11 @@ const CreateInvoice = () => {
               </label>
               {new Date().toISOString().slice(0, 10)}
             </div>
-            {
-              stockQty && 
-              <p className="mb-2 block text-sm font-medium text-gray-700 dark:text-white">Available QTY: {stockQty}</p>
-
-            }
+            {stockQty && (
+              <p className="mb-2 block text-sm font-medium text-gray-700 dark:text-white">
+                Available QTY: {stockQty}
+              </p>
+            )}
             {/* <input
               type="date"
               value={invoice.dueDate}
@@ -355,37 +392,43 @@ const CreateInvoice = () => {
 
               return (
                 <tr key={index} className="border-b">
-                 <td className="px-4 py-2">
-  <input
-    type="text"
-    value={product.productName}
-    onChange={(e) => handleProductSearch(e.target.value, index)}
-    onKeyDown={(e) => handleKeyDownProductSelect(e, index, "productName")}
-    ref={(el) =>
-      (productRefs.current[index] = {
-        ...productRefs.current[index],
-        productName: el,
-      })
-    }
-    className="w-full rounded-md border px-2 py-1 text-center dark:bg-gray-700 dark:text-white"
-    placeholder="Search Product"
-  />
-  {product.filteredProducts.length > 0 && (
-    <ul className="absolute rounded-md border bg-white shadow-md dark:bg-gray-800">
-      {product.filteredProducts.map((p: any, idx: number) => (
-        <li
-          key={idx}
-          onClick={() => handleProductSelect(p, index)}
-          className={`cursor-pointer p-2 ${
-            highlightedIndex === idx ? 'bg-gray-200 dark:bg-gray-600' : ''
-          } hover:bg-gray-200 dark:text-white dark:hover:bg-gray-600`}
-        >
-          {p.product_name}
-        </li>
-      ))}
-    </ul>
-  )}
-</td>
+                  <td className="px-4 py-2">
+                    <input
+                      type="text"
+                      value={product.productName}
+                      onChange={(e) =>
+                        handleProductSearch(e.target.value, index)
+                      }
+                      onKeyDown={(e) =>
+                        handleKeyDownProductSelect(e, index, "productName")
+                      }
+                      ref={(el) =>
+                        (productRefs.current[index] = {
+                          ...productRefs.current[index],
+                          productName: el,
+                        })
+                      }
+                      className="w-full rounded-md border px-2 py-1 text-center dark:bg-gray-700 dark:text-white"
+                      placeholder="Search Product"
+                    />
+                    {product.filteredProducts.length > 0 && (
+                      <ul className="absolute rounded-md border bg-white shadow-md dark:bg-gray-800">
+                        {product.filteredProducts.map((p: any, idx: number) => (
+                          <li
+                            key={idx}
+                            onClick={() => handleProductSelect(p, index)}
+                            className={`cursor-pointer p-2 ${
+                              highlightedIndex === idx
+                                ? "bg-gray-200 dark:bg-gray-600"
+                                : ""
+                            } hover:bg-gray-200 dark:text-white dark:hover:bg-gray-600`}
+                          >
+                            {p.product_name}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </td>
 
                   <td className="px-4 py-2">
                     <input
