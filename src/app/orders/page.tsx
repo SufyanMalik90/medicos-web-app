@@ -175,7 +175,7 @@ const TablesPage = () => {
       </div>
       <div className="flex flex-col gap-10">
         
-        <OrderTable orders={orders} />
+        <OrderTable orders={orders} setUpdate={setUpdate}/>
       </div>
 
       {/* <div className="mt-4 flex h-auto w-full items-center justify-end gap-2">

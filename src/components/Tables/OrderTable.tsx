@@ -3,11 +3,23 @@ import { Product } from "@/types/product";
 import { useEffect, useState } from "react";
 import {api} from '@/axios'
 import { useRouter } from "next/navigation";
+import ConfirmModalOrder from '../ConfirmModal/ConfirmModalOrder'
 
 
-const OrderTable = ({ orders }: any) => {
+const OrderTable = ({ orders, setUpdate }: any) => {
   const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [invoiceNo, setInvoiceNo] = useState("");
 
+  const handleDeleteOrder = (order_id: string) => {
+    setIsModalOpen(true)
+    setInvoiceNo(order_id)
+    
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
   const handleViewDetails = (order_id: string) => {
     console.log("order_id >>", order_id);
     router.push(`/orders/${order_id}`);
@@ -77,6 +89,8 @@ const OrderTable = ({ orders }: any) => {
             </p>
           </div>
           <div className="col-span-1 flex items-center">
+          <ConfirmModalOrder isOpen={isModalOpen} onClose={closeModal} orderId={invoiceNo} setUpdate={setUpdate}/>
+
             <div className="flex gap-4 items-center">
             <button
             type="button"
@@ -93,7 +107,7 @@ const OrderTable = ({ orders }: any) => {
             </button>
             <button
               className=" hover:text-blue-700"
-              // onClick={() => handleViewDetails(order._id)}
+              onClick={() => handleDeleteOrder(order._id)}
             >
             <Image
               alt="view-icon"
