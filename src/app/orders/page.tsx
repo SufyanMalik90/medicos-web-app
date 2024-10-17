@@ -79,37 +79,7 @@ const TablesPage = () => {
   };
 
   // Function to send POST request
-  async function hitApi() {
-    try {
-      const response = await api.post("/api/create-order", {
-        party_name: formData.customer_name,
-        products: [
-          {
-            product_id: "66e808a68cfe094dc66958d6",
-            quantity: 10,
-            amount: 2500,
-          },
-        ],
-      });
-      if (response?.data?.success) {
-        setUpdate((prev: any) => !prev);
-        setShowSuccessAlert(true);
-        setIsOpen(false);
-        setErrorMessage("");
-        // Hide the success alert after 3 seconds
-        setTimeout(() => {
-          setShowSuccessAlert(false);
-        }, 3000); // Close the modal after successful creation
-      }
-    } catch (error) {
-      console.error("Error creating customer:", error);
-      setErrorMessage(`Failed to create customer. ${error}`);
-      setIsOpen(false);
-      setTimeout(() => {
-        setErrorMessage("");
-      }, 3000);
-    }
-  }
+ 
   const [products, setproducts] = useState([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -176,14 +146,7 @@ const TablesPage = () => {
           <span className="text-2xl font-bold text-[#5750f1] dark:text-white">
             Create Order
           </span>
-          <input
-            type="text"
-            name="customer_name"
-            value={formData.customer_name}
-            onChange={handleInputChange}
-            className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
-            placeholder="Party Name"
-          />
+         
 
           {/* <input
             type="text"
@@ -195,15 +158,10 @@ const TablesPage = () => {
           /> */}
 
           <div className="h-[60vh]  w-full overflow-y-auto pr-1 ">
-            <OrderProductsTable products={products} />
+            <OrderProductsTable products={products} setUpdate={setUpdate} setIsOpen={setIsOpen}/>
           </div>
 
-          <button
-            onClick={hitApi}
-            className="text-md flex h-14 w-full items-center justify-center rounded-lg bg-[#5750f1] font-medium text-white outline-none"
-          >
-            Create New
-          </button>
+         
         </div>
       </div>
 
