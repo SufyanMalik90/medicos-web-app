@@ -83,11 +83,21 @@ const CreateInvoice = () => {
     const product: any = invoice.products[index];
     const apiProduct = products.find((p: { _id: any }) => p._id === product.product_id);
    
-    if (field === 'quantity' && apiProduct && value > apiProduct.stock) {
-      setStockAvailable(`Stock available ${apiProduct.stock}`);
-    } else {
-      setStockAvailable(null); // Clear the error if quantity is valid
+    if (field === 'quantity' && apiProduct) {
+      const remainingStock :any = apiProduct.stock - value;
+      if (value > apiProduct.stock) {
+        setStockAvailable(`Stock available ${apiProduct.stock}`);
+      } else {
+        setStockAvailable(null); // Clear the error if quantity is valid
+      }
+      // Update stockQty to show the remaining stock
+      setStockQty(remainingStock);
     }
+    // if (field === 'quantity' && apiProduct && value > apiProduct.stock) {
+    //   setStockAvailable(`Stock available ${apiProduct.stock}`);
+    // } else {
+    //   setStockAvailable(null); // Clear the error if quantity is valid
+    // }
     
     const newProducts = invoice.products.map((product, i) =>
       i === index
