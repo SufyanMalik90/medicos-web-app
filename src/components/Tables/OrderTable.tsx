@@ -1,7 +1,5 @@
 import Image from "next/image";
-import { Product } from "@/types/product";
 import { useEffect, useState } from "react";
-import {api} from '@/axios'
 import { useRouter } from "next/navigation";
 import ConfirmModalOrder from '../ConfirmModal/ConfirmModalOrder'
 
@@ -33,99 +31,114 @@ const OrderTable = ({ orders, setUpdate }: any) => {
           Orders History
         </h4>
       </div>
-
-      <div className="grid grid-cols-6 border-t border-stroke bg-[#5750f1] px-4 py-4.5 text-white dark:border-dark-3 sm:grid-cols-8 md:px-6 2xl:px-7.5">
-        <div className="col-span-2 flex items-center">
-          <p className="font-medium">Date</p>
-        </div>
-        <div className="col-span-2 flex items-center">
-          <p className="font-medium">Party Name</p>
-        </div>
-        <div className="col-span-2 hidden items-center sm:flex">
-          <p className="font-medium">Amount</p>
-        </div>
-        <div className="col-span-1 flex items-center">
-          <p className="font-medium">Status</p>
-        </div>
-      </div>
-
-      {orders.map((order: any, key: any) => (
-        <div
-          className="grid grid-cols-9 border-t border-stroke px-4 py-4.5 dark:border-dark-3 sm:grid-cols-8 md:px-6 2xl:px-7.5"
-          key={key}
-        >
-          <div className="col-span-2 flex items-center">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <p className="text-body-sm font-medium text-dark dark:text-dark-6">
-                {new Date(order.createdAt).toISOString().slice(0, 10)}
-              </p>
+      {orders.length > 0 ? (
+        <>
+          <div className="grid grid-cols-6 border-t border-stroke bg-[#5750f1] px-4 py-4.5 text-white dark:border-dark-3 sm:grid-cols-8 md:px-6 2xl:px-7.5">
+            <div className="col-span-2 flex items-center">
+              <p className="font-medium">Date</p>
+            </div>
+            <div className="col-span-2 flex items-center">
+              <p className="font-medium">Party Name</p>
+            </div>
+            <div className="col-span-2 hidden items-center sm:flex">
+              <p className="font-medium">Amount</p>
+            </div>
+            <div className="col-span-1 flex items-center">
+              <p className="font-medium">Status</p>
             </div>
           </div>
-          <div className="col-span-2 flex items-center">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <p className="text-body-sm font-medium text-dark dark:text-dark-6">
-                {order.party_name}
-              </p>
-            </div>
-          </div>
-          <div className="col-span-2 flex items-center">
-            <p className="text-body-sm font-medium text-dark dark:text-dark-6">
-              {order.total_amount}
-            </p>
-          </div>
-          <div className="col-span-1 flex items-center">
-            <p
-              className={`text-body-sm font-medium ${
-                order.orderStatus === "Received"
-                  ? "text-green-600"
-                  : order.orderStatus === "Pending"
-                    ? "text-yellow-600"
-                    : order.orderStatus === "Cancelled"
-                      ? "text-red-600"
-                      : "text-gray-600"
-              }`}
-            >
-              {order.orderStatus}
-            </p>
-          </div>
-          <div className="col-span-1 flex items-center">
-          <ConfirmModalOrder isOpen={isModalOpen} onClose={closeModal} orderId={invoiceNo} setUpdate={setUpdate}/>
 
-            <div className="flex gap-4 items-center">
-            <button
-            type="button"
-              className=" hover:text-blue-700"
-              onClick={() => handleViewDetails(order._id)} // Define your view details logic
+          {orders.map((order: any, key: any) => (
+            <div
+              className="grid grid-cols-9 border-t border-stroke px-4 py-4.5 dark:border-dark-3 sm:grid-cols-8 md:px-6 2xl:px-7.5"
+              key={key}
             >
-            <Image
-              alt="view-icon"
-              src="/images/icon/view.svg"
-              width={20}
-              height={20}
-              className="text-green-900"
-            />
-            </button>
-            <button
-              className=" hover:text-blue-700"
-              onClick={() => handleDeleteOrder(order._id)}
-            >
-            <Image
-              alt="view-icon"
-              src="/images/icon/trash.svg"
-              width={20}
-              height={20}
-              className="text-green-900"
-            />
-            </button>
+              <div className="col-span-2 flex items-center">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                  <p className="text-body-sm font-medium text-dark dark:text-dark-6">
+                    {new Date(order.createdAt).toISOString().slice(0, 10)}
+                  </p>
+                </div>
+              </div>
+              <div className="col-span-2 flex items-center">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                  <p className="text-body-sm font-medium text-dark dark:text-dark-6">
+                    {order.party_name}
+                  </p>
+                </div>
+              </div>
+              <div className="col-span-2 flex items-center">
+                <p className="text-body-sm font-medium text-dark dark:text-dark-6">
+                  {order.total_amount}
+                </p>
+              </div>
+              <div className="col-span-1 flex items-center">
+                <p
+                  className={`text-body-sm font-medium ${
+                    order.orderStatus === "Received"
+                      ? "text-green-600"
+                      : order.orderStatus === "Pending"
+                        ? "text-yellow-600"
+                        : order.orderStatus === "Cancelled"
+                          ? "text-red-600"
+                          : "text-gray-600"
+                  }`}
+                >
+                  {order.orderStatus}
+                </p>
+              </div>
+              <div className="col-span-1 flex items-center">
+                <ConfirmModalOrder
+                  isOpen={isModalOpen}
+                  onClose={closeModal}
+                  orderId={invoiceNo}
+                  setUpdate={setUpdate}
+                />
+
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    className=" hover:text-blue-700"
+                    onClick={() => handleViewDetails(order._id)} // Define your view details logic
+                  >
+                    <Image
+                      alt="view-icon"
+                      src="/images/icon/view.svg"
+                      width={20}
+                      height={20}
+                      className="text-green-900"
+                    />
+                  </button>
+                  <button
+                    className=" hover:text-blue-700"
+                    onClick={() => handleDeleteOrder(order._id)}
+                  >
+                    <Image
+                      alt="view-icon"
+                      src="/images/icon/trash.svg"
+                      width={20}
+                      height={20}
+                      className="text-green-900"
+                    />
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-          {/* <div className="col-span-1 flex items-center">
-            <p className="text-body-sm font-medium text-green">
-              ${product.profit}
-            </p>
-          </div> */}
+          ))}
+        </>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-10">
+          <Image
+            alt="no-data"
+            src="/images/nothing.png"
+            width={300}
+            height={300}
+          />
+          <p className="mt-4 text-lg font-medium text-gray-500 dark:text-gray-400">
+            No orders found.
+          </p>
         </div>
-      ))}
+      )}
     </div>
   );
 };
