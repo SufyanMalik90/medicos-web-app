@@ -102,7 +102,7 @@ const OrderProductsTable = ({ products , setUpdate, setIsOpen}: any) => {
             name="customer_name"
             value={partyName}
             onChange={(e)=> setPartyName(e.target.value)}
-            className="h-14 w-[98%] mt-2 mx-2 mb-1 rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
+            className="h-14 w-[98%] mt-2 mx-2 mb-1 rounded-lg bg-gray-50 px-3 text-gray-700 dark:text-white dark:placeholder:text-gray-100 dark:bg-[rgb(18,32,49)]"
             placeholder="Party Name"
           />
       <div className="flex items-center justify-between">
@@ -111,7 +111,7 @@ const OrderProductsTable = ({ products , setUpdate, setIsOpen}: any) => {
         </h4>
         <input
           type="text"
-          className="mt-2 h-12 w-56 rounded-lg bg-gray-50 px-3 py-3"
+          className="mt-2 h-12 w-56 rounded-lg bg-gray-50 dark:bg-gray-800 px-3 py-3 dark:placeholder:text-gray-100"
           placeholder="Search"
         />
       </div>
@@ -147,24 +147,24 @@ const OrderProductsTable = ({ products , setUpdate, setIsOpen}: any) => {
             />
           </div>
           <div className="col-span-3 flex items-center">
-            <p className="text-body-sm font-medium text-dark dark:text-dark-6">
+            <p className="text-body-sm font-medium text-dark dark:text-white">
               {product.product_name}
             </p>
           </div>
           <div className="col-span-1 flex items-center">
-            <p className="text-body-sm font-medium text-dark dark:text-dark-6">
+            <p className="text-body-sm font-medium text-dark dark:text-white">
               {product.price}
             </p>
           </div>
           <div className="col-span-3 flex items-center">
-            <div className="py-2 px-3 bg-white border border-gray-200 rounded-lg">
+            <div className="py-2 px-3 bg-white border dark:bg-gray-800 border-gray-200 rounded-lg">
               <div className="w-full flex justify-between items-center gap-x-5">
                 <div className="grow">
-                  <span className="block text-xs text-gray-500">
+                  <span className="block text-xs text-gray-500 dark:text-white">
                     Select quantity
                   </span>
                   <input
-                    className="w-full outline-none p-0 bg-transparent border-0 text-gray-800 focus:ring-0"
+                    className="w-full outline-none p-0 bg-transparent border-0 text-gray-800 dark:text-white focus:ring-0"
                     type="number"
                     value={selectedProducts[product._id]?.quantity || 0}
                     onChange={(e) =>
