@@ -2,6 +2,7 @@ import { Package } from "@/types/package";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import NewModal from "./Modal.jsx"
+import ConfirmModalProduct from '../ConfirmModal/ConfirmModalProduct.jsx'
 
 const packageData: Package[] = [
   {
@@ -33,6 +34,9 @@ const packageData: Package[] = [
 const TableThree = ({products, setUpdate}: any) => {
   const modalRef = useRef<any>();
   const [isOpen, setIsOpen] = useState<any>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [productId, setProductId] = useState("");
+
 
   const [formData, setFormData] = useState({
     product_name: "",
@@ -71,6 +75,20 @@ const TableThree = ({products, setUpdate}: any) => {
     
     
   };
+  const handleDeleteInvoice = (productId: string) => {
+    
+    setIsModalOpen(true)
+    setProductId(productId)
+    
+  };
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="rounded-[10px] bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
       <div className="px-4 py-6 md:px-6 xl:px-9">
@@ -135,6 +153,8 @@ const TableThree = ({products, setUpdate}: any) => {
               {product.stock}
             </p>
           </div>
+          <ConfirmModalProduct isOpen={isModalOpen} onClose={closeModal} productId={productId} setUpdate={setUpdate}/>
+
           <div className="col-span-1 flex items-center">
                   <div className="flex items-center gap-4">
                     <button
@@ -145,6 +165,20 @@ const TableThree = ({products, setUpdate}: any) => {
                       <Image
                         alt="edit-icon"
                         src="/images/icon/edit.svg"
+                        width={20}
+                        height={20}
+                        className="text-green-900"
+                      />
+                    </button>
+                    <button
+                      className="hover:text-blue-700"
+                      onClick={() =>
+                        handleDeleteInvoice(product._id)
+                      }
+                    >
+                      <Image
+                        alt="delete-icon"
+                        src="/images/icon/trash.svg"
                         width={20}
                         height={20}
                         className="text-green-900"
