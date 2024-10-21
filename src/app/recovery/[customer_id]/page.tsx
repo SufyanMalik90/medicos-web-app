@@ -52,8 +52,8 @@ const LeadgerDetails = ({ params, searchParams }: {
   return (
     <DefaultLayout>
        <div ref={buttonRef} className="my-6 mx-auto max-w-4xl flex justify-end">
-          <button  onClick={() => handlePrint()}  className="hidden rounded-full bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700 md:block">
-            Download PDF
+          <button  onClick={() => handlePrint()}  className="hidden rounded-full bg-[#5750f1] px-4 py-2 text-white transition hover:bg-blue-700 md:block">
+            Print Details
           </button>
         </div>
       <div
