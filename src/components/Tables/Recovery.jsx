@@ -1,16 +1,21 @@
 import Image from 'next/image';
 import React, { useRef, useState } from 'react'
 import AddRecoveryModal from "./AddRecoveryModal"
+import { useRouter } from 'next/navigation';
 
 
 const Recovery = ({ledgers, setUpdate}) => {
   const [selectedLeadger, setselectedLeadger] = useState(null)
   const [isOpen, setIsOpen] = useState(false);
   const modalRef = useRef();
+  const router = useRouter();
+
 
       
       const handleViewDetails = (customer_id) => {
         console.log("View customer:", customer_id);
+        router.push(`/recovery/${customer_id}`);
+
       };
       
       const handleEdit = (ledger) => {
