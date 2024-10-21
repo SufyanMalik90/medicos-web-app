@@ -8,6 +8,7 @@ const AddRecoveryModal = ({ledger, toggleModal, modalRef, isOpen, setIsOpen, set
 
     const [name, setName] = useState("")
     const [paymentAmount, setpaymentAmount] = useState("")
+    const [isAmountValid, setIsAmountValid] = useState(true);
     const [dueAmount, setDueAmount] = useState("")
     const purchasingPriceRef = useRef(null);
     const priceRef = useRef(null);
@@ -24,6 +25,11 @@ const AddRecoveryModal = ({ledger, toggleModal, modalRef, isOpen, setIsOpen, set
         if (e.key === "Enter" && nextRef && nextRef.current) {
           nextRef.current.focus();
         }
+      };
+      const handlePaymentAmountChange = (e) => {
+        const value = e.target.value;
+        setpaymentAmount(value);
+        setIsAmountValid(Number(value) <= Number(dueAmount)); // Check if payment amount is valid
       };
       async function handleUpdateProduct() {
         setLoading(true); 
@@ -99,6 +105,7 @@ const AddRecoveryModal = ({ledger, toggleModal, modalRef, isOpen, setIsOpen, set
         name="purchasing_price"
         value={dueAmount}
         ref={purchasingPriceRef}
+        disabled
         onChange={(e)=>setDueAmount(e.target.value)}
         onKeyDown={(e) => handleKeyDown(e, priceRef)}
         className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
@@ -109,12 +116,12 @@ const AddRecoveryModal = ({ledger, toggleModal, modalRef, isOpen, setIsOpen, set
         name="paymentAmount"
         value={paymentAmount}
         ref={priceRef}
-        onChange={(e)=>setpaymentAmount(e.target.value)}
+        onChange={handlePaymentAmountChange}
         onKeyDown={(e) => handleKeyDown(e, stockRef)}
         className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
         placeholder="Recovery payment"
       />
-
+      {!isAmountValid ? <p className='text-red-600 font-bold'>Invalid recovery amount</p> : null}
       <button
         onClick={handleUpdateProduct}
         className="text-md flex h-14 w-full items-center justify-center rounded-lg bg-[#5750f1] font-medium text-white outline-none"
