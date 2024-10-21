@@ -7,8 +7,8 @@ const AddRecoveryModal = ({ledger, toggleModal, modalRef, isOpen, setIsOpen, set
 
 
     const [name, setName] = useState("")
-    const [purchasingPrice, setPurchasingPrice] = useState("")
-    const [price, setPrice] = useState("")
+    const [paymentAmount, setpaymentAmount] = useState("")
+    const [dueAmount, setDueAmount] = useState("")
     const purchasingPriceRef = useRef(null);
     const priceRef = useRef(null);
     const stockRef = useRef(null);
@@ -17,8 +17,7 @@ const AddRecoveryModal = ({ledger, toggleModal, modalRef, isOpen, setIsOpen, set
 
     useEffect(()=>{
         setName(ledger?.customer_name)
-        setPurchasingPrice(ledger?.total_balance)
-        // setPrice(product?.price)
+        setDueAmount(ledger?.total_balance)
     },[])
 
     const handleKeyDown = (e, nextRef) => {
@@ -30,18 +29,19 @@ const AddRecoveryModal = ({ledger, toggleModal, modalRef, isOpen, setIsOpen, set
         setLoading(true); 
         
         try {
-          const response = await api.post("/api/update-product", {
-            product_id: product._id,
-            product_name: name,
-            purchasing_price: purchasingPrice,
-            price: price,
+          const response = await api.post("/api/add-recovery-payment", {
+            customer_id: ledger.customer_id,
+            payment_amount: Number(paymentAmount),
           });
-      
+          
           if (response?.data?.success) {
             setUpdate((prev) => !prev);
-            setIsOpen(false)
+            toast.success('Recovery Added!')
+            setTimeout(() => {
+              setIsOpen(false);
+            }, 200); // Small delay before closing the modal
+         
             // setShowSuccessAlert(true);
-            toast.success('Product Updated!')
             // setErrorMessage("");
             // setTimeout(() => {
             //   setShowSuccessAlert(false);
@@ -79,6 +79,7 @@ const AddRecoveryModal = ({ledger, toggleModal, modalRef, isOpen, setIsOpen, set
     />
     <div
       ref={modalRef}
+      onClick={(e) => e.stopPropagation()} 
       className="flex h-auto w-full flex-col items-start justify-start gap-4 rounded-3xl  bg-white p-6 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] dark:bg-[rgb(2,13,26)] lg:w-[40rem]"
     >
       <span className="text-2xl font-bold text-[#5750f1] dark:text-white">
@@ -96,19 +97,19 @@ const AddRecoveryModal = ({ledger, toggleModal, modalRef, isOpen, setIsOpen, set
       <input
         type="number"
         name="purchasing_price"
-        value={purchasingPrice}
+        value={dueAmount}
         ref={purchasingPriceRef}
-        onChange={(e)=>setPurchasingPrice(e.target.value)}
+        onChange={(e)=>setDueAmount(e.target.value)}
         onKeyDown={(e) => handleKeyDown(e, priceRef)}
         className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
         placeholder="Due Amount"
       />
       <input
         type="number"
-        name="price"
-        value={price}
+        name="paymentAmount"
+        value={paymentAmount}
         ref={priceRef}
-        onChange={(e)=>setPrice(e.target.value)}
+        onChange={(e)=>setpaymentAmount(e.target.value)}
         onKeyDown={(e) => handleKeyDown(e, stockRef)}
         className="h-14 w-full rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-[#fdfdfd]"
         placeholder="Recovery payment"
@@ -121,7 +122,7 @@ const AddRecoveryModal = ({ledger, toggleModal, modalRef, isOpen, setIsOpen, set
          {loading ? (
             <Spinners />
           ) : (
-            "Update Product"
+            "Add Recovery"
           )}
       </button>
     </div>
