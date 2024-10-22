@@ -65,7 +65,7 @@ const OrderDatails = ({ params, searchParams }: {
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
             {" "}
-            {orderDetails.party_name}
+            {orderDetails.purchaser_id.purchaser_name}
           </h2>
           <p className="text-sm font-bold text-gray-500 dark:text-white">
             Order ID: <span className="font-medium">{orderDetails._id}</span>
