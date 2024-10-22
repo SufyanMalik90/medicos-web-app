@@ -189,7 +189,7 @@ const menuGroups = [
         label: "Orders",
         route: "#",
         children: [{ label: "Orders History", route: "/orders" },
-          { label: "Orders Record", route: "/orders/records" }
+          { label: "Orders Payment", route: "/orders/records" }
         ],
       },
       {
