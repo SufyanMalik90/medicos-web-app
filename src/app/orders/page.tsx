@@ -81,6 +81,7 @@ const TablesPage = () => {
   // Function to send POST request
  
   const [products, setproducts] = useState([]);
+  const [purchaser, setPurchaser] = useState([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
 
@@ -110,6 +111,27 @@ const TablesPage = () => {
 
     fetchProducts(currentPage);
   }, [currentPage]);
+
+  useEffect(() => {
+    // Function to fetch getpurchaser
+    const fetchPurchaser = async () => {
+      try {
+        const response = await api.get(`/api/get-purchaser`);
+        console.log("API Response:", response.data); // Log the response to inspect it
+
+        // Check if the response was successful and if the customers array is present
+        if (response.data.success) {
+          setPurchaser(response.data.purchaser);
+        } else {
+          console.error("Unexpected response format:", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching purchaser:", error);
+      }
+    };
+
+    fetchPurchaser();
+  }, []);
 
   // Function to handle page change
   const handlePageChange = (newPage: number) => {
@@ -158,7 +180,7 @@ const TablesPage = () => {
           /> */}
 
           <div className="h-[60vh]  w-full overflow-y-auto pr-1 ">
-            <OrderProductsTable products={products} setUpdate={setUpdate} setIsOpen={setIsOpen}/>
+            <OrderProductsTable products={products} purchaser={purchaser} setUpdate={setUpdate} setIsOpen={setIsOpen}/>
           </div>
 
          

@@ -3,11 +3,16 @@ import { api } from "../../axios.js";
 import toast, { Toaster } from 'react-hot-toast';
 import Spinners from "../Spinners/Spinners";
 
-const OrderProductsTable = ({ products , setUpdate, setIsOpen}: any) => {
+const OrderProductsTable = ({ products , purchaser, setUpdate, setIsOpen}: any) => {
   const [selectedProducts, setSelectedProducts] = useState<any>({});
   const [partyName, setPartyName] = useState("");
+  const [purchaserId, setPurchaserId] = useState<string | null>(null); // Store selected purchaser's ID
+  const [filteredPurchasers, setFilteredPurchasers] = useState<any[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [total, setTotal] = useState<number>(0);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
+  const [highlightedPurchaserIndex, setHighlightedPurchaserIndex] = useState<number>(-1);
+
 
 
   // Function to update the total based on selected products and quantities
@@ -18,6 +23,67 @@ const OrderProductsTable = ({ products , setUpdate, setIsOpen}: any) => {
     );
     setTotal(newTotal);
   };
+// Filter purchasers based on partyName input
+useEffect(() => {
+  if (partyName && !purchaserId) { // Check if purchaserId is not set
+    const filtered = purchaser.filter((p: any) =>
+      p.purchaser_name.toLowerCase().includes(partyName.toLowerCase())
+    );
+    setFilteredPurchasers(filtered);
+    setShowDropdown(true);
+  } else {
+    setFilteredPurchasers([]);
+    setShowDropdown(false);
+  }
+}, [partyName, purchaser, purchaserId]);
+
+const handlePurchaserSelect = (purchaserName: string, purchaser_id: string) => {
+  setPartyName(purchaserName); // Set the selected purchaser name
+  setPurchaserId(purchaser_id); // Set the purchaser ID
+  setShowDropdown(false); // Hide dropdown after selection
+  setHighlightedPurchaserIndex(-1); // Reset highlighted index
+};
+
+// Function to filter purchasers based on input
+const handlePurchaserSearch = (searchTerm: string) => {
+  const filtered = purchaser.filter((p: any) =>
+    p.purchaser_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  setFilteredPurchasers(filtered); // Update the state with filtered purchasers
+  setShowDropdown(filtered.length > 0); // Show dropdown only if there are results
+};
+
+// You can implement keyboard navigation (e.g., arrow keys, enter key) similarly as in your customer implementation.
+const handlePurchaserKeyDown = (e: React.KeyboardEvent) => {
+  if (!showDropdown || filteredPurchasers.length === 0) {
+    return; // Do nothing if dropdown is not shown or no purchasers are available
+  }
+
+  if (e.key === "ArrowDown") {
+    // Move down the list
+    e.preventDefault();
+    setHighlightedPurchaserIndex((prevIndex) =>
+      prevIndex < filteredPurchasers.length - 1 ? prevIndex + 1 : 0
+    );
+  } else if (e.key === "ArrowUp") {
+    // Move up the list
+    e.preventDefault();
+    setHighlightedPurchaserIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : filteredPurchasers.length - 1
+    );
+  } else if (e.key === "Enter") {
+    // Select the highlighted purchaser
+    if (highlightedPurchaserIndex >= 0 && highlightedPurchaserIndex < filteredPurchasers.length) {
+      const selectedPurchaser = filteredPurchasers[highlightedPurchaserIndex];
+      handlePurchaserSelect(selectedPurchaser.purchaser_name, selectedPurchaser._id);
+    }
+  } else if (e.key === "Escape") {
+    setShowDropdown(false); // Hide dropdown after selection
+    setHighlightedPurchaserIndex(-1);
+  }
+
+};
+
 
   // Handle product selection and quantity update
   const handleQuantityChange = (productId: string, quantity: string) => {
@@ -73,7 +139,7 @@ const OrderProductsTable = ({ products , setUpdate, setIsOpen}: any) => {
 
       // Send the selected products data to the API
       const response = await api.post("/api/create-order", {
-        party_name: partyName,
+        purchaser_id: purchaserId,
         products: productsToSend,
       });
 
@@ -97,21 +163,49 @@ const OrderProductsTable = ({ products , setUpdate, setIsOpen}: any) => {
     <div className="h-auto w-full rounded-[10px]">
       <Toaster position="top-center" reverseOrder={false} />
 
-       <input
-            type="text"
-            name="customer_name"
-            value={partyName}
-            onChange={(e)=> setPartyName(e.target.value)}
-            className="h-14 w-[98%] mt-2 mx-2 mb-1 rounded-lg bg-gray-50 px-3 text-gray-700 dark:text-white dark:placeholder:text-gray-100 dark:bg-[rgb(18,32,49)]"
-            placeholder="Party Name"
-          />
+      <div className="relative">
+        <input
+          type="text"
+          value={partyName}
+          onChange={(e) => {
+            setPartyName(e.target.value);
+            setPurchaserId(null);
+            handlePurchaserSearch(e.target.value); // Call to handle searching
+          }}
+          onKeyDown={handlePurchaserKeyDown} // Optional: handle keyboard events for navigation
+          className="mx-2 mb-1 mt-2 h-14 w-[98%] rounded-lg bg-gray-50 px-3 text-gray-700 dark:bg-[rgb(18,32,49)] dark:text-white dark:placeholder:text-gray-100"
+          placeholder="Select party name..."
+          onBlur={() => setShowDropdown(false)} // Hide dropdown on blur
+          onFocus={() => partyName && setShowDropdown(true)} // Show dropdown when input focused
+        />
+
+        {showDropdown && (
+          <ul className="absolute z-10 mx-2 mt-1 w-[98%] rounded-lg bg-white shadow-lg dark:bg-[rgb(18,32,49)]">
+            {filteredPurchasers.map((p: any, idx: number) => (
+              <li
+                key={p._id}
+                className={`cursor-pointer px-3 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 ${
+                  highlightedPurchaserIndex === idx
+                    ? "bg-gray-100 dark:bg-gray-600"
+                    : ""
+                }`}
+                onMouseDown={() =>
+                  handlePurchaserSelect(p.purchaser_name, p._id)
+                }
+              >
+                {p.purchaser_name}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
       <div className="flex items-center justify-between">
         <h4 className="text-body-2xlg font-bold text-dark dark:text-white">
           Select Products
         </h4>
         <input
           type="text"
-          className="mt-2 h-12 w-56 rounded-lg bg-gray-50 dark:bg-gray-800 px-3 py-3 dark:placeholder:text-gray-100"
+          className="mt-2 h-12 w-56 rounded-lg bg-gray-50 px-3 py-3 dark:bg-gray-800 dark:placeholder:text-gray-100"
           placeholder="Search"
         />
       </div>
@@ -139,7 +233,7 @@ const OrderProductsTable = ({ products , setUpdate, setIsOpen}: any) => {
           <div className="col-span-1 flex items-center">
             <input
               type="checkbox"
-              className="w-3 h-3 accent-blue-600"
+              className="h-3 w-3 accent-blue-600"
               onChange={(e) =>
                 handleProductSelection(product, e.target.checked)
               }
@@ -157,14 +251,14 @@ const OrderProductsTable = ({ products , setUpdate, setIsOpen}: any) => {
             </p>
           </div>
           <div className="col-span-3 flex items-center">
-            <div className="py-2 px-3 bg-white border dark:bg-gray-800 border-gray-200 rounded-lg">
-              <div className="w-full flex justify-between items-center gap-x-5">
+            <div className="rounded-lg border border-gray-200 bg-white px-3 py-2 dark:bg-gray-800">
+              <div className="flex w-full items-center justify-between gap-x-5">
                 <div className="grow">
                   <span className="block text-xs text-gray-500 dark:text-white">
                     Select quantity
                   </span>
                   <input
-                    className="w-full outline-none p-0 bg-transparent border-0 text-gray-800 dark:text-white focus:ring-0"
+                    className="w-full border-0 bg-transparent p-0 text-gray-800 outline-none focus:ring-0 dark:text-white"
                     type="number"
                     value={selectedProducts[product._id]?.quantity || 0}
                     onChange={(e) =>
@@ -180,8 +274,10 @@ const OrderProductsTable = ({ products , setUpdate, setIsOpen}: any) => {
       ))}
 
       {/* Total */}
-      <div className="flex justify-end mx-4 mb-2">
-        <p className="font-bold text-black dark:text-white">Order total: {total}</p>
+      <div className="mx-4 mb-2 flex justify-end">
+        <p className="font-bold text-black dark:text-white">
+          Order total: {total}
+        </p>
       </div>
       <button
         onClick={hitApi} // Call hitApi on button click
