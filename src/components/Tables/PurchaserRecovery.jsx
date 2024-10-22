@@ -12,9 +12,9 @@ const PurchaserRecovery = ({ledgers, setUpdate}) => {
 
 
       
-      const handleViewDetails = (customer_id) => {
-        console.log("View customer:", customer_id);
-        router.push(`/recovery/${customer_id}`);
+      const handleViewDetails = (purchaser_id) => {
+        console.log("View customer:", purchaser_id);
+        router.push(`/orders/records/${purchaser_id}`);
 
       };
       
