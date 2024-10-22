@@ -182,7 +182,7 @@ const OrderDatails = ({ params, searchParams }: {
 
         {/* Order Summary */}
         <div className="mx-3 mt-6 space-y-3">
-          <div className="flex justify-between">
+          <div className="flex justify-end gap-1">
             <p className="font-medium text-gray-700 dark:text-white">
               Net Amount:
             </p>
@@ -191,7 +191,7 @@ const OrderDatails = ({ params, searchParams }: {
             </p>
           </div>
 
-          <div className="flex justify-between">
+          {/* <div className="flex justify-between">
             <p className="font-medium text-gray-700 dark:text-white">
               Order Status:
             </p>
@@ -206,10 +206,10 @@ const OrderDatails = ({ params, searchParams }: {
             >
               {orderDetails.orderStatus}
             </p>
-          </div>
+          </div> */}
           {/* <ToogleSwitchButton /> */}
 
-          <div className="flex justify-between">
+          {/* <div className="flex justify-between">
             <p className="font-medium text-gray-700 dark:text-white">
               Payment Status:
             </p>
@@ -224,7 +224,7 @@ const OrderDatails = ({ params, searchParams }: {
             >
               {orderDetails.paymentStatus}
             </p>
-          </div>
+          </div> */}
         </div>
 
         {/* Action Buttons */}
