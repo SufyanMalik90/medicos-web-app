@@ -73,16 +73,16 @@ const PurchaserRecovery = ({ledgers, setUpdate}) => {
         {ledgers.length > 0 ? (
           ledgers.map((ledger, index) => (
             <div
-              key={ledger.customer_id}
+              key={ledger.purchaser_id}
               className={`grid grid-cols-2 gap-4 p-2 text-center shadow-sm  sm:grid-cols-6 ${index !== ledgers.length - 1 ? "border-b border-stroke dark:border-dark-3" : ""}`}
             >
               <div className="font-medium sm:hidden">#</div>
               <div className="py-2 text-center font-medium text-dark dark:text-white">
                 {index + 1}
               </div>
-              <div className="font-medium sm:hidden">Customer Name</div>
+              <div className="font-medium sm:hidden">Purchaser Name</div>
               <div className="py-2 font-medium text-dark dark:text-white">
-                {ledger.customer_name}
+                {ledger.purchaser_name}
               </div>
               <div className="font-medium sm:hidden">Due Amount</div>
               <div className="py-2 font-medium text-dark dark:text-white">
@@ -92,7 +92,7 @@ const PurchaserRecovery = ({ledgers, setUpdate}) => {
                 <button
                   type="button"
                   className="hover:text-blue-700"
-                  onClick={() => handleViewDetails(ledger.customer_id)}
+                  onClick={() => handleViewDetails(ledger.purchaser_id)}
                 >
                   <Image
                     alt="view-icon"

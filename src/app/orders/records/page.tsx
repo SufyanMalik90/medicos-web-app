@@ -31,7 +31,7 @@ const PurchaserRecords = () => {
     // Function to fetch customers
     const fetchCustomers = async () => {
       try {
-        const response = await api.get(`/api/get-customer-leadger`);
+        const response = await api.get(`/api/get-purchaser-leadger`);
         console.log("API Response ledgers>>:", response.data); // Log the response to inspect it
 
         // Check if the response was successful
