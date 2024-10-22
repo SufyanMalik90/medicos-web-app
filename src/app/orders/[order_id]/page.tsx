@@ -5,8 +5,8 @@ import { api } from "@/axios";
 import Loader from '@/components/common/Loader';
 import moment from 'moment';
 import ToogleSwitchButton from '@/components/Toggle/ToggleButton';
-import {jsPDF} from 'jspdf';
-import html2canvas from 'html2canvas';
+import { useReactToPrint } from "react-to-print";
+
 
 const OrderDatails = ({ params, searchParams }: {
   params: { order_id: string },
@@ -16,7 +16,9 @@ const OrderDatails = ({ params, searchParams }: {
     const [orderDetails, setOrderDetails] = useState<any>(null);
     const invoiceRef = useRef<HTMLDivElement>(null); 
     const buttonRef = useRef<HTMLDivElement>(null);
-    const doc = new jsPDF();
+    const contentRef = useRef<HTMLDivElement>(null); // Ensure correct typing of the ref
+    
+  
 
     useEffect(() => {
       // Function to fetch customers
@@ -40,48 +42,8 @@ const OrderDatails = ({ params, searchParams }: {
   
       fetchOrderDetails();
     }, [params.order_id]);
-    const handleDownloadInvoice = async () => {
-      if (invoiceRef.current && buttonRef.current) {
-        if (buttonRef.current) buttonRef.current.classList.add('hide-in-pdf');
-        buttonRef.current.style.display = 'none';
-        const element = invoiceRef.current;
-        
-        // Capture the DOM as an image using html2canvas
-        const canvas = await html2canvas(element, {
-          backgroundColor: '#ffffff',
-          scale: 2,
-        });
-        const imgData = canvas.toDataURL('image/png');
-        
-        // Create a new PDF document using jsPDF
-        const pdf = new jsPDF('p', 'mm', 'a4'); // 'p' for portrait, 'mm' for millimeters, 'a4' for the size
-  
-        // Calculate the width and height based on A4 page size (210mm x 297mm)
-        const imgWidth = 210;
-        const pageHeight = 297;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  
-        let heightLeft = imgHeight;
-        let position = 0;
-  
-        // Add image to the PDF
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-  
-        // If the content is larger than one page, add more pages
-        while (heightLeft >= 0) {
-          position = heightLeft - imgHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-        }
-  
-        // Save the generated PDF
-        element.style.backgroundColor = "";
-        pdf.save(`invoice_${orderDetails._id}.pdf`);
-        buttonRef.current.style.display = 'flex';
-      }
-    };
+    const handlePrint = useReactToPrint({ contentRef });
+
 
      // Show loading or placeholder text while fetching the data
   if (!orderDetails) {
@@ -96,7 +58,7 @@ const OrderDatails = ({ params, searchParams }: {
   return (
     <DefaultLayout>
       <div
-        ref={invoiceRef}
+        ref={contentRef}
         className="mx-auto max-w-4xl rounded-lg bg-white p-6 shadow-md dark:bg-gray-dark dark:shadow-card"
       >
         {/* Order Info */}
@@ -229,15 +191,15 @@ const OrderDatails = ({ params, searchParams }: {
 
         {/* Action Buttons */}
         <div ref={buttonRef} className="mt-6 flex space-x-4">
-          <button
+          {/* <button
             type="button"
             className="flex items-center rounded-full bg-red-600 px-4 py-2 text-white transition hover:bg-red-700"
           >
             Delete
-          </button>
+          </button> */}
           <button
             type="button"
-            onClick={handleDownloadInvoice}
+            onClick={() => handlePrint()}
             className="hidden rounded-full bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700 md:block"
           >
             Download Invoice
