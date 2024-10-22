@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import React, { useRef, useState } from 'react'
-import AddRecoveryModal from "./AddRecoveryModal"
+import AddPurchaserRecoveryModal from "./AddPurchaserRecoveryModal"
 import { useRouter } from 'next/navigation';
 
 
@@ -60,7 +60,7 @@ const PurchaserRecovery = ({ledgers, setUpdate}) => {
         </div>
       </div>
       {
-      isOpen && <AddRecoveryModal ledger={selectedLeadger} toggleModal={toggleModal} modalRef={modalRef}  isOpen={isOpen} setIsOpen={setIsOpen} setUpdate={setUpdate}/>
+      isOpen && <AddPurchaserRecoveryModal ledger={selectedLeadger} toggleModal={toggleModal} modalRef={modalRef}  isOpen={isOpen} setIsOpen={setIsOpen} setUpdate={setUpdate}/>
     }
       <div className="hidden grid-cols-4 gap-4 text-center font-medium uppercase text-gray-600 dark:text-gray-300 sm:grid sm:grid-cols-6">
         <div>#</div>
