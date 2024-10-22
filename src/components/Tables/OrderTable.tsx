@@ -63,7 +63,7 @@ const OrderTable = ({ orders, setUpdate }: any) => {
               <div className="col-span-2 flex items-center">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                   <p className="text-body-sm font-medium text-dark dark:text-dark-6">
-                    {order.party_name}
+                    {order.purchaser_id.purchaser_name}
                   </p>
                 </div>
               </div>
