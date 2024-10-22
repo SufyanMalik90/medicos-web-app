@@ -1,6 +1,6 @@
 "use client";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import Recovery from "@/components/Tables/Recovery.jsx";
+import PurchaserRecovery from "@/components/Tables/PurchaserRecovery";
 import { api } from "@/axios";
 
 import DefaultLayout from "@/components/Layouts/DefaultLaout";
@@ -11,7 +11,7 @@ import OrderTable from "@/components/Tables/OrderTable";
 import Pagination from "@/components/Pagination/pagination";
 import OrderProductsTable from "@/components/orders/OrderProductTable";
 
-const TablesPage = () => {
+const PurchaserRecords = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [ledgers, setLedgers] = useState([]);
   const modalRef = useRef<any>();
@@ -86,12 +86,12 @@ const TablesPage = () => {
 
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Recovery" />
+      <Breadcrumb pageName="Order Record" />
     
-     <Recovery ledgers={ledgers} setUpdate={setUpdate}/>
+     <PurchaserRecovery ledgers={ledgers} setUpdate={setUpdate}/>
       
     </DefaultLayout>
   );
 };
 
-export default TablesPage;
+export default PurchaserRecords;
