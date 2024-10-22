@@ -292,10 +292,14 @@ const CreateInvoice = () => {
     try {
       const response = await api.post('/api/create-invoice', apiInvoiceData);
       if (response.data.success) {
-        console.log("Invoice created successfully:", response.data);
+        // console.log("Invoice created successfully:", response.data);
+        if (response.data.invoice.invoice_number) {
+          router.replace(`/invoices/${response.data.invoice.invoice_number}`);
+        toast.success('Invoice Created!')
+        }
         toast.success('Invoice Created!')
 
-        router.push('/invoices')
+        // router.push('/invoices')
 
         // Handle successful invoice creation (e.g., show success message, redirect, etc.)
       } else {
