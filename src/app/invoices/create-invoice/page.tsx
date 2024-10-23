@@ -62,6 +62,7 @@ const CreateInvoice = () => {
     issueDate: '',
     dueDate: '',
   });
+  const [amountPaid, setAmountPaid] = useState(0)
 
   // Refs for each input field
   const productRefs = useRef<Array<any>>([]);
@@ -535,6 +536,15 @@ const CreateInvoice = () => {
           >
             Save Invoice
           </button>
+        </div>
+        <div className="flex justify-end mb-4 items-center gap-2"> Amount Paid:
+          <input
+            value={amountPaid}
+            onChange={(e) => setAmountPaid(Number(e.target.value))}
+            type="text"
+            className=" rounded-md border px-2 py-1 text-center dark:bg-gray-700 dark:text-white border-gray-400"
+            placeholder="Amount Paid"
+          />
         </div>
 
         <div className="text-right">
