@@ -82,23 +82,25 @@ const CreateInvoice = () => {
   const updateProduct = (index: number, field: string, value: any) => {
     const product: any = invoice.products[index];
     const apiProduct = products.find((p: { _id: any }) => p._id === product.product_id);
-   
+    
     if (field === 'quantity' && apiProduct) {
-      const remainingStock :any = apiProduct.stock - value;
-      if (value > apiProduct.stock) {
-        setStockAvailable(`Stock available ${apiProduct.stock}`);
+      // Calculate the total quantity of the same product in the invoice
+      const totalExistingQuantity = invoice.products
+        .filter((p: any, i: number) => p.product_id === product.product_id && i !== index)
+        .reduce((sum: number, p: any) => sum + p.quantity, 0);
+      
+      // Calculate the remaining stock after considering the existing quantities
+      const remainingStock: any = apiProduct.stock - totalExistingQuantity - value;
+      
+      if (value > apiProduct.stock - totalExistingQuantity) {
+        setStockAvailable(`Stock available ${apiProduct.stock - totalExistingQuantity}`);
       } else {
         setStockAvailable(null); // Clear the error if quantity is valid
       }
       // Update stockQty to show the remaining stock
       setStockQty(remainingStock);
     }
-    // if (field === 'quantity' && apiProduct && value > apiProduct.stock) {
-    //   setStockAvailable(`Stock available ${apiProduct.stock}`);
-    // } else {
-    //   setStockAvailable(null); // Clear the error if quantity is valid
-    // }
-    
+  
     const newProducts = invoice.products.map((product, i) =>
       i === index
         ? { 
@@ -129,7 +131,14 @@ const CreateInvoice = () => {
   };
 
   const handleProductSelect = (selectedProduct: any, index: number) => {
-    setStockQty(selectedProduct.stock);
+    // Calculate total existing quantity of the selected product in the invoice
+    const totalExistingQuantity : any = invoice.products
+      .filter((p: any, i: number) => p.product_id === selectedProduct._id && i !== index)
+      .reduce((sum: number, p: any) => sum + p.quantity, 0);
+  
+    // Set the remaining stock
+    setStockQty((selectedProduct.stock - totalExistingQuantity).toString());
+  
     const updatedProducts = invoice.products.map((product, i) =>
       i === index
         ? { ...product, product_id: selectedProduct._id, productName: selectedProduct.product_name, rate: selectedProduct.price, filteredProducts: [] }
