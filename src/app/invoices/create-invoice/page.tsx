@@ -293,6 +293,7 @@ const CreateInvoice = () => {
         rate: product.rate,
         discount: product.discount
       })),
+      amount_paid:amountPaid,
       issue_date: new Date().toISOString().slice(0, 10),
       due_date: new Date().toISOString().slice(0, 10),
     };

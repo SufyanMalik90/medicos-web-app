@@ -152,6 +152,22 @@ const OrderDatails = ({ params, searchParams }: {
               {orderDetails.total_amount}
             </p>
           </div>
+          <div className="flex justify-end gap-1">
+            <p className="font-medium text-gray-700 dark:text-white">
+              Old Balance:
+            </p>
+            <p className="font-bold text-gray-900 dark:text-white">
+              {orderDetails.old_balance}
+            </p>
+          </div>
+          <div className="flex justify-end gap-1">
+            <p className="font-medium text-gray-700 dark:text-white">
+              Total Balance:
+            </p>
+            <p className="font-bold text-gray-900 dark:text-white">
+              {orderDetails.total_balance}
+            </p>
+          </div>
 
           {/* <div className="flex justify-between">
             <p className="font-medium text-gray-700 dark:text-white">
