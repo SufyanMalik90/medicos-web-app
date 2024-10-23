@@ -134,7 +134,7 @@ const handlePurchaserKeyDown = (e: React.KeyboardEvent) => {
         .map((product: any) => ({
           product_id: product._id,
           quantity: product.quantity,
-          amount: product.price * product.quantity, // Calculate the amount based on price and quantity
+          amount: product.price, // Calculate the amount based on price and quantity
         }));
 
       // Send the selected products data to the API
@@ -233,7 +233,7 @@ const handlePurchaserKeyDown = (e: React.KeyboardEvent) => {
           <div className="col-span-1 flex items-center">
             <input
               type="checkbox"
-              className="h-3 w-3 accent-blue-600"
+              className="h-4 w-4 accent-blue-600"
               onChange={(e) =>
                 handleProductSelection(product, e.target.checked)
               }
