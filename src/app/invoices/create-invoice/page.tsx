@@ -297,7 +297,7 @@ const CreateInvoice = () => {
           router.replace(`/invoices/${response.data.invoice.invoice_number}`);
         toast.success('Invoice Created!')
         }
-        toast.success('Invoice Created!')
+       
 
         // router.push('/invoices')
 
