@@ -8,6 +8,7 @@ import { use, useEffect, useRef, useState } from "react";
 import Image from "next/image.js";
 import Spinners from "@/components/Spinners/Spinners";
 import Pagination from "@/components/Pagination/pagination";
+import PurchaserTable from "@/components/Tables/PurchaserTable";
 
 const TablesPage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -174,7 +175,7 @@ const handlePageChange = (newPage: number) => {
           </div>
         ) : (
           <>
-          <TableTwo purchasers={purchasers} />
+          <PurchaserTable purchasers={purchasers} />
           <div className="flex justify-end">
         <Pagination
           currentPage={currentPage}
