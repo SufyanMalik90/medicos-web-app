@@ -36,6 +36,8 @@ const TableThree = ({products, setUpdate}: any) => {
   const [isOpen, setIsOpen] = useState<any>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productId, setProductId] = useState("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
 
 
   const [formData, setFormData] = useState({
@@ -88,13 +90,44 @@ const TableThree = ({products, setUpdate}: any) => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+  // Filter products based on the search term
+const filteredProducts = products.filter((product: any) =>
+  product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
+);
 
   return (
     <div className="rounded-[10px] bg-white shadow-1 dark:bg-gray-dark dark:shadow-card">
-      <div className="px-4 py-6 md:px-6 xl:px-9">
+      <div className="flex  items-center justify-between px-4 py-6 md:px-6 xl:px-9">
         <h4 className="text-body-2xlg font-bold text-dark dark:text-white">
           Products
         </h4>
+        <div className="relative">
+            <input
+              type="text"
+              placeholder="Search products..."
+              className="rounded-lg border-2 bg-white py-2 pl-10 pr-4 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-none dark:bg-gray-700 dark:text-white"
+              value={searchTerm}
+              onChange={handleSearch}
+            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-search absolute left-3 top-2.5 text-gray-400"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+          </div>
       </div>
 
     {
@@ -122,7 +155,7 @@ const TableThree = ({products, setUpdate}: any) => {
       </div> */}
       </div>
 
-      {products.map((product: any, key: any) => (
+      {filteredProducts.map((product: any, key: any) => (
         <div
           className="grid grid-cols-6 border-t border-stroke px-4 py-4.5 dark:border-dark-3 sm:grid-cols-8 md:px-6 2xl:px-7.5"
           key={key}
