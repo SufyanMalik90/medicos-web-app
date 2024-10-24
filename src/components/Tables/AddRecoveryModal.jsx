@@ -32,6 +32,11 @@ const AddRecoveryModal = ({ledger, toggleModal, modalRef, isOpen, setIsOpen, set
         setIsAmountValid(Number(value) <= Number(dueAmount)); // Check if payment amount is valid
       };
       async function handleUpdateProduct() {
+        if (Number(paymentAmount) <= 0) {
+          setIsOpen(false);
+          toast.error("Recovery amount must be greater than 0.");
+          return; // Prevent API call if amount is not valid
+        }
         setLoading(true); 
         
         try {
