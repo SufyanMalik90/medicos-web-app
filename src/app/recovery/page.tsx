@@ -5,11 +5,6 @@ import { api } from "../../axios.js";
 
 import DefaultLayout from "@/components/Layouts/DefaultLaout";
 import { use, useEffect, useRef, useState } from "react";
-import AlertSuccess from "@/components/Alerts/AlertSuccess";
-import AlertError from "@/components/Alerts/AlertError";
-import OrderTable from "@/components/Tables/OrderTable";
-import Pagination from "@/components/Pagination/pagination";
-import OrderProductsTable from "@/components/orders/OrderProductTable";
 
 const TablesPage = () => {
   const [isOpen, setIsOpen] = useState(false);

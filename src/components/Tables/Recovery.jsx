@@ -5,31 +5,34 @@ import { useRouter } from 'next/navigation';
 
 
 const Recovery = ({ledgers, setUpdate}) => {
-  const [selectedLeadger, setselectedLeadger] = useState(null)
+  const [selectedLeadger, setselectedLeadger] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const modalRef = useRef();
   const router = useRouter();
 
+  const handleViewDetails = (customer_id) => {
+    console.log("View customer:", customer_id);
+    router.push(`/recovery/${customer_id}`);
+  };
 
-      
-      const handleViewDetails = (customer_id) => {
-        console.log("View customer:", customer_id);
-        router.push(`/recovery/${customer_id}`);
+  const handleEdit = (ledger) => {
+    console.log("Edit customer:", ledger);
+    setIsOpen(true);
+    setselectedLeadger(ledger);
+  };
+  const toggleModal = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      setIsOpen(false);
+      setselectedLeadger(null);
+    }
+  };
+  // // Filter ledgers based on the search term
+  const filteredLedgers = ledgers.filter((ledger) =>
+    ledger.customer_name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
-      };
-      
-      const handleEdit = (ledger) => {
-        console.log("Edit customer:", ledger);
-            setIsOpen(true);
-            setselectedLeadger(ledger)
-      };
-      const toggleModal = (e) => {
-        if (modalRef.current && !modalRef.current.contains(e.target)) {
-          setIsOpen(false);
-          setselectedLeadger(null)
-        }
-      };
-      
   return (
     <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800">
       <div className="mb-4 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
@@ -39,6 +42,8 @@ const Recovery = ({ledgers, setUpdate}) => {
         <div className="relative w-full sm:w-auto">
           <input
             type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search customer..."
             className="w-full rounded-md border bg-white py-2 pl-10 pr-4 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-100"
           />
@@ -59,9 +64,16 @@ const Recovery = ({ledgers, setUpdate}) => {
           </svg>
         </div>
       </div>
-      {
-      isOpen && <AddRecoveryModal ledger={selectedLeadger} toggleModal={toggleModal} modalRef={modalRef}  isOpen={isOpen} setIsOpen={setIsOpen} setUpdate={setUpdate}/>
-    }
+      {isOpen && (
+        <AddRecoveryModal
+          ledger={selectedLeadger}
+          toggleModal={toggleModal}
+          modalRef={modalRef}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          setUpdate={setUpdate}
+        />
+      )}
       <div className="hidden grid-cols-4 gap-4 text-center font-medium uppercase text-gray-600 dark:text-gray-300 sm:grid sm:grid-cols-6">
         <div>#</div>
         <div>Customer Name</div>
@@ -70,8 +82,8 @@ const Recovery = ({ledgers, setUpdate}) => {
       </div>
 
       <div className="mt-4 space-y-4">
-        {ledgers.length > 0 ? (
-          ledgers.map((ledger, index) => (
+        {filteredLedgers.length > 0 ? (
+          filteredLedgers.map((ledger, index) => (
             <div
               key={ledger.customer_id}
               className={`grid grid-cols-2 gap-4 p-2 text-center shadow-sm  sm:grid-cols-6 ${index !== ledgers.length - 1 ? "border-b border-stroke dark:border-dark-3" : ""}`}
@@ -118,7 +130,7 @@ const Recovery = ({ledgers, setUpdate}) => {
             </div>
           ))
         ) : (
-            <div className="flex w-full flex-col items-center justify-center py-4">
+          <div className="flex w-full flex-col items-center justify-center py-4">
             <span className="text-3xl font-bold">Nothing here</span>
             <Image
               src="/images/nothing.png"
