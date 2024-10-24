@@ -13,34 +13,37 @@ const TableOne = () => {
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false); // State for filter dropdown
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [invoiceNo, setInvoiceNo] = useState("");
+  const [filter, setFilter] = useState({
+    startDate : "",
+    endDate : ""
+  })
   const router = useRouter();
   const [update, setUpdate] = useState<any>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
 
-  useEffect(() => {
-    // Function to fetch invoices
-    const fetchLastInvoices = async (page: number) => {
-      try {
-        const response = await api.get("/api/get-all-invoices");
-        console.log("API Response Invoices:", response.data);
+  const fetchLastInvoices = async (page: number) => {
+    try {
+      const response = await api.get("/api/get-all-invoices");
+      console.log("API Response Invoices:", response.data);
 
-        if (response.data.success && Array.isArray(response.data.invoice)) {
-          const sortedProducts = response.data.invoice.sort(
-            (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
-          setInvoices(sortedProducts);
-          setTotalPages(response.data.totalPages || 1);
-          setCurrentPage(response.data.currentPage || 1);
+      if (response.data.success && Array.isArray(response.data.invoice)) {
+        const sortedProducts = response.data.invoice.sort(
+          (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        setInvoices(sortedProducts);
+        setTotalPages(response.data.totalPages || 1);
+        setCurrentPage(response.data.currentPage || 1);
 
-        } else {
-          console.error("Unexpected response format:", response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching invoices:", error);
+      } else {
+        console.error("Unexpected response format:", response.data);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching invoices:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchLastInvoices(currentPage);
   }, [update,currentPage]);
 
@@ -76,6 +79,42 @@ const TableOne = () => {
 
   const toggleFilterDropdown = () => {
     setIsFilterOpen(!isFilterOpen);
+  };
+
+  const handleClearFilter = () => {
+    setIsFilterOpen(false);
+
+    // Reset the filter state
+    setFilter({
+      startDate: "",
+      endDate: "",
+    });
+    fetchLastInvoices(1);
+  };
+
+  const handleApply = async () => {
+    try {
+      const response = await api.post("/api/filter-invoice-by-date", {
+        from_date: filter.startDate,
+        to_date: filter.endDate
+      });
+      console.log("Filtered Invoices Response:", response.data);
+  
+      if (response.data.success && Array.isArray(response.data.invoices)) {
+
+        const sortedInvoices = response.data.invoices.sort(
+          (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        setInvoices(sortedInvoices);
+      } else {
+        console.error("Unexpected response format:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching filtered invoices:", error);
+    } finally{
+      setIsFilterOpen(false);
+
+    }
   };
 
   return (
@@ -156,8 +195,14 @@ const TableOne = () => {
                   <div className="flex items-center rounded-md border bg-gray-100 p-2 dark:border-none dark:bg-gray-800">
                     <input
                       type="date"
-                      // value={startDate}
-                      // onChange={(e) => setStartDate(e.target.value)}
+                      value={filter.startDate}
+                      onChange={(e) => {
+                        setFilter((prevFilter) => ({
+                          ...prevFilter,
+                          startDate: e.target.value,
+                        }));
+                        console.log(e.target.value);
+                      }}
                       className="flex-1 bg-gray-100 align-bottom outline-none dark:bg-gray-800"
                       placeholder="MM/DD/YYYY"
                     />
@@ -170,8 +215,14 @@ const TableOne = () => {
                   <div className="flex items-center rounded-md border bg-gray-100 p-2 dark:border-none dark:bg-gray-800">
                     <input
                       type="date"
-                      // value={startDate}
-                      // onChange={(e) => setStartDate(e.target.value)}
+                      value={filter.endDate}
+                      onChange={(e) => {
+                        setFilter((prevFilter) => ({
+                          ...prevFilter,
+                          endDate: e.target.value,
+                        }));
+                        console.log(e.target.value);
+                      }}
                       className="flex-1 bg-gray-100 outline-none dark:bg-gray-800"
                       placeholder="MM/DD/YYYY"
                     />
@@ -181,13 +232,13 @@ const TableOne = () => {
                 <div className="flex justify-between gap-2">
                   <button
                     className="w-full rounded-md bg-gray-200 px-4 py-2 text-gray-500"
-                    // onClick={handleClear}
+                    onClick={handleClearFilter}
                   >
                     Clear
                   </button>
                   <button
                     className=" w-full rounded-md bg-[#5750f1] px-4 py-2 text-white"
-                    // onClick={handleApply}
+                    onClick={handleApply}
                   >
                     Apply
                   </button>
