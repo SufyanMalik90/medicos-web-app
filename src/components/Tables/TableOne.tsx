@@ -6,6 +6,7 @@ import { api } from "../../axios.js";
 import { useRouter } from "next/navigation";
 import DatePickerOne from "../FormElements/DatePicker/DatePickerOne";
 import ConfirmModal from '../ConfirmModal/ConfirmModal'
+import Pagination from "../Pagination/pagination";
 const TableOne = () => {
   const [invoices, setInvoices] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -14,10 +15,12 @@ const TableOne = () => {
   const [invoiceNo, setInvoiceNo] = useState("");
   const router = useRouter();
   const [update, setUpdate] = useState<any>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
   useEffect(() => {
     // Function to fetch invoices
-    const fetchLastInvoices = async () => {
+    const fetchLastInvoices = async (page: number) => {
       try {
         const response = await api.get("/api/get-all-invoices");
         console.log("API Response Invoices:", response.data);
@@ -27,6 +30,8 @@ const TableOne = () => {
             (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
           setInvoices(sortedProducts);
+          setTotalPages(response.data.totalPages || 1);
+          setCurrentPage(response.data.currentPage || 1);
 
         } else {
           console.error("Unexpected response format:", response.data);
@@ -36,8 +41,8 @@ const TableOne = () => {
       }
     };
 
-    fetchLastInvoices();
-  }, [update]);
+    fetchLastInvoices(currentPage);
+  }, [update,currentPage]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -60,6 +65,11 @@ const TableOne = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+  const handlePageChange = (newPage: number) => {
+    console.log("newPage>>", newPage);
+    
+    setCurrentPage(newPage);
+  };
   const filteredInvoices = invoices.filter((invoice: any) =>
     invoice.customer_id.customer_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -69,6 +79,7 @@ const TableOne = () => {
   };
 
   return (
+    <>
     <div className="rounded-[10px] bg-white px-7.5 pb-4 pt-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card">
       <div className="mb-3 flex items-start justify-between">
         <h4 className="mb-5.5 text-body-2xlg font-bold text-dark dark:text-white">
@@ -302,6 +313,14 @@ const TableOne = () => {
         )}
       </div>
     </div>
+      <div className="flex justify-end mt-4">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </div>
+      </>
   );
 };
 
