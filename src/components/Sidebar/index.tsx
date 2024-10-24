@@ -143,7 +143,7 @@ const menuGroups = [
         route: "#",
         children: [
           { label: "Customer list", route: "/customers" },
-          // { label: "Add new customer", route: "/forms/add-customer" },
+          { label: "Purchaser", route: "/purchaser" },
         ],
       },
       {
