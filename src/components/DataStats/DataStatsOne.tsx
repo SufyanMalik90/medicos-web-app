@@ -181,7 +181,7 @@ useEffect(() => {
                     </span>
                   </div>
 
-                  <span
+                  {/* <span
                     className={`flex items-center gap-1.5 text-body-sm font-medium ${
                       stat.growthRate > 0 ? "text-green" : "text-red"
                     }`}
@@ -216,7 +216,7 @@ useEffect(() => {
                         />
                       </svg>
                     )}
-                  </span>
+                  </span> */}
                 </div>
               </div>
             </motion.div>
