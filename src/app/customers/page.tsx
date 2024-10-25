@@ -238,7 +238,7 @@ const handlePageChange = (newPage: number) => {
           </div>
         ) : (
           <>
-          <TableTwo customers={customers} />
+          <TableTwo customers={customers} setUpdate={setUpdate}/>
           <div className="flex justify-end">
         <Pagination
           currentPage={currentPage}
