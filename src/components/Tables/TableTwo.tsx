@@ -65,7 +65,7 @@ const TableTwo = ({ customers, setUpdate }: any) => {
           <ConfirmModalCustomer isOpen={isModalOpen} onClose={closeModal} customerId={customerId} setUpdate={setUpdate}/>
 
           <div className="col-span-2 flex items-center">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 ml-4">
                     <button
                       className="hover:text-blue-700"
                       onClick={() =>
