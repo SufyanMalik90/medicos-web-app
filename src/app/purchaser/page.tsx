@@ -175,7 +175,7 @@ const handlePageChange = (newPage: number) => {
           </div>
         ) : (
           <>
-          <PurchaserTable purchasers={purchasers} />
+          <PurchaserTable purchasers={purchasers} setUpdate={setUpdate}/>
           <div className="flex justify-end">
         <Pagination
           currentPage={currentPage}
