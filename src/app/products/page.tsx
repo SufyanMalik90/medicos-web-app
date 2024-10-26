@@ -83,15 +83,27 @@ const TablesPage = () => {
    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
   
-    // Convert the value to a number if the input name is 'price' or 'stock'
-    const numericValue = name === "price" || name === "stock" || name === "purchasing_price" ? Number(value) : value;
-  console.log("numericValue",numericValue);
-  
+    // Allow decimal values for price and purchasing_price
+    let numericValue: any = value;
+    if (name === "price" || name === "purchasing_price") {
+      // Check if the value is a valid decimal number or empty
+      if (/^\d*\.?\d*$/.test(value) || value === "") {
+        numericValue = value;
+      } else {
+        // If the value is not a valid number, don't update the state
+        return;
+      }
+    } else if (name === "stock") {
+      numericValue = Number(value);
+    }
+    console.log("numericValue >>", numericValue);
+    
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: numericValue,
     }));
   };
+  
   const handleKeyDown = (e:any, nextRef:any) => {
     if (e.key === "Enter" && nextRef && nextRef.current) {
       nextRef.current.focus();

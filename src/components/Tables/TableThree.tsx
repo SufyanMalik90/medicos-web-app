@@ -178,7 +178,7 @@ const filteredProducts = products.filter((product: any) =>
           
           <div className="col-span-1 flex items-center">
             <p className="text-body-sm font-medium text-dark dark:text-dark-6">
-              {product.price}
+            {Number.isInteger(product.price) ? product.price : product.price.toFixed(2)}
             </p>
           </div>
           <div className="col-span-1 flex items-center">
