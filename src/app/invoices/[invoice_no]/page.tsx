@@ -179,14 +179,7 @@ const OrderDetails = ({
               {orderDetails.total}
             </p>
           </div>
-          <div className="flex justify-end gap-1">
-            <p className="font-medium text-gray-700 dark:text-white">
-              Amount Paid:
-            </p>
-            <p className="font-bold text-gray-900 dark:text-white">
-              {orderDetails.amount_paid}
-            </p>
-          </div>
+         
 
           <div className="flex justify-end gap-1">
             <p className="font-medium text-gray-700 dark:text-white">
@@ -203,6 +196,13 @@ const OrderDetails = ({
             </p>
             <p className="font-bold text-gray-900 dark:text-white">
               {orderDetails.total_balance}
+            </p>
+          </div> <div className="flex justify-end gap-1">
+            <p className="font-medium text-gray-700 dark:text-white">
+              Amount Paid:
+            </p>
+            <p className="font-bold text-gray-900 dark:text-white">
+              {orderDetails.amount_paid}
             </p>
           </div>
 

@@ -18,14 +18,7 @@ const Process = () => {
     // >
       <div className={`px-4 md:px-12 lg:px-28 flex flex-col items-center justify-start`}>
         <div className={`w-full px-0 flex flex-col justify-between items-start`}>
-          <p className={`text-xl font-bold text-[#8F8F8F] uppercase `}>
-            6 step agile process
-          </p>
-          <h1
-            className={`lg:font-bold uppercase font-extrabold text-4xl lg:text-6xl`}
-          >
-            our process
-          </h1>
+         
         </div>
         <div className="w-full h-auto mt-6 lg:my-6 grid grid-cols-3 grid-rows-1">
           <button
@@ -46,7 +39,7 @@ const Process = () => {
             >
               {/* <MdKeyboardArrowDown className="text-2xl" /> */}
             </span>
-            <h1>agile</h1>
+            <h1>Register as Student</h1>
           </button>
           <button
             type="button"
@@ -66,28 +59,9 @@ const Process = () => {
             >
               {/* <MdKeyboardArrowDown className="text-2xl" /> */}
             </span>
-            <h1>waterfall</h1>
+            <h1>Register as Teacher</h1>
           </button>
-          <button
-            type="button"
-            name="open-tab"
-            onClick={() => setOpenedTab(3)}
-            className={`w-full font-medium text-md lg:text-lg gap-1 lg:gap-3 transition-all duration-300 h-16  border-b-2  ${openedTab == 3
-              ? "border-[#F15C20] text-[#f15c20]"
-              : "border-[#B4B4B4]/[0.5] text-[#b4b4b4]"
-              } focus:border-[#F15C20] capitalize flex items-center justify-start lg:px-3`}
-          >
-            <span
-              className={`w-7 h-7 lg:w-9 lg:h-9  rounded-full flex justify-center items-center   ${openedTab == 3
-                ? "bg-[#F15C20]/[0.08] -rotate-0"
-                : "bg-black"
-                // theme == "light" ? "bg-[#E7E7E7] -rotate-90" : "bg-[#1c1c1c] -rotate-90"
-                }`}
-            >
-              {/* <MdKeyboardArrowDown className="text-2xl" /> */}
-            </span>
-            <h1>hybrid</h1>
-          </button>
+         
         </div>
 
         <ProcessContainer openedTab={openedTab} />
