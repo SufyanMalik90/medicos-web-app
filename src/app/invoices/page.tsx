@@ -25,7 +25,7 @@ const TablesPage = () => {
         </button>
       </div>
       </Link>
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-3">
         <TableOne />
         {/* <TableTwo /> */}
         {/* <TableThree /> */}
