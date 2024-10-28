@@ -13,6 +13,7 @@ const CreateInvoice = () => {
   const [filteredCustomers, setFilteredCustomers] = useState<any>([]);
   const [stockAvailable, setStockAvailable] = useState<string | null>(null);
   const [stockQty, setStockQty] = useState<string | null>(null);
+  const [purchasingPrice, setPurchasingPrice] = useState<string | null>(null);
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
   const [highlightedCustomerIndex, setHighlightedCustomerIndex] = useState<number>(-1);
 
@@ -70,6 +71,7 @@ const CreateInvoice = () => {
   // Function to add a new product row
   const addProduct = () => {
     setStockQty("");
+    setPurchasingPrice("");
     setInvoice({
       ...invoice,
       products: [
@@ -132,6 +134,8 @@ const CreateInvoice = () => {
   };
 
   const handleProductSelect = (selectedProduct: any, index: number) => {
+    console.log("selectedProduct>>=====", selectedProduct);
+    
     // Calculate total existing quantity of the selected product in the invoice
     const totalExistingQuantity : any = invoice.products
       .filter((p: any, i: number) => p.product_id === selectedProduct._id && i !== index)
@@ -139,6 +143,7 @@ const CreateInvoice = () => {
   
     // Set the remaining stock
     setStockQty((selectedProduct.stock - totalExistingQuantity).toString());
+    setPurchasingPrice((selectedProduct.purchasing_price).toString());
   
     const updatedProducts = invoice.products.map((product, i) =>
       i === index
@@ -383,6 +388,11 @@ const CreateInvoice = () => {
             {stockQty && (
               <p className="mb-2 block text-sm font-medium text-gray-700 dark:text-white">
                 Available QTY: {stockQty}
+              </p>
+            )}
+            {purchasingPrice && (
+              <p className="mb-2 block text-sm font-medium text-gray-700 dark:text-white">
+                Purchasing Rate: {purchasingPrice}
               </p>
             )}
             {/* <input
