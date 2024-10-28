@@ -37,7 +37,7 @@ const CreateInvoice = () => {
     };
     const fetchCustomer = async () => {
       try {
-        const response = await api.get(`/api/get-all-customer`);
+        const response = await api.get(`/api/all-customer`);
         if (response.data.success && Array.isArray(response.data.customers)) {
           const sortedProducts = response.data.customers.sort(
             (a: any, b: any) =>
