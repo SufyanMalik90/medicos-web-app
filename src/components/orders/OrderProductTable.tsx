@@ -14,7 +14,6 @@ const OrderProductsTable = ({ products , purchaser, setUpdate, setIsOpen}: any) 
   const [highlightedPurchaserIndex, setHighlightedPurchaserIndex] = useState<number>(-1);
 
 
-
   // Function to update the total based on selected products and quantities
   const updateTotal = () => {
     const newTotal = Object.values(selectedProducts).reduce(
@@ -84,10 +83,21 @@ const handlePurchaserKeyDown = (e: React.KeyboardEvent) => {
 
 };
 
+const handlePriceChange = (productId:any, newPrice:any) => {
+  const updatedPrice = newPrice === '' ? 0 : parseFloat(newPrice);
+  // Update the state with the new price for the selected product
+  setSelectedProducts((prevSelectedProducts:any) => ({
+    ...prevSelectedProducts,
+    [productId]: {
+      ...prevSelectedProducts[productId],
+      price: updatedPrice,
+    },
+  }));
+};
 
   // Handle product selection and quantity update
   const handleQuantityChange = (productId: string, quantity: string) => {
-    const parsedQuantity = parseInt(quantity.replace(/^0+/, ""), 10) || 0;
+    const parsedQuantity = quantity === '' ? 0 : parseInt(quantity);
 
     setSelectedProducts((prev: any) => {
       const updatedProducts = {
@@ -100,6 +110,7 @@ const handlePurchaserKeyDown = (e: React.KeyboardEvent) => {
       return updatedProducts;
     });
   };
+  
 
   // Handle checkbox change for product selection
   const handleProductSelection = (product: any, isChecked: boolean) => {
@@ -212,66 +223,72 @@ const handlePurchaserKeyDown = (e: React.KeyboardEvent) => {
 
       {/* Table Header */}
       <div className="mt-2 grid grid-cols-9 border-t border-stroke bg-[#5750f1] px-4 py-4.5 text-white dark:border-dark-3 sm:grid-cols-8 md:px-6 2xl:px-7.5">
-        <div className="col-span-1 flex items-center"></div>
-        <div className="col-span-3 flex items-center">
-          <p className="font-medium">Product Title</p>
-        </div>
-        <div className="col-span-1 flex items-center">
-          <p className="font-medium">Price</p>
-        </div>
-        <div className="col-span-3 flex items-center">
-          <p className="font-medium">Quantity</p>
-        </div>
+      <div className="col-span-1 flex items-center"></div>
+      <div className="col-span-3 flex items-center">
+        <p className="font-medium">Product Title</p>
       </div>
+      <div className="col-span-2 flex items-center justify-center">
+        <p className="font-medium">Price</p>
+      </div>
+      <div className="col-span-2 flex items-center justify-center">
+        <p className="font-medium">Quantity</p>
+      </div>
+    </div>
 
-      {/* Table Rows */}
-      {products.map((product: any) => (
-        <div
-          key={product._id}
-          className="grid grid-cols-9 border-t border-stroke px-4 py-4.5 dark:border-dark-3 sm:grid-cols-8 md:px-6 2xl:px-7.5"
-        >
-          <div className="col-span-1 flex items-center">
-            <input
-              type="checkbox"
-              className="h-4 w-4 accent-blue-600"
-              onChange={(e) =>
-                handleProductSelection(product, e.target.checked)
-              }
-              checked={!!selectedProducts[product._id]}
-            />
-          </div>
-          <div className="col-span-3 flex items-center">
-            <p className="text-body-sm font-medium text-dark dark:text-white">
-              {product.product_name}
-            </p>
-          </div>
-          <div className="col-span-1 flex items-center">
-            <p className="text-body-sm font-medium text-dark dark:text-white">
-              {product.price}
-            </p>
-          </div>
-          <div className="col-span-3 flex items-center">
-            <div className="rounded-lg border border-gray-200 bg-white px-3 py-2 dark:bg-gray-800">
-              <div className="flex w-full items-center justify-between gap-x-5">
-                <div className="grow">
-                  <span className="block text-xs text-gray-500 dark:text-white">
-                    Select quantity
-                  </span>
-                  <input
-                    className="w-full border-0 bg-transparent p-0 text-gray-800 outline-none focus:ring-0 dark:text-white"
-                    type="number"
-                    value={selectedProducts[product._id]?.quantity || 0}
-                    onChange={(e) =>
-                      handleQuantityChange(product._id, e.target.value)
-                    }
-                    min="0"
-                  />
-                </div>
+    {/* Table Rows */}
+    {products.map((product: any) => (
+      <div
+        key={product._id}
+        className="grid grid-cols-9 border-t border-stroke px-4 py-4.5 dark:border-dark-3 sm:grid-cols-8 md:px-6 2xl:px-7.5"
+      >
+        <div className="col-span-1 flex items-center">
+          <input
+            type="checkbox"
+            className="h-4 w-4 accent-blue-600"
+            onChange={(e) =>
+              handleProductSelection(product, e.target.checked)
+            }
+            checked={!!selectedProducts[product._id]}
+          />
+        </div>
+        <div className="col-span-3 flex items-center">
+          <p className="text-body-sm font-medium text-dark dark:text-white">
+            {product.product_name}
+          </p>
+        </div>
+        <div className="col-span-2 flex items-center">
+          <input
+            type="text"
+            placeholder="Enter price"
+            className="w-full rounded-lg mr-2 border border-gray-300 px-3 py-2 text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+            value={selectedProducts[product._id]?.price || 0}
+            onChange={(e) =>
+              handlePriceChange(product._id, e.target.value)
+            }
+          />
+        </div>
+        <div className="col-span-2 flex items-center">
+          <div className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 dark:border-gray-600 dark:bg-gray-800">
+            <div className="flex w-full items-center justify-between gap-x-2">
+              <div className="grow">
+                {/* <span className="block text-xs text-gray-500 dark:text-white">
+                  Select quantity
+                </span> */}
+                <input
+                  className="w-full border-0 bg-transparent p-0 text-gray-800 outline-none focus:ring-0 dark:text-white"
+                  type="text"
+                  value={selectedProducts[product._id]?.quantity || 0}
+                  onChange={(e) =>
+                    handleQuantityChange(product._id, e.target.value)
+                  }
+                  min="0"
+                />
               </div>
             </div>
           </div>
         </div>
-      ))}
+      </div>
+    ))}
 
       {/* Total */}
       <div className="mx-4 mb-2 flex justify-end">
