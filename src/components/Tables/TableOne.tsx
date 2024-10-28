@@ -74,7 +74,9 @@ const TableOne = () => {
     setCurrentPage(newPage);
   };
   const filteredInvoices = invoices.filter((invoice: any) =>
-    invoice.customer_id.customer_name.toLowerCase().includes(searchTerm.toLowerCase())
+    // invoice.customer_id.customer_name.toLowerCase().includes(searchTerm.toLowerCase())
+  // seaarch by invoice number
+  invoice.invoice_number.toString().includes(searchTerm)
   );
 
   const toggleFilterDropdown = () => {
