@@ -284,7 +284,15 @@ const CreateInvoice = () => {
     setShowDropdown(false); // Hide dropdown after selection
     setHighlightedCustomerIndex(-1); // Reset highlighted index
   };
-
+  const removeProduct = (index:any) => {
+    const updatedProducts = [...invoice.products];
+    updatedProducts.splice(index, 1); // Remove the product at the specified index
+    setInvoice((prevInvoice) => ({
+      ...prevInvoice,
+      products: updatedProducts,
+    }));
+  };
+  
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     console.log("invoice======", invoice);
@@ -417,6 +425,7 @@ const CreateInvoice = () => {
               <th className="px-4 py-2 dark:text-white">Discount (%)</th>
               <th className="px-4 py-2 dark:text-white">Dis-Amount</th>
               <th className="px-4 py-2 dark:text-white">N-Total</th>
+              <th className="px-4 py-2 dark:text-white">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -533,6 +542,19 @@ const CreateInvoice = () => {
                   </td>
                   <td className="px-4 py-2 text-center dark:text-white">
                     {netTotal.toFixed(2)}
+                  </td>
+                  <td className="px-4 py-2 text-center">
+                    <button
+                      onClick={() => removeProduct(index)}
+                      className={`rounded-md px-3 py-1 text-white ${
+                        invoice.products.length === 1
+                          ? "cursor-not-allowed bg-gray-400"
+                          : "bg-red-500"
+                      }`}
+                      disabled={invoice.products.length === 1} // Disable the button if there's only one product
+                    >
+                      Remove
+                    </button>
                   </td>
                 </tr>
               );
