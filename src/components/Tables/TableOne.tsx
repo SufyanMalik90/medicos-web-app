@@ -268,11 +268,6 @@ const TableOne = () => {
                   Amount
                 </h5>
               </div>
-              <div className="px-2 pb-3.5 text-center sm:block">
-                <h5 className="text-sm font-medium uppercase xsm:text-base">
-                  Status
-                </h5>
-              </div>
             </div>
 
             {filteredInvoices.map((invoice: any, key: number) => (
@@ -290,7 +285,7 @@ const TableOne = () => {
                   </p>
                 </div>
 
-                <div className="flex items-center justify-center px-2 py-4">
+                <div className="flex items-center justify-start px-2 py-4">
                   <p className="font-medium text-dark dark:text-white">
                     {invoice.customer_id.customer_name}
                   </p>
@@ -303,17 +298,6 @@ const TableOne = () => {
                   </p>
                 </div>
 
-                <div className="items-center justify-center px-2 py-4 sm:flex">
-                  <div
-                    className={`flex w-18 justify-center rounded-md px-4 ${
-                      invoice.status === "Paid" ? "bg-green-500" : "bg-red-500"
-                    }`}
-                  >
-                    <p className="font-medium text-dark dark:text-white">
-                      {invoice.status}
-                    </p>
-                  </div>
-                </div>
                 <ConfirmModal isOpen={isModalOpen} onClose={closeModal} invoiceNo={invoiceNo} setUpdate={setUpdate}/>
                 <div className="col-span-1 flex items-center">
                   <div className="flex items-center gap-4">
