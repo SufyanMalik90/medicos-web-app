@@ -138,14 +138,14 @@ const handleCustomerSelect = (customerName, product_id) => {
       </div>
       {data && (
         <div ref={contentRef}>
-          <div className="mb-4 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <h4 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+          <div className="my-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+            <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-100">
               Product Name: {data.product_name}
             </h4>
           </div>
 
           {/* Data List */}
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto my-8">
             <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
               {/* Table Head */}
               <thead className="bg-gray-700 font-medium uppercase text-gray-300">
