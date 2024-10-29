@@ -74,7 +74,7 @@ const Recovery = ({ledgers, setUpdate}) => {
           setUpdate={setUpdate}
         />
       )}
-      <div className="hidden grid-cols-4 gap-4 text-center font-medium uppercase text-gray-600 dark:text-gray-300 sm:grid sm:grid-cols-6">
+      <div className="hidden grid-cols-4 gap-4 text-center font-medium uppercase text-gray-600 dark:text-gray-300 sm:grid sm:grid-cols-4">
         <div>#</div>
         <div>Customer Name</div>
         <div>Due Amount</div>
@@ -86,7 +86,7 @@ const Recovery = ({ledgers, setUpdate}) => {
           filteredLedgers.map((ledger, index) => (
             <div
               key={ledger.customer_id}
-              className={`grid grid-cols-2 gap-4 p-2 text-center shadow-sm  sm:grid-cols-6 ${index !== ledgers.length - 1 ? "border-b border-stroke dark:border-dark-3" : ""}`}
+              className={`grid grid-cols-2 gap-4 p-2 text-center shadow-sm  sm:grid-cols-4 ${index !== ledgers.length - 1 ? "border-b border-stroke dark:border-dark-3" : ""}`}
             >
               <div className="font-medium sm:hidden">#</div>
               <div className="py-2 text-center font-medium text-dark dark:text-white">
