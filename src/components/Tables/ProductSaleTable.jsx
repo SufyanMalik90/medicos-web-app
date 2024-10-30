@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import { api } from "@/axios"; // Assuming you have an API setup
+import Spinners from "../Spinners/Spinners";
 
 
 const ProductSaleTable = () => {
@@ -10,6 +11,8 @@ const ProductSaleTable = () => {
   const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [highlightedCustomerIndex, setHighlightedCustomerIndex] = useState(-1);
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false); // Add loading state
+  const customerRefs = useRef([]);
   const [searchProduct, setSearchProduct] = useState({
     product_id : "",
     customerName: '',
@@ -59,8 +62,39 @@ const handleCustomerSelect = (customerName, product_id) => {
     setHighlightedCustomerIndex(-1); // Reset highlighted index
   };
 
+  const handleCustomerKeyDown = (e) => {
+    const customersLength = filteredCustomers.length;
+  
+    if (e.key === 'ArrowDown') {
+      // Move down in the list
+      setHighlightedCustomerIndex((prevIndex) =>
+        prevIndex < customersLength - 1 ? prevIndex + 1 : 0
+      );
+      e.preventDefault(); // Prevent default scrolling behavior
+    } else if (e.key === 'ArrowUp') {
+      // Move up in the list
+      setHighlightedCustomerIndex((prevIndex) =>
+        prevIndex > 0 ? prevIndex - 1 : customersLength - 1
+      );
+      e.preventDefault(); // Prevent default scrolling behavior
+    } else if (e.key === 'Enter') {
+      // Select the highlighted customer
+      if (highlightedCustomerIndex >= 0 && highlightedCustomerIndex < customersLength) {
+        handleCustomerSelect(
+          filteredCustomers[highlightedCustomerIndex].product_name,
+          filteredCustomers[highlightedCustomerIndex]._id
+        );
+      }
+    } else if (e.key === 'Escape') {
+      // Close the dropdown
+      setShowDropdown(false);
+      setHighlightedCustomerIndex(-1);
+    }
+  };
+
   const handleSubmit = async (e) => {
     // e.preventDefault();
+    setLoading(true);
   
     try {
       const response = await api.post('/api/product-wise-sale', {
@@ -79,8 +113,18 @@ const handleCustomerSelect = (customerName, product_id) => {
       // alert(error.response.data.message)
       // toast.error("Something went Wrong!")
       // alert("Something went Wrong")
+    }finally {
+      setLoading(false); // Stop loading spinner
     }
   };
+  useEffect(() => {
+    if (highlightedCustomerIndex >= 0 && customerRefs.current[highlightedCustomerIndex]) {
+      customerRefs.current[highlightedCustomerIndex].scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+      });
+    }
+  }, [highlightedCustomerIndex]);
   
   return (
     <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800">
@@ -91,7 +135,7 @@ const handleCustomerSelect = (customerName, product_id) => {
             type="text"
             value={searchProduct.customerName}
             onChange={handleCustomerSearch}
-            // onKeyDown={handleCustomerKeyDown}
+            onKeyDown={handleCustomerKeyDown}
             className="w-40 rounded-md border px-3 py-2 text-center font-bold focus:outline-none dark:bg-gray-800 dark:text-white"
             placeholder="Select product"
             onBlur={() => setShowDropdown(false)} // Hide dropdown on blur
@@ -104,6 +148,7 @@ const handleCustomerSelect = (customerName, product_id) => {
               {filteredCustomers.map((customer, idx) => (
                 <li
                   key={customer._id}
+                  ref={(el) => (customerRefs.current[idx] = el)}
                   className={`cursor-pointer p-2 ${
                     highlightedCustomerIndex === idx
                       ? "bg-gray-200 dark:bg-gray-600"
@@ -122,8 +167,9 @@ const handleCustomerSelect = (customerName, product_id) => {
             type="button"
             onClick={() => handleSubmit()}
             className="rounded-lg bg-[#5750f1] px-4 py-2 text-white transition hover:bg-blue-700 md:block "
+            disabled={loading}
           >
-            Apply
+            {loading ? <Spinners /> : "Apply"} {/* Toggle spinner */}
           </button>
         </div>
         {/* {data && data.customerSummary.length > 0 && (
@@ -201,6 +247,12 @@ const handleCustomerSelect = (customerName, product_id) => {
                     <td className="px-4 py-2 font-medium text-dark dark:text-white ">
                       {item.total_purchased}
                     </td>
+                    <td className="px-4 py-2 font-medium text-dark dark:text-white ">
+                      {item.price}
+                    </td>
+                    <td className="px-4 py-2 font-medium text-dark dark:text-white ">
+                      {item.total_sale_amount}
+                    </td>
                     {/* Extra data for larger screens */}
                     {/* <td className="px-4 py-2 font-medium text-dark dark:text-white">{item.price}</td>
           <td className="px-4 py-2 font-medium text-dark dark:text-white">{item.total}</td> */}
@@ -209,6 +261,7 @@ const handleCustomerSelect = (customerName, product_id) => {
               </tbody>
             </table>
           </div>
+            <div className="text-dark dark:text-white text-end mr-2">Net-Total: {data.net_amount}</div>
         </div>
       )}
     </div>
