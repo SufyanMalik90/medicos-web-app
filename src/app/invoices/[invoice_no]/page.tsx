@@ -176,7 +176,8 @@ const OrderDetails = ({
               Total Amount:
             </p>
             <p className="font-bold text-gray-900 dark:text-white">
-              {orderDetails.total}
+            {Number.isInteger(orderDetails.total) ? orderDetails.total : orderDetails.total.toFixed(2)}
+              {/* {orderDetails.total} */}
             </p>
           </div>
          
@@ -195,7 +196,9 @@ const OrderDetails = ({
               Total Balance:
             </p>
             <p className="font-bold text-gray-900 dark:text-white">
-              {orderDetails.total_balance}
+            {Number.isInteger(orderDetails.total_balance) ? orderDetails.total_balance : orderDetails.total_balance.toFixed(2)}
+
+              {/* {orderDetails.total_balance} */}
             </p>
           </div> <div className="flex justify-end gap-1">
             <p className="font-medium text-gray-700 dark:text-white">
@@ -211,7 +214,8 @@ const OrderDetails = ({
               Net Balance:
             </p>
             <p className="font-bold text-gray-900 dark:text-white">
-              {orderDetails.net_balance}
+            {Number.isInteger(orderDetails.net_balance) ? orderDetails.net_balance : orderDetails.net_balance.toFixed(2)}
+              {/* {orderDetails.net_balance} */}
             </p>
           </div>
 

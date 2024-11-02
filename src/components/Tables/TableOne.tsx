@@ -419,7 +419,8 @@ const TableOne = () => {
                   <div className="flex items-center justify-center px-2 py-4">
                     <p className="font-medium text-green-light-1">
                       {" "}
-                      {invoice.total}
+                    {Number.isInteger(invoice.total) ? invoice.total : invoice.total.toFixed(2)}
+                      {/* {invoice.total} */}
                     </p>
                   </div>
 
