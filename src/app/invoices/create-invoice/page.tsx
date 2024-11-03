@@ -331,9 +331,10 @@ const CreateInvoice = () => {
         toast.error("Something went Wrong!")
       }
     } catch (error:any) {
-      console.error("Error submitting invoice:", error);
+      console.error("Error submitting invoice:", error.response.data.message);
       // alert(error.response.data.message)
-      toast.error("Something went Wrong!")
+      let errorMessage = error.response.data.message
+      toast.error( errorMessage ||"Something went Wrong!")
       // alert("Something went Wrong")
     }
   };
