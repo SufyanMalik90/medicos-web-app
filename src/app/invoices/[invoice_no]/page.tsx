@@ -187,7 +187,8 @@ const OrderDetails = ({
               Old Balance:
             </p>
             <p className="font-bold text-gray-900 dark:text-white">
-              {orderDetails.old_balance}
+            {Number.isInteger(orderDetails.old_balance) ? orderDetails.old_balance : orderDetails.old_balance.toFixed(2)}
+              {/* {orderDetails.old_balance} */}
             </p>
           </div>
 
@@ -205,7 +206,8 @@ const OrderDetails = ({
               Amount Paid:
             </p>
             <p className="font-bold text-gray-900 dark:text-white">
-              {orderDetails.amount_paid}
+            {Number.isInteger(orderDetails.amount_paid) ? orderDetails.amount_paid : orderDetails.amount_paid.toFixed(2)}
+              {/* {orderDetails.amount_paid} */}
             </p>
           </div>
 
